@@ -2,6 +2,8 @@
 
 import os
 import re
+import shutil
+import distutils.dir_util
 
 # publishpath = shotpath + 'publish' + 'charSet' + char
 # publishfullpath = publishpath + currentVer
@@ -50,6 +52,13 @@ class outputPathConf (object):
             os.mkdir(self._publishfullabcpath)
         except:
             pass
+
+    def makeCurrentDir (self):
+        currentDir = os.path.join(self.publishpath, 'current')
+        # if os.path.exists(currentDir):
+        #     shutil.rmtree(currentDir)
+        # shutil.copytree(self._publishfullpath, currentDir)
+        distutils.dir_util.copy_tree(self._publishfullpath, currentDir)
 
     @property
     def publishpath (self):

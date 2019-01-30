@@ -64,6 +64,8 @@ class GUI (QMainWindow):
                 batch.hairExport(ninaSetup.assetHair, ninaSetup.nsNina, ninaSetup.topNode, hairOutput, inputpath)
                 batch.abcAttach(ninaSetup.assetNina, ninaSetup.nsNina, ninaSetup.topNode, abcOutput, ninaOutput)
 
+                opc.makeCurrentDir()
+
 def run (*argv):
     app = QApplication.instance()
     if app is None:
