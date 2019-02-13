@@ -11,6 +11,7 @@ import os
 import util
 import batch
 import ninaSetup
+import hikalSetup
 
 try:
     from PySide.QtGui import *
@@ -37,7 +38,9 @@ class GUI (QMainWindow):
 
         self.setWindowTitle('%s %s'%(self.WINDOW, __version__))
         self.setGeometry(400, 400, 400, 300)
+        self.ui.comboBox.addItems(['nina', 'hikal', 'all'])
         self.ui.groupBox.installEventFilter(self)
+
 
     def eventFilter (self, object, event):
         if event.type() == QEvent.DragEnter:
@@ -51,20 +54,47 @@ class GUI (QMainWindow):
                 inputpath = url_list[0].toString().replace("file:///", "")
 
                 opc = util.outputPathConf(inputpath)
-                opc.createOutputDir('nina')
 
-                print opc.publishpath
-                print opc.publishfullpath
-                print opc.publishfullabcpath
+                chara = self.ui.comboBox.currentText()
+                if chara == 'nina' or chara == 'all':
+                    self.ui.progressBar.setValue(0)
 
-                abcOutput = opc.publishfullabcpath + '/' + 'nina.abc'
-                hairOutput = opc.publishfullpath + '/' + 'hair.ma'
-                ninaOutput = opc.publishfullpath + '/' + 'nina.ma'
-                batch.abcExport(ninaSetup.nsNina, abcOutput, inputpath)
-                batch.hairExport(ninaSetup.assetHair, ninaSetup.nsNina, ninaSetup.topNode, hairOutput, inputpath)
-                batch.abcAttach(ninaSetup.assetNina, ninaSetup.nsNina, ninaSetup.topNode, abcOutput, ninaOutput)
+                    opc.createOutputDir('nina')
 
-                opc.makeCurrentDir()
+                    print opc.publishpath
+                    print opc.publishfullpath
+                    print opc.publishfullabcpath
+
+                    abcOutput = opc.publishfullabcpath + '/' + 'nina.abc'
+                    hairOutput = opc.publishfullpath + '/' + 'hair.ma'
+                    ninaOutput = opc.publishfullpath + '/' + 'nina.ma'
+                    batch.abcExport(ninaSetup.nsNina, abcOutput, inputpath)
+                    self.ui.progressBar.setValue(30)
+                    batch.hairExport(ninaSetup.assetHair, ninaSetup.nsNina, ninaSetup.topNode, hairOutput, inputpath)
+                    self.ui.progressBar.setValue(60)
+                    batch.abcAttach(ninaSetup.assetNina, ninaSetup.nsNina, ninaSetup.topNode, abcOutput, ninaOutput)
+
+                    opc.makeCurrentDir()
+                    self.ui.progressBar.setValue(100)
+                if chara == 'hikal' or chara == 'all':
+                    self.ui.progressBar.setValue(0)
+                    opc.createOutputDir('hikal')
+
+                    print opc.publishpath
+                    print opc.publishfullpath
+                    print opc.publishfullabcpath
+
+                    abcOutput = opc.publishfullabcpath + '/' + 'hikal.abc'
+                    hairOutput = opc.publishfullpath + '/' + 'hair.ma'
+                    hikalOutput = opc.publishfullpath + '/' + 'hikal.ma'
+                    batch.abcExport(hikalSetup.nsHikal, abcOutput, inputpath)
+                    self.ui.progressBar.setValue(30)
+                    batch.hairExport(hikalSetup.assetHair, hikalSetup.nsHikal, hikalSetup.topNode, hairOutput, inputpath)
+                    self.ui.progressBar.setValue(60)
+                    batch.abcAttach(hikalSetup.assetHikal, hikalSetup.nsHikal, hikalSetup.topNode, abcOutput, hikalOutput)
+
+                    opc.makeCurrentDir()
+                    self.ui.progressBar.setValue(100)
 
 def run (*argv):
     app = QApplication.instance()

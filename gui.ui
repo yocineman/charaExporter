@@ -18,6 +18,9 @@
     <item>
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
+       <widget class="QComboBox" name="comboBox"/>
+      </item>
+      <item>
        <widget class="QGroupBox" name="groupBox">
         <property name="acceptDrops">
          <bool>true</bool>
@@ -46,6 +49,13 @@
        </widget>
       </item>
      </layout>
+    </item>
+    <item>
+     <widget class="QProgressBar" name="progressBar">
+      <property name="value">
+       <number>0</number>
+      </property>
+     </widget>
     </item>
    </layout>
   </widget>

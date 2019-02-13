@@ -62,6 +62,21 @@ def setEnv ():
         print k, v
 
 
+def bakeKeys (topNode):
+    sframe = mc.playbackOptions(q=True, min=True)
+    eframe = mc.playbackOptions(q=True, max=True
+    mc.bakeResults(topNode, simulation=True, t=(sframe, eframe), hierarchy='below', sampleBy=1, dic=True, pok=True, sac=False, ral=False, bol=False, mr=True, cp=False, shape=True)
+
+    constraints = []
+    constraints += mc.ls(topNode, dag=True, type='parentConstraint')
+    constraints += mc.ls(topNode, dag=True, type='pointConstraint')
+    constraints += mc.ls(topNode, dag=True, type='orientConstraint')
+    constraints += mc.ls(topNode, dag=True, type='scaleConstraint')
+    for constraint in constraints:
+        if mc.referenceQuery(constraint, inr=True): continue
+        mc.delete(constraint)
+
+
 if __name__ == '__main__':
     namespace = 'DDNinaNml'
     assetPath = 'P:/Project/mem2/assets/chara/DDNina/DDNinaNml/publish/model/RenderHigh/maya/current/DDNinaNml_mdlRH.mb'
