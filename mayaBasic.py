@@ -18,6 +18,7 @@ def saveAs (outputPath):
         mc.file(f=True, s=True, type='mayaBinary')
 
 def replaceAsset (assetPath, namespace):
+    mc.warning( 'replace start ')
     refs = mc.ls(type='reference')
     try:
         print refs
@@ -34,16 +35,21 @@ def replaceAsset (assetPath, namespace):
         mc.error('can not replace')
 
     mc.file(assetPath, loadReference=tgtRN)
+    mc.warning('replace end')
 
 
 def exportFile (outputPath, topNode):
+    mc.warning('export start')
     mc.select(topNode)
     mc.file(outputPath, typ='mayaAscii', f=True, es=True, pr=True)
+    mc.warning('export end')
 
 def loadAsset (assetPath, namespace):
     mc.file(assetPath, r=True, namespace=namespace, mergeNamespacesOnClash=False, ignoreVersion=True)
 
 def attachABC (abcPath, hierarchyList):
+    if not mc.pluginInfo('AbcImport', q=True, l=True):
+        mc.loadPlugin('AbcImport')
     hierarchy = ' '.join(hierarchyList)
     mel.eval('AbcImport -mode import -fitTimeRange -debug -connect ' + '\"' + hierarchy + '\" ' + '\"' + abcPath + '\"')
 
@@ -62,19 +68,19 @@ def setEnv ():
         print k, v
 
 
-def bakeKeys (topNode):
-    sframe = mc.playbackOptions(q=True, min=True)
-    eframe = mc.playbackOptions(q=True, max=True
-    mc.bakeResults(topNode, simulation=True, t=(sframe, eframe), hierarchy='below', sampleBy=1, dic=True, pok=True, sac=False, ral=False, bol=False, mr=True, cp=False, shape=True)
+# def bakeKeys (topNode):
+#     sframe = mc.playbackOptions(q=True, min=True)
+#     eframe = mc.playbackOptions(q=True, max=True
+#     mc.bakeResults(topNode, simulation=True, t=(sframe, eframe), hierarchy='below', sampleBy=1, dic=True, pok=True, sac=False, ral=False, bol=False, mr=True, cp=False, shape=True)
 
-    constraints = []
-    constraints += mc.ls(topNode, dag=True, type='parentConstraint')
-    constraints += mc.ls(topNode, dag=True, type='pointConstraint')
-    constraints += mc.ls(topNode, dag=True, type='orientConstraint')
-    constraints += mc.ls(topNode, dag=True, type='scaleConstraint')
-    for constraint in constraints:
-        if mc.referenceQuery(constraint, inr=True): continue
-        mc.delete(constraint)
+#     constraints = []
+#     constraints += mc.ls(topNode, dag=True, type='parentConstraint')
+#     constraints += mc.ls(topNode, dag=True, type='pointConstraint')
+#     constraints += mc.ls(topNode, dag=True, type='orientConstraint')
+#     constraints += mc.ls(topNode, dag=True, type='scaleConstraint')
+#     for constraint in constraints:
+#         if mc.referenceQuery(constraint, inr=True): continue
+#         mc.delete(constraint)
 
 
 if __name__ == '__main__':

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 #------------------------------
-__version__ = '0.1.0'
+__version__ = '0.2.0'
 __author__ = "Yoshihisa Okano"
 #------------------------------
 
@@ -28,7 +28,7 @@ qtSlot = Slot
 
 
 class GUI (QMainWindow):
-    WINDOW = 'nina setup'
+    WINDOW = 'ZGR chara export'
     def __init__ (self, parent=None):
         super(self.__class__, self).__init__(parent)
         self.ui_path = 'P:\\Project\\mem2\\Library\\Tool\\maya\\scripts\\python\\charaExporter\\gui.ui'
@@ -68,14 +68,17 @@ class GUI (QMainWindow):
                     abcOutput = opc.publishfullabcpath + '/' + 'nina.abc'
                     hairOutput = opc.publishfullpath + '/' + 'hair.ma'
                     ninaOutput = opc.publishfullpath + '/' + 'nina.ma'
+
                     batch.abcExport(ninaSetup.nsNina, abcOutput, inputpath)
                     self.ui.progressBar.setValue(30)
+
                     batch.hairExport(ninaSetup.assetHair, ninaSetup.nsNina, ninaSetup.topNode, hairOutput, inputpath)
                     self.ui.progressBar.setValue(60)
-                    batch.abcAttach(ninaSetup.assetNina, ninaSetup.nsNina, ninaSetup.topNode, abcOutput, ninaOutput)
 
+                    batch.abcAttach(ninaSetup.assetNina, ninaSetup.nsNina, ninaSetup.topNode, abcOutput, ninaOutput)
                     opc.makeCurrentDir()
                     self.ui.progressBar.setValue(100)
+
                 if chara == 'hikal' or chara == 'all':
                     self.ui.progressBar.setValue(0)
                     opc.createOutputDir('hikal')
@@ -92,7 +95,6 @@ class GUI (QMainWindow):
                     batch.hairExport(hikalSetup.assetHair, hikalSetup.nsHikal, hikalSetup.topNode, hairOutput, inputpath)
                     self.ui.progressBar.setValue(60)
                     batch.abcAttach(hikalSetup.assetHikal, hikalSetup.nsHikal, hikalSetup.topNode, abcOutput, hikalOutput)
-
                     opc.makeCurrentDir()
                     self.ui.progressBar.setValue(100)
 

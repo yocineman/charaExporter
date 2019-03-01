@@ -12,8 +12,9 @@ import distutils.dir_util
 class outputPathConf (object):
 
     def __init__ (self, inputPath):
-        self.inputPath = inputPath
-        match = re.match('(P:/Project/[a-zA-Z0-9]+)/([a-zA-Z0-9]+)/([a-zA-Z0-9]+)/([a-zA-Z0-9]+)/([a-zA-Z0-9]+)', inputPath)
+        self.inputPath = inputPath.replace('\\', '/')
+        print self.inputPath
+        match = re.match('(P:/Project/[a-zA-Z0-9]+)/([a-zA-Z0-9]+)/([a-zA-Z0-9]+)/([a-zA-Z0-9]+)/([a-zA-Z0-9]+)', self.inputPath)
         if match is None:
             raise ValueError('directory structure is not n-design format')
 
