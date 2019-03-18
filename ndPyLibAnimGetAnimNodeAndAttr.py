@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+
+
 import maya.cmds as mc
 from ndPyLibStrDeletePrefix import *
 

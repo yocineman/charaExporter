@@ -2,14 +2,15 @@
 
 import subprocess
 
-mayaBatch = 'C:\\Program Files\\Autodesk\\Maya2015\\bin\\mayabatch.exe' 
+# mayaBatch = 'C:\\Program Files\\Autodesk\\Maya2015\\bin\\mayabatch.exe' 
+mayaBatch = 'C:\\Program Files\\Autodesk\\Maya2017\\bin\\mayabatch.exe' 
 
 
 def abcExport (namespace, outputPath, scene):
     cmd = []
     cmd.append(mayaBatch)
     cmd.append('-command')
-    cmd.append('''python(\"from ndPyLibExportAbc import ndPyLibExportAbc2;ndPyLibExportAbc2(['''+"\'" + namespace + "\'"+'''], ['abcExport_Sets'],''' + "\'" + outputPath + "\'" + ''')\")''')
+    cmd.append('''python(\"from ndPyLibExportAbc import ndPyLibExportAbc2;ndPyLibExportAbc2(''' + str(namespace) +''', ['abcExport_Sets'],''' + "\'" + outputPath + "\'" + ''')\")''')
     cmd.append('-file')
     cmd.append(scene)
     print cmd

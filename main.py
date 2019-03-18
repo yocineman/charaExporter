@@ -29,7 +29,8 @@ qtSlot = Slot
 
 class GUI (QMainWindow):
     WINDOW = 'ZGR chara export'
-    def __init__ (self, parent=None):
+    def __init__ (self, parent=None, mode='ZGR'):
+        print mode
         super(self.__class__, self).__init__(parent)
         self.ui_path = 'P:\\Project\\mem2\\Library\\Tool\\maya\\scripts\\python\\charaExporter\\gui.ui'
 
@@ -61,10 +62,6 @@ class GUI (QMainWindow):
 
                     opc.createOutputDir('nina')
 
-                    print opc.publishpath
-                    print opc.publishfullpath
-                    print opc.publishfullabcpath
-
                     abcOutput = opc.publishfullabcpath + '/' + 'nina.abc'
                     hairOutput = opc.publishfullpath + '/' + 'hair.ma'
                     ninaOutput = opc.publishfullpath + '/' + 'nina.ma'
@@ -72,10 +69,18 @@ class GUI (QMainWindow):
                     batch.abcExport(ninaSetup.nsNina, abcOutput, inputpath)
                     self.ui.progressBar.setValue(30)
 
-                    batch.hairExport(ninaSetup.assetHair, ninaSetup.nsNina, ninaSetup.topNode, hairOutput, inputpath)
+                    abcFiles = os.listdir(opc.publishfullabcpath)
+                    for abc in abcFiles:
+                        ns = abc.replace('nina_', '').replace('.abc', '')
+                        hairOutput = opc.publishfullpath + '/' + 'hair_' + ns + '.ma'
+                        batch.hairExport(ninaSetup.assetHair, ns, ns+':'+ninaSetup.topNode, hairOutput, inputpath)
                     self.ui.progressBar.setValue(60)
 
-                    batch.abcAttach(ninaSetup.assetNina, ninaSetup.nsNina, ninaSetup.topNode, abcOutput, ninaOutput)
+                    for abc in abcFiles:
+                        ns = abc.replace('nina_', '').replace('.abc', '')
+                        abcOutput = opc.publishfullabcpath + '/' + abc
+                        ninaOutput = opc.publishfullpath + '/' + abc.replace('abc', 'ma')
+                        batch.abcAttach(ninaSetup.assetNina, ns, ns+':'+ninaSetup.topNode, abcOutput, ninaOutput)
                     opc.makeCurrentDir()
                     self.ui.progressBar.setValue(100)
 
@@ -83,18 +88,25 @@ class GUI (QMainWindow):
                     self.ui.progressBar.setValue(0)
                     opc.createOutputDir('hikal')
 
-                    print opc.publishpath
-                    print opc.publishfullpath
-                    print opc.publishfullabcpath
-
                     abcOutput = opc.publishfullabcpath + '/' + 'hikal.abc'
                     hairOutput = opc.publishfullpath + '/' + 'hair.ma'
                     hikalOutput = opc.publishfullpath + '/' + 'hikal.ma'
+
                     batch.abcExport(hikalSetup.nsHikal, abcOutput, inputpath)
                     self.ui.progressBar.setValue(30)
-                    batch.hairExport(hikalSetup.assetHair, hikalSetup.nsHikal, hikalSetup.topNode, hairOutput, inputpath)
+
+                    abcFiles = os.listdir(opc.publishfullabcpath)
+                    for abc in abcFiles:
+                        ns = abc.replace('hikal_', '').replace('.abc', '')
+                        hairOutput = opc.publishfullpath + '/' + 'hair_' + ns + '.ma'
+                        batch.hairExport(hikalSetup.assetHair, ns, ns+':'+hikalSetup.topNode, hairOutput, inputpath)
                     self.ui.progressBar.setValue(60)
-                    batch.abcAttach(hikalSetup.assetHikal, hikalSetup.nsHikal, hikalSetup.topNode, abcOutput, hikalOutput)
+
+                    for abc in abcFiles:
+                        ns = abc.replace('hikal_', '').replace('.abc', '')
+                        abcOutput = opc.publishfullabcpath + '/' + abc
+                        hikalOutput = opc.publishfullpath + '/' + abc.replace('abc', 'ma')
+                        batch.abcAttach(hikalSetup.assetHikal, ns, ns+':'+hikalSetup.topNode, abcOutput, hikalOutput)
                     opc.makeCurrentDir()
                     self.ui.progressBar.setValue(100)
 
@@ -103,7 +115,10 @@ def run (*argv):
     if app is None:
         app = QApplication(sys.argv)
     app.setStyle('plastique')
-    ui = GUI()
+    if argv[0][0] == '':
+        ui = GUI()
+    else:
+        ui = GUI(mode=argv[0][0])
     ui.show()
 
     app.exec_()

@@ -1,4 +1,4 @@
-
+# -*- coding: utf-8 -*-
 
 from ndPyLibAnimGetAnimNodeAndAttr import *
 import maya.cmds as mc

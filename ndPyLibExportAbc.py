@@ -149,7 +149,13 @@ def _exportAbc2 (outputPath, namespaceList, regexArgs):
     if len(namespaceList) == 0:
         allNamespaces = _getNamespace()
     else:
-        allNamespaces = namespaceList
+        # allNamespaces = namespaceList
+        tmpNS = _getNamespace()
+        for _nsList in namespaceList:
+            for _ns in tmpNS:
+                match = re.match(_nsList, _ns)
+                if match != None:
+                    allNamespaces.append(_ns)
 
     allNodes = {}
     for ns in allNamespaces:
@@ -162,6 +168,8 @@ def _exportAbc2 (outputPath, namespaceList, regexArgs):
         pickNodes = []
         pickNodes = allNodes[ns]
         if len(pickNodes) == 0: continue
+
+        outputPath_ns = outputPath.replace('.abc', '_'+ns+'.abc')
 
         strAbc = ''
         strAbc = strAbc + '-frameRange '
@@ -176,7 +184,7 @@ def _exportAbc2 (outputPath, namespaceList, regexArgs):
             strAbc = strAbc + '-root '
             strAbc = strAbc + pn + ' '
         strAbc = strAbc + '-file '
-        strAbc = strAbc + outputPath
+        strAbc = strAbc + outputPath_ns
 
         print 'AbcExport -j ' + strAbc
         mel.eval('AbcExport -j ' + '"' + strAbc + '"')

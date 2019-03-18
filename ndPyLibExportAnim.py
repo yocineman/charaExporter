@@ -152,5 +152,6 @@ def ndPyLibExportAnim (regexArgs, isFilter):
 
 def ndPyLibExportAnim2 (publishpath, oFilename, regexArgs, isFilter):
     regexArgs = regexArgs.split(',')
+    print 'aaaaa'
     print regexArgs
     _exportAnim(publishpath, oFilename, regexArgs, isFilter)
