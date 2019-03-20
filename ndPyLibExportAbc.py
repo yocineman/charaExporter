@@ -18,7 +18,7 @@ def norefresh (func):
 
 
 def _getNamespace ():
-    namespaces = mc.namespaceInfo(lon=True)
+    namespaces = mc.namespaceInfo(lon=True, r=True)
     namespaces.remove('UI')
     namespaces.remove('shared')
     return namespaces
@@ -169,6 +169,8 @@ def _exportAbc2 (outputPath, namespaceList, regexArgs):
         pickNodes = allNodes[ns]
         if len(pickNodes) == 0: continue
 
+        if ':' in ns:
+            ns = ns.replace(':', '___')
         outputPath_ns = outputPath.replace('.abc', '_'+ns+'.abc')
 
         strAbc = ''

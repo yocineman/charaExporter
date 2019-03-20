@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 #------------------------------
-__version__ = '0.2.0'
+__version__ = '0.3.5'
 __author__ = "Yoshihisa Okano"
 #------------------------------
 
@@ -52,63 +52,72 @@ class GUI (QMainWindow):
             mimedata = event.mimeData()
             if mimedata.hasUrls:
                 url_list = mimedata.urls()
-                inputpath = url_list[0].toString().replace("file:///", "")
+                for url in url_list:
+                    inputpath = url.toString().replace("file:///", "")
 
-                opc = util.outputPathConf(inputpath)
+                    opc = util.outputPathConf(inputpath)
 
-                chara = self.ui.comboBox.currentText()
-                if chara == 'nina' or chara == 'all':
-                    self.ui.progressBar.setValue(0)
+                    chara = self.ui.comboBox.currentText()
+                    if chara == 'nina' or chara == 'all':
+                        self.ui.progressBar.setValue(0)
 
-                    opc.createOutputDir('nina')
+                        opc.createOutputDir('nina')
 
-                    abcOutput = opc.publishfullabcpath + '/' + 'nina.abc'
-                    hairOutput = opc.publishfullpath + '/' + 'hair.ma'
-                    ninaOutput = opc.publishfullpath + '/' + 'nina.ma'
+                        abcOutput = opc.publishfullabcpath + '/' + 'nina.abc'
+                        hairOutput = opc.publishfullpath + '/' + 'hair.ma'
+                        ninaOutput = opc.publishfullpath + '/' + 'nina.ma'
 
-                    batch.abcExport(ninaSetup.nsNina, abcOutput, inputpath)
-                    self.ui.progressBar.setValue(30)
+                        batch.abcExport(ninaSetup.nsNina, abcOutput, inputpath)
+                        self.ui.progressBar.setValue(30)
 
-                    abcFiles = os.listdir(opc.publishfullabcpath)
-                    for abc in abcFiles:
-                        ns = abc.replace('nina_', '').replace('.abc', '')
-                        hairOutput = opc.publishfullpath + '/' + 'hair_' + ns + '.ma'
-                        batch.hairExport(ninaSetup.assetHair, ns, ns+':'+ninaSetup.topNode, hairOutput, inputpath)
-                    self.ui.progressBar.setValue(60)
+                        abcFiles = os.listdir(opc.publishfullabcpath)
+                        for abc in abcFiles:
+                            ns = abc.replace('nina_', '').replace('.abc', '')
+                            hairOutput = opc.publishfullpath + '/' + 'hair_' + ns + '.ma'
+                            if '___' in ns:
+                                ns = ns.replace('___', ':')
+                            batch.hairExport(ninaSetup.assetHair, ns, ns+':'+ninaSetup.topNode, hairOutput, inputpath)
+                        self.ui.progressBar.setValue(60)
 
-                    for abc in abcFiles:
-                        ns = abc.replace('nina_', '').replace('.abc', '')
-                        abcOutput = opc.publishfullabcpath + '/' + abc
-                        ninaOutput = opc.publishfullpath + '/' + abc.replace('abc', 'ma')
-                        batch.abcAttach(ninaSetup.assetNina, ns, ns+':'+ninaSetup.topNode, abcOutput, ninaOutput)
-                    opc.makeCurrentDir()
-                    self.ui.progressBar.setValue(100)
+                        for abc in abcFiles:
+                            ns = abc.replace('nina_', '').replace('.abc', '')
+                            abcOutput = opc.publishfullabcpath + '/' + abc
+                            ninaOutput = opc.publishfullpath + '/' + abc.replace('abc', 'ma')
+                            if '___' in ns:
+                                ns = ns.split('___')[-1]
+                            batch.abcAttach(ninaSetup.assetNina, ns, ns+':'+ninaSetup.topNode, abcOutput, ninaOutput)
+                        opc.makeCurrentDir()
+                        self.ui.progressBar.setValue(100)
 
-                if chara == 'hikal' or chara == 'all':
-                    self.ui.progressBar.setValue(0)
-                    opc.createOutputDir('hikal')
+                    if chara == 'hikal' or chara == 'all':
+                        self.ui.progressBar.setValue(0)
+                        opc.createOutputDir('hikal')
 
-                    abcOutput = opc.publishfullabcpath + '/' + 'hikal.abc'
-                    hairOutput = opc.publishfullpath + '/' + 'hair.ma'
-                    hikalOutput = opc.publishfullpath + '/' + 'hikal.ma'
+                        abcOutput = opc.publishfullabcpath + '/' + 'hikal.abc'
+                        hairOutput = opc.publishfullpath + '/' + 'hair.ma'
+                        hikalOutput = opc.publishfullpath + '/' + 'hikal.ma'
 
-                    batch.abcExport(hikalSetup.nsHikal, abcOutput, inputpath)
-                    self.ui.progressBar.setValue(30)
+                        batch.abcExport(hikalSetup.nsHikal, abcOutput, inputpath)
+                        self.ui.progressBar.setValue(30)
 
-                    abcFiles = os.listdir(opc.publishfullabcpath)
-                    for abc in abcFiles:
-                        ns = abc.replace('hikal_', '').replace('.abc', '')
-                        hairOutput = opc.publishfullpath + '/' + 'hair_' + ns + '.ma'
-                        batch.hairExport(hikalSetup.assetHair, ns, ns+':'+hikalSetup.topNode, hairOutput, inputpath)
-                    self.ui.progressBar.setValue(60)
+                        abcFiles = os.listdir(opc.publishfullabcpath)
+                        for abc in abcFiles:
+                            ns = abc.replace('hikal_', '').replace('.abc', '')
+                            hairOutput = opc.publishfullpath + '/' + 'hair_' + ns + '.ma'
+                            if '___' in ns:
+                                ns = ns.replace('___', ':')
+                            batch.hairExport(hikalSetup.assetHair, ns, ns+':'+hikalSetup.topNode, hairOutput, inputpath)
+                        self.ui.progressBar.setValue(60)
 
-                    for abc in abcFiles:
-                        ns = abc.replace('hikal_', '').replace('.abc', '')
-                        abcOutput = opc.publishfullabcpath + '/' + abc
-                        hikalOutput = opc.publishfullpath + '/' + abc.replace('abc', 'ma')
-                        batch.abcAttach(hikalSetup.assetHikal, ns, ns+':'+hikalSetup.topNode, abcOutput, hikalOutput)
-                    opc.makeCurrentDir()
-                    self.ui.progressBar.setValue(100)
+                        for abc in abcFiles:
+                            ns = abc.replace('hikal_', '').replace('.abc', '')
+                            abcOutput = opc.publishfullabcpath + '/' + abc
+                            hikalOutput = opc.publishfullpath + '/' + abc.replace('abc', 'ma')
+                            if '___' in ns:
+                                ns = ns.split('___')[-1]
+                            batch.abcAttach(hikalSetup.assetHikal, ns, ns+':'+hikalSetup.topNode, abcOutput, hikalOutput)
+                        opc.makeCurrentDir()
+                        self.ui.progressBar.setValue(100)
 
 def run (*argv):
     app = QApplication.instance()
