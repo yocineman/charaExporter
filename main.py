@@ -141,7 +141,7 @@ class GUI (QMainWindow):
                         charaList.remove('all')
                         for chara in charaList:
                             if chara == 'TKN':
-                                pass
+                                self.execExportAnim(chara, inputpath)
                             else:
                                 self.execExport(chara, inputpath)
 
