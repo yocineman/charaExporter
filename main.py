@@ -31,7 +31,7 @@ qtSlot = Slot
 
 
 class GUI (QMainWindow):
-    WINDOW = 'ZGR chara export'
+    WINDOW = 'mem chara export'
     def __init__ (self, parent=None, mode='ZGR'):
         print mode
         super(self.__class__, self).__init__(parent)
