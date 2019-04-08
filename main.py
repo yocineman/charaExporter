@@ -190,6 +190,7 @@ class GUI (QMainWindow):
             animOutput = opc.publishfullanimpath + '/' + animFiles[0]
             charaOutput = opc.publishfullpath + '/' + ns + '.ma'
             batch.animAttach(charaSetup.assetChara, ns, animOutput, charaOutput)
+            opc.makeCurrentDir()
 
 
 def run (*argv):
