@@ -178,7 +178,7 @@ def _exportAbc2 (outputPath, namespaceList, regexArgs):
         strAbc = strAbc + str(sframe) + ' '
         strAbc = strAbc + str(eframe) + ' '
         strAbc = strAbc + '-uvWrite '
-        strAbc = strAbc + '-worldSpace '
+        # strAbc = strAbc + '-worldSpace '
         strAbc = strAbc + '-writeVisibility '
         strAbc = strAbc + '-eulerFilter '
         strAbc = strAbc + '-dataFormat ogawa '
@@ -192,4 +192,6 @@ def _exportAbc2 (outputPath, namespaceList, regexArgs):
         mel.eval('AbcExport -j ' + '"' + strAbc + '"')
 
 def ndPyLibExportAbc2 (namespaceList, regexArgs, outputPath):
+    print 'x'*20
+    print regexArgs
     _exportAbc2(outputPath, namespaceList, regexArgs)

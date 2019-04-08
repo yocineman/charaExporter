@@ -71,4 +71,9 @@ def ndPyLibAnimIOExportContain (isFilterCurve, inPfxInfo, inDirPath, inFileName,
         readFileID.close()
         writeFileID.close()
 
+    org = inDirPath + '/' + fileName
+    tmp = inDirPath + '/' + tmpFile
+    os.remove(org)
+    os.rename(tmp, org)
+
     ###

@@ -6,11 +6,11 @@ import subprocess
 mayaBatch = 'C:\\Program Files\\Autodesk\\Maya2017\\bin\\mayabatch.exe' 
 
 
-def abcExport (namespace, outputPath, scene):
+def abcExport (namespace, exportSet, outputPath, scene):
     cmd = []
     cmd.append(mayaBatch)
     cmd.append('-command')
-    cmd.append('''python(\"from ndPyLibExportAbc import ndPyLibExportAbc2;ndPyLibExportAbc2(''' + str(namespace) +''', ['abcExport_Sets'],''' + "\'" + outputPath + "\'" + ''')\")''')
+    cmd.append('''python(\"from ndPyLibExportAbc import ndPyLibExportAbc2;ndPyLibExportAbc2(''' + str(namespace) +''', ''' + str(exportSet) + ''',''' + "\'" + outputPath + "\'" + ''')\")''')
     cmd.append('-file')
     cmd.append(scene)
     print cmd
@@ -35,12 +35,20 @@ def abcAttach (assetPath, namespace,topNode, abcPath, outputPath):
     print cmd
     ret = subprocess.call(cmd)
 
-def animExport (outputPath, oFilename, regex, scene):
+def animExport (outputPath, oFilename, namespace, regex, scene):
     cmd = []
     cmd.append(mayaBatch)
     cmd.append('-command')
-    cmd.append('''python(\"from ndPyLibExportAnim import ndPyLibExportAnim2;ndPyLibExportAnim2(''' + "\'" + outputPath + "\'" + "," + "\'" + oFilename + "\'" + "," + "\'" + regex + "\'"  + ''', 0);\")''')
+    cmd.append('''python(\"from ndPyLibExportAnim import ndPyLibExportAnim2;ndPyLibExportAnim2(''' + "\'" + outputPath + "\'" + "," + "\'" + oFilename + "\'" + "," + str(namespace) + "," + "\'" + regex + "\'"  + ''', 0);\")''')
     cmd.append('-file')
     cmd.append(scene)
     print cmd
     subprocess.call(cmd)
+
+def animAttach (assetPath, namespace, animPath, outputPath):
+    cmd = []
+    cmd.append(mayaBatch)
+    cmd.append('-command')
+    cmd.append('''python(\"from mayaBasic import *;import maya.cmds as mc;saveAs(''' + "\'" + outputPath + "\'" + ''');loadAsset(''' + "\'" + assetPath + "\'" + "," + "\'" + namespace + "\'"''');loadAsset(''' + "\'" + animPath + "\'" + "," + "\'" + namespace+'_anim' + "\'" + ''');saveAs(''' + "\'" + outputPath + "\'" + ''');\")''')
+    print cmd
+    ret = subprocess.call(cmd)

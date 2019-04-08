@@ -11,8 +11,9 @@ import distutils.dir_util
 
 class outputPathConf (object):
 
-    def __init__ (self, inputPath):
+    def __init__ (self, inputPath, isAnim=False):
         self.inputPath = inputPath.replace('\\', '/')
+        self.isAnim = isAnim
         print self.inputPath
         match = re.match('(P:/Project/[a-zA-Z0-9]+)/([a-zA-Z0-9]+)/([a-zA-Z0-9]+)/([a-zA-Z0-9]+)/([a-zA-Z0-9]+)', self.inputPath)
         if match is None:
@@ -48,9 +49,13 @@ class outputPathConf (object):
             self._currentVer = nextVer
         self._publishfullpath = os.path.join(self._publishpath, self._currentVer)
         self._publishfullabcpath = os.path.join(self._publishfullpath, 'abc')
+        self._publishfullanimpath = os.path.join(self._publishfullpath, 'anim')
         try:
             os.mkdir(self._publishfullpath)
-            os.mkdir(self._publishfullabcpath)
+            if self.isAnim:
+                os.mkdir(self._publishfullanimpath)
+            else:
+                os.mkdir(self._publishfullabcpath)
         except:
             pass
 
@@ -72,4 +77,8 @@ class outputPathConf (object):
     @property
     def publishfullabcpath (self):
         return self._publishfullabcpath.replace(os.path.sep, '/')
+
+    @property
+    def publishfullanimpath (self):
+        return self._publishfullanimpath.replace(os.path.sep, '/')
 

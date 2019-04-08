@@ -68,16 +68,22 @@ def _getNoKeyAttributes (nodes):
     return attrs
 
 
-def _exportAnim (publishpath, oFilename, regexArgs, isFilter):
+def _exportAnim (publishpath, oFilename, namespaceList, regexArgs, isFilter):
     outputfiles = []
     sframe = mc.playbackOptions(q=True, min=True)
     eframe = mc.playbackOptions(q=True, max=True)
 
     namespaces = _getNamespace()
 
+    print namespaceList
+    print namespaces
+
     allNodes = []
     for ns in namespaces:
-        allNodes += _getAllNodes(ns, regexArgs)
+        for _nsList in namespaceList:
+            match = re.match(_nsList, ns)
+            if match != None:
+                allNodes += _getAllNodes(ns, regexArgs)
 
     characterSet = mc.ls(type='character')
     if len(characterSet) == 0:
@@ -150,8 +156,8 @@ def ndPyLibExportAnim (regexArgs, isFilter):
         publishpath = os.path.normpath(publishpath)
         os.makedirs(publishpath)
 
-def ndPyLibExportAnim2 (publishpath, oFilename, regexArgs, isFilter):
+def ndPyLibExportAnim2 (publishpath, oFilename, namespaceList, regexArgs, isFilter):
     regexArgs = regexArgs.split(',')
     print 'aaaaa'
     print regexArgs
-    _exportAnim(publishpath, oFilename, regexArgs, isFilter)
+    _exportAnim(publishpath, oFilename, namespaceList, regexArgs, isFilter)
