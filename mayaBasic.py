@@ -17,6 +17,9 @@ def saveAs (outputPath):
     else:
         mc.file(f=True, s=True, type='mayaBinary')
 
+def save ():
+    mc.file(s=True)
+
 def replaceAsset (assetPath, namespace):
     mc.warning( 'replace start ')
     refs = mc.ls(type='reference')
@@ -52,6 +55,11 @@ def attachABC (abcPath, hierarchyList):
         mc.loadPlugin('AbcImport')
     hierarchy = ' '.join(hierarchyList)
     mel.eval('AbcImport -mode import -fitTimeRange -debug -connect ' + '\"' + hierarchy + '\" ' + '\"' + abcPath + '\"')
+
+def replaceABCPath (repAbcPath):
+    abcNodes = mc.ls(type='AlembicNode')
+    if len(abcNodes) != 0:
+        mc.setAttr(abcNodes[0]+'.abc_File', repAbcPath, type='string')
 
 def setEnv ():
     os.environ['VRAY_FOR_MAYA2015_MAIN_X64'] = 'Y:\\users\\env\\vray\\maya2015_vray_adv_36004\\maya_vray'
