@@ -40,67 +40,59 @@ def ndPyLibExportCam_bakeCamera(frameHandle):
 
     bakeCams = []
     fromCam = []
-
+    toCam = []
     for i in range(0, len(cams), 2):
-    
-        toCam = cmds.camera()
+        toCam.extend(cmds.camera())
         fromCam.append(cams[i])
         fromCam.append(cams[i+1])
 
-        for thisAttr in shapeAttrs:
-            cmds.setAttr(fromCam[i]+'.'+thisAttr, lock=False)
+    for t in range(int(sframe),int(eframe+1)):
+        for i in range(0, len(cams), 2):
         
-        cmds.setAttr(toCam[1]+'.renderable', True)
-        cmds.setAttr(toCam[1]+'.renderable', lock=True)
-
-        for thisAttr in shapeAttrs:
-            
-            anim = cmds.listConnections(fromCam[i+1]+'.'+thisAttr,t='animCurve')
-
-            # if anim is None: continue
-
-            if anim is not None and len(anim) > 0:
-                cmds.select(fromCam[i+1], r=True)
-                cmds.copyKey(fromCam[i+1],attribute=thisAttr)
-                cmds.select(toCam[1], r=True)
-                cmds.pasteKey(toCam[1],attribute=thisAttr)
-
-            cmds.setAttr(toCam[1]+'.'+thisAttr, cmds.getAttr(fromCam[1]+'.'+thisAttr))
-        
-        for thisAttr in shapeAttrs:
-            cmds.setAttr(toCam[1]+'.'+thisAttr,lock=True)
-        
-        cmds.setAttr(toCam[0]+'.rotateAxisX', cmds.getAttr(fromCam[i]+'.rotateAxisX'))
-        cmds.setAttr(toCam[0]+'.rotateAxisY', cmds.getAttr(fromCam[i]+'.rotateAxisY'))
-        cmds.setAttr(toCam[0]+'.rotateAxisZ', cmds.getAttr(fromCam[i]+'.rotateAxisZ'))
-        cmds.setAttr(toCam[0]+'.ro', cmds.getAttr(fromCam[i]+'.ro'))
-
-        for t in range(int(sframe),int(eframe+1)):
-
             cmds.currentTime(t)
 
             attrsTrans = cmds.xform(fromCam[i],q=True,ws=True,t=True)
             attrsRot = cmds.xform(fromCam[i],q=True,ws=True,ro=True)
 
-            cmds.setKeyframe(toCam[0],t=cmds.currentTime(q=True), v=attrsTrans[0], at='tx')
-            cmds.setKeyframe(toCam[0],t=cmds.currentTime(q=True), v=attrsTrans[1], at='ty')
-            cmds.setKeyframe(toCam[0],t=cmds.currentTime(q=True), v=attrsTrans[2], at='tz')
-            cmds.setKeyframe(toCam[0],t=cmds.currentTime(q=True), v=attrsRot[0], at='rx')
-            cmds.setKeyframe(toCam[0],t=cmds.currentTime(q=True), v=attrsRot[1], at='ry')
-            cmds.setKeyframe(toCam[0],t=cmds.currentTime(q=True), v=attrsRot[2], at='rz')
+            cmds.setKeyframe(toCam[int(i)],t=cmds.currentTime(q=True), v=attrsTrans[0], at='tx')
+            cmds.setKeyframe(toCam[int(i)],t=cmds.currentTime(q=True), v=attrsTrans[1], at='ty')
+            cmds.setKeyframe(toCam[int(i)],t=cmds.currentTime(q=True), v=attrsTrans[2], at='tz')
+            cmds.setKeyframe(toCam[int(i)],t=cmds.currentTime(q=True), v=attrsRot[0], at='rx')
+            cmds.setKeyframe(toCam[int(i)],t=cmds.currentTime(q=True), v=attrsRot[1], at='ry')
+            cmds.setKeyframe(toCam[int(i)],t=cmds.currentTime(q=True), v=attrsRot[2], at='rz')
+
+            for thisAttr in shapeAttrs:
+                anim = cmds.listConnections(fromCam[i+1]+'.'+thisAttr)
+                if anim is not None and len(anim) > 0:
+                    cmds.setKeyframe(toCam[i+1],t=cmds.currentTime(q=True), v=cmds.getAttr(fromCam[i+1]+'.'+thisAttr), at='.'+thisAttr)
         
+    for i in range(0, len(cams), 2):
+        cmds.setAttr(toCam[1]+'.'+thisAttr, cmds.getAttr(fromCam[1]+'.'+thisAttr))
 
+    for i in range(0, len(cams), 2):
 
-        cmds.setAttr(toCam[0]+'.translate',lock=True)
-        cmds.setAttr(toCam[0]+'.rotate',lock=True)
-        cmds.setAttr(toCam[0]+'.scale',lock=True)
-        cmds.setAttr(toCam[0]+'.ro',lock=True)
+        for thisAttr in shapeAttrs:
+            cmds.setAttr(fromCam[i]+'.'+thisAttr, lock=False)
+        
+        cmds.setAttr(toCam[i+1]+'.renderable', True)
+        cmds.setAttr(toCam[i+1]+'.renderable', lock=True)
+        
+        cmds.setAttr(toCam[i]+'.rotateAxisX', cmds.getAttr(fromCam[i]+'.rotateAxisX'))
+        cmds.setAttr(toCam[i]+'.rotateAxisY', cmds.getAttr(fromCam[i]+'.rotateAxisY'))
+        cmds.setAttr(toCam[i]+'.rotateAxisZ', cmds.getAttr(fromCam[i]+'.rotateAxisZ'))
+        cmds.setAttr(toCam[i]+'.ro', cmds.getAttr(fromCam[i]+'.ro'))
+
+        for thisAttr in shapeAttrs:
+            cmds.setAttr(toCam[i+1]+'.'+thisAttr,lock=True)
+
+        cmds.setAttr(toCam[i]+'.translate',lock=True)
+        cmds.setAttr(toCam[i]+'.rotate',lock=True)
+        cmds.setAttr(toCam[i]+'.scale',lock=True)
+        cmds.setAttr(toCam[i]+'.ro',lock=True)
           
-        bakeCams.append(toCam[0])
-        bakeCams.append(toCam[1])
+        bakeCams.append(toCam[i])
+        bakeCams.append(toCam[i+1])
         bakeCams.append(cams[int(i)]) 
-
-        #bakeCams[newCamName,newCamShape,oldCamName]
 
     return bakeCams
 #end of ndPylibExportCam_bakeCamera
@@ -136,8 +128,8 @@ def ndPyLibExportCam_exportCamera(publishpath, oFilename, isImagePlane, isFbx, i
 
     grp = cmds.group(em=True, n='cam_grp')
     toCam = []
-
     if(len(cams)==3):#カメラが一つの場合
+        toCam.append(cams[0])
         cmds.parent(toCam[0],'cam_grp')
         cmds.rename(toCam[0],'rend_cam')
     else :#カメラが複数の場合
@@ -230,9 +222,13 @@ def ndPyLibExportCam(isImagePlane, isFbx, isAbc, frameHandle):
                 cmds.sysFile(o, copy=destFile)
 #end of ndPyLibExportCam
 
-# publishPath = r'P:/Project/mem2/shots/roll05/s139T/c006/work/k_ueda/50_FX/cam_export/'
-# outputFile = 'test'
-# ndPyLibExportCam_exportCamera(publishPath, outputFile, 1, 1, 1, 0)
 
 def ndPyLibExportCam2 (publishPath, oFilename):
     ndPyLibExportCam_exportCamera(publishPath, oFilename, 1, 1, 1, 0)
+
+
+if __name__ == '__main__':
+    publishPath = r'C:\Users\k_ueda\Desktop\op'
+    oFilename = 'test
+
+    ndPyLibExportCam2(publishPath, oFilename)
