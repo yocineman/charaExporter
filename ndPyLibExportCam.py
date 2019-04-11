@@ -89,7 +89,7 @@ def ndPyLibExportCam_bakeCamera(frameHandle):
         cmds.setAttr(toCam[i]+'.rotate',lock=True)
         cmds.setAttr(toCam[i]+'.scale',lock=True)
         cmds.setAttr(toCam[i]+'.ro',lock=True)
-          
+
         bakeCams.append(toCam[i])
         bakeCams.append(toCam[i+1])
         bakeCams.append(cams[int(i)]) 

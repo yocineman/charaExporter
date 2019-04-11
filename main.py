@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 #------------------------------
-__version__ = '0.5.0'
+__version__ = '0.5.1'
 __author__ = "Yoshihisa Okano"
 #------------------------------
 
@@ -169,7 +169,7 @@ class GUI (QMainWindow):
         allOutput = []
         for abc in abcFiles:
             ns = abc.replace(charaName+'_', '').replace('.abc', '')
-            hairOutput = opc.publishfullabcpath + '/' + 'hair_' + ns + '.ma'
+            hairOutput = opc.publishfullpath + '/' + 'hair_' + ns + '.ma'
             if '___' in ns:
                 ns = ns.replace('___', ':')
             if charaSetup.assetHair != '':
@@ -204,6 +204,8 @@ class GUI (QMainWindow):
             batch.animAttach(charaSetup.assetChara, ns, animOutput, charaOutput)
             opc.makeCurrentDir()
 
+            batch.animReplace(ns, opc.publishcurrentpath+'/anim/'+animFiles[0], opc.publishcurrentpath+'/'+ns+'.ma')
+
     def execExportCam (self, inputpath):
         opc = util.outputPathConf(inputpath)
         opc.createCamOutputDir()
@@ -217,6 +219,7 @@ class GUI (QMainWindow):
                 shutil.copy(srcFile, dstDir)
             except:
                 pass
+
 
 def run (*argv):
     app = QApplication.instance()
