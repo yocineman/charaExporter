@@ -61,8 +61,8 @@ def _getNoKeyAttributes (nodes):
         print n, gAttrs
         if gAttrs is None: continue
         for attr in gAttrs:
-            if '.' in attr:
-                if len(mc.listConnections(n+'.'+attr, s=True, d=False)):
+            if '.' not in attr:
+                if mc.listConnections(n+'.'+attr, s=True, d=False) is None:
                     attrs.append(n+'.'+attr)
                     print 'find no key attribute : ' + n + '.' + attr
     return attrs
@@ -103,6 +103,7 @@ def _exportAnim (publishpath, oFilename, namespaceList, regexArgs, isFilter):
     mc.select(cl=True)
 
     attrs = _getNoKeyAttributes(allNodes)
+    print attrs
     if len(attrs) != 0:
         mc.setKeyframe(attrs, t=sframe, insertBlend=False)
 

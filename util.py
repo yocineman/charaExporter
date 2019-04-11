@@ -36,6 +36,15 @@ class outputPathConf (object):
             except:
                 pass
 
+    def createCamOutputDir (self):
+        self._publishpath = os.path.join(self._shotpath, 'publish', 'Cam', os.path.basename(self.inputPath))
+        self._publishfullpath = self._publishpath
+        if not os.path.exists(self._publishpath):
+            try:
+                os.makedirs(self._publishpath)
+            except:
+                pass
+
     def verInc (self):
         vers = os.listdir(self._publishpath)
         if len(vers) == 0:
@@ -61,10 +70,19 @@ class outputPathConf (object):
 
     def makeCurrentDir (self):
         currentDir = os.path.join(self.publishpath, 'current')
+        self._publishcurrentpath = currentDir
         # if os.path.exists(currentDir):
         #     shutil.rmtree(currentDir)
         # shutil.copytree(self._publishfullpath, currentDir)
         distutils.dir_util.copy_tree(self._publishfullpath, currentDir)
+
+    @property
+    def sequence (self):
+        return self._sequence
+
+    @property
+    def shot (self):
+        return self._shot
 
     @property
     def publishpath (self):
@@ -82,3 +100,6 @@ class outputPathConf (object):
     def publishfullanimpath (self):
         return self._publishfullanimpath.replace(os.path.sep, '/')
 
+    @property
+    def publishcurrentpath (self):
+        return self._publishcurrentpath.replace(os.path.sep, '/')

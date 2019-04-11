@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 
 #------------------------------
-__version__ = '0.4.0'
+__version__ = '0.5.1'
 __author__ = "Yoshihisa Okano"
 #------------------------------
 
 import sys
 import os
+import shutil
 
 import util
 import batch
@@ -45,10 +46,10 @@ class GUI (QMainWindow):
         self.setGeometry(400, 400, 400, 300)
         if mode == 'ZGR':
             self.exportTgtList = ['nina', 'hikal', 'all']
-            self.ui.comboBox.addItems(self.exportTgtList)
         else:
             self.exportTgtList = ['ikka', 'juran', 'manato', 'tatsuya', 'naoto', 'SMO', 'UKI', 'YPI', 'FBTKN', 'TKN', 'all']
-            self.ui.comboBox.addItems(self.exportTgtList)
+        self.exportTgtList.append('Cam')
+        self.ui.comboBox.addItems(self.exportTgtList)
         self.ui.groupBox.installEventFilter(self)
 
 
@@ -134,6 +135,8 @@ class GUI (QMainWindow):
                     if chara != 'all':
                         if chara == 'TKN':
                             self.execExportAnim(chara, inputpath)
+                        elif chara == 'Cam':
+                            self.execExportCam(inputpath)
                         else:
                             self.execExport(chara, inputpath)
                     else:
@@ -142,6 +145,8 @@ class GUI (QMainWindow):
                         for chara in charaList:
                             if chara == 'TKN':
                                 self.execExportAnim(chara, inputpath)
+                            elif chara == 'Cam':
+                                self.execExportCam(inputpath)
                             else:
                                 self.execExport(chara, inputpath)
 
@@ -161,6 +166,7 @@ class GUI (QMainWindow):
 
         abcFiles = os.listdir(opc.publishfullabcpath)
         print abcFiles
+        allOutput = []
         for abc in abcFiles:
             ns = abc.replace(charaName+'_', '').replace('.abc', '')
             hairOutput = opc.publishfullpath + '/' + 'hair_' + ns + '.ma'
@@ -172,7 +178,13 @@ class GUI (QMainWindow):
             abcOutput = opc.publishfullabcpath + '/' + abc
             charaOutput = opc.publishfullpath + '/' + abc.replace('abc', 'ma')
             batch.abcAttach(charaSetup.assetChara, ns, ns+':'+charaSetup.topNode, abcOutput, charaOutput)
+            allOutput.append([abc.replace('abc', 'ma'), abc])
         opc.makeCurrentDir()
+
+        for output in allOutput:
+            abcOutput = opc.publishcurrentpath + '/' + output[0] 
+            charaOutput = opc.publishcurrentpath + '/abc/' + output[1]
+            batch.repABC(charaOutput, abcOutput)
 
     def execExportAnim (self, charaName, inputpath):
         opc = util.outputPathConf(inputpath, True)
@@ -191,6 +203,22 @@ class GUI (QMainWindow):
             charaOutput = opc.publishfullpath + '/' + ns + '.ma'
             batch.animAttach(charaSetup.assetChara, ns, animOutput, charaOutput)
             opc.makeCurrentDir()
+
+            batch.animReplace(ns, opc.publishcurrentpath+'/anim/'+animFiles[0], opc.publishcurrentpath+'/'+ns+'.ma')
+
+    def execExportCam (self, inputpath):
+        opc = util.outputPathConf(inputpath)
+        opc.createCamOutputDir()
+
+        batch.camExport(opc.publishfullpath, opc.sequence+opc.shot+'_cam', inputpath)
+        camFiles = os.listdir(opc.publishfullpath)
+        for camFile in camFiles:
+            srcFile = os.path.join(opc.publishfullpath, camFile)
+            dstDir = os.path.join(opc.publishfullpath, '..')
+            try:
+                shutil.copy(srcFile, dstDir)
+            except:
+                pass
 
 
 def run (*argv):
