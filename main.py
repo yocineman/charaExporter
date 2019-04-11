@@ -163,7 +163,7 @@ class GUI (QMainWindow):
         print abcFiles
         for abc in abcFiles:
             ns = abc.replace(charaName+'_', '').replace('.abc', '')
-            hairOutput = opc.publishfullabcpath + '/' + 'hair_' + ns + '.ma'
+            hairOutput = opc.publishfullpath + '/' + 'hair_' + ns + '.ma'
             if '___' in ns:
                 ns = ns.replace('___', ':')
             if charaSetup.assetHair != '':
