@@ -27,6 +27,9 @@ def ndPyLibExportCam_searchCamera():
     camAll = []
 
     for i in range(len(cams)):
+        if cmds.referenceQuery(cams[i], inr=True):
+            refFile = cmds.referenceQuery(cmds.referenceQuery(cams[i], rfn=True), f=True)
+            cmds.file(refFile, importReference=True)
         camAll.append(cams[i])
         camAll.append(camShapes[i])
 
