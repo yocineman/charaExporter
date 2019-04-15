@@ -100,8 +100,6 @@ def ndPyLibExportCam_bakeCamera(frameHandle, CameraScale):
         cmds.setAttr(toCam[i]+'.scale',lock=True)
         cmds.setAttr(toCam[i]+'.ro',lock=True)
 
-        # cmds.setAttr(toCam[i+1]+'.bestFitClippingPlanes', True)
-
         bakeCams.append(toCam[i])
         bakeCams.append(toCam[i+1])
         bakeCams.append(cams[int(i)])

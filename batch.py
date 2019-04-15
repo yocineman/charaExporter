@@ -53,6 +53,16 @@ def animAttach (assetPath, namespace, animPath, outputPath):
     print cmd
     ret = subprocess.call(cmd)
 
+def animReplace (namespace, animPath, scene):
+    cmd = []
+    cmd.append(mayaBatch)
+    cmd.append('-command')
+    cmd.append('''python(\"from mayaBasic import *;replaceAsset(''' + "\'" + animPath + "\'" + "," + "\'" + namespace+'_anim' + "\'" + ''');save();\")''')
+    cmd.append('-file')
+    cmd.append(scene)
+    print cmd
+    subprocess.call(cmd)
+
 def camExport (outputPath, oFilename, scene):
     cmd = []
     cmd.append(mayaBatch)
