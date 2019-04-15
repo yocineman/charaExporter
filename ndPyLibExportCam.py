@@ -237,9 +237,9 @@ def ndPyLibExportCam(isImagePlane, isFbx, isAbc, frameHandle, CameraScale):
 #end of ndPyLibExportCam
 
 
-def ndPyLibExportCam2 (publishPath, oFilename):
+def ndPyLibExportCam2 (publishPath, oFilename, CameraScale):
     FrameHandle = 0
-    CameraScale = 2
+    # CameraScale = 2
     ndPyLibExportCam_exportCamera(publishPath, oFilename, 1, 1, 1, FrameHandle, CameraScale)
 
 
