@@ -6,6 +6,9 @@ import re
 import maya.cmds as cmds
 import maya.mel as mel
 
+import sys
+import subprocess
+
 def ndPyLibExportCam_searchCamera():
     camShapes = cmds.ls(ca=True)
     try:
@@ -30,7 +33,7 @@ def ndPyLibExportCam_searchCamera():
     return camAll
 #end of ndPyLibExportCamera_searchCamera
 
-def ndPyLibExportCam_bakeCamera(frameHandle):
+def ndPyLibExportCam_bakeCamera(frameHandle, CameraScale):
 
     sframe = cmds.playbackOptions(q=True, min=True) - frameHandle
     eframe = cmds.playbackOptions(q=True, max=True) + frameHandle
@@ -41,6 +44,7 @@ def ndPyLibExportCam_bakeCamera(frameHandle):
     bakeCams = []
     fromCam = []
     toCam = []
+
     for i in range(0, len(cams), 2):
         toCam.extend(cmds.camera())
         fromCam.append(cams[i])
@@ -61,10 +65,13 @@ def ndPyLibExportCam_bakeCamera(frameHandle):
             cmds.setKeyframe(toCam[int(i)],t=cmds.currentTime(q=True), v=attrsRot[1], at='ry')
             cmds.setKeyframe(toCam[int(i)],t=cmds.currentTime(q=True), v=attrsRot[2], at='rz')
 
+            if CameraScale != -1:
+                cmds.setKeyframe(toCam[i+1],t=cmds.currentTime(q=True), v=CameraScale, at='.cs')
+
             for thisAttr in shapeAttrs:
-                anim = cmds.listConnections(fromCam[i+1]+'.'+thisAttr)
-                if anim is not None and len(anim) > 0:
-                    cmds.setKeyframe(toCam[i+1],t=cmds.currentTime(q=True), v=cmds.getAttr(fromCam[i+1]+'.'+thisAttr), at='.'+thisAttr)
+                cmds.setKeyframe(toCam[i+1],t=cmds.currentTime(q=True), v=cmds.getAttr(fromCam[i+1]+'.'+thisAttr), at='.'+thisAttr)
+                # anim = cmds.listConnections(fromCam[i+1]+'.'+thisAttr)
+                # if anim is not None and len(anim) > 0:
         
     for i in range(0, len(cams), 2):
         cmds.setAttr(toCam[1]+'.'+thisAttr, cmds.getAttr(fromCam[1]+'.'+thisAttr))
@@ -84,15 +91,22 @@ def ndPyLibExportCam_bakeCamera(frameHandle):
 
         for thisAttr in shapeAttrs:
             cmds.setAttr(toCam[i+1]+'.'+thisAttr,lock=True)
+        
+        if CameraScale != -1:
+            cmds.setAttr(toCam[i+1]+'.cs',lock=True)
 
         cmds.setAttr(toCam[i]+'.translate',lock=True)
         cmds.setAttr(toCam[i]+'.rotate',lock=True)
         cmds.setAttr(toCam[i]+'.scale',lock=True)
         cmds.setAttr(toCam[i]+'.ro',lock=True)
-          
+
+        # cmds.setAttr(toCam[i+1]+'.bestFitClippingPlanes', True)
+
         bakeCams.append(toCam[i])
         bakeCams.append(toCam[i+1])
-        bakeCams.append(cams[int(i)]) 
+        bakeCams.append(cams[int(i)])
+
+        mel.eval('setAttr '+toCam[i+1]+'.bestFitClippingPlanes true')   
 
     return bakeCams
 #end of ndPylibExportCam_bakeCamera
@@ -107,7 +121,7 @@ def ndPyLibPlatform(text):
     print(otsr)
 #end of ndPyLibPlatform
 
-def ndPyLibExportCam_exportCamera(publishpath, oFilename, isImagePlane, isFbx, isABC, frameHandle):
+def ndPyLibExportCam_exportCamera(publishpath, oFilename, isImagePlane, isFbx, isABC, frameHandle, CameraScale=-1):
 
     outputfiles = []
     sframe = cmds.playbackOptions(q=True, min=True)-frameHandle
@@ -120,7 +134,9 @@ def ndPyLibExportCam_exportCamera(publishpath, oFilename, isImagePlane, isFbx, i
     
     #end of delete imageplane
 
-    cams = ndPyLibExportCam_bakeCamera(frameHandle)
+    cams = ndPyLibExportCam_bakeCamera(frameHandle, CameraScale)
+
+    
 
     #empty groupnode 
     if cmds.objExists('cam_grp'):
@@ -169,7 +185,7 @@ def ndPyLibExportCam_exportCamera(publishpath, oFilename, isImagePlane, isFbx, i
         strAbc = strAbc+ '-root cam_grp '
         strAbc = strAbc+ '-file '+ os.path.join(publishpath, oFilename+'.abc').replace('\\', '/')
         
-        print 'AbcExport -j ' + strAbc
+        print ('AbcExport -j ' + strAbc)
         mel.eval('AbcExport -j ' + '"' + strAbc + '"')
 
         outputfiles.append(os.path.join(publishpath, oFilename + '.abc').replace('\\', '/'))
@@ -180,7 +196,7 @@ def ndPyLibExportCam_exportCamera(publishpath, oFilename, isImagePlane, isFbx, i
 
     #end of ndPythonLibExportCam_exportCamera
 
-def ndPyLibExportCam(isImagePlane, isFbx, isAbc, frameHandle):
+def ndPyLibExportCam(isImagePlane, isFbx, isAbc, frameHandle, CameraScale):
     if cmds.file(q=True, modified=True) == 1:
         ndPyLibPlatform('please save scene file...')
     else:
@@ -212,7 +228,7 @@ def ndPyLibExportCam(isImagePlane, isFbx, isAbc, frameHandle):
             if not os.exists(publishpath):
                 os.mkdir(publishpath, md=True)
 
-            outputfiles = ndPyLibExportCam_exportCamera(publishpath, oFilename,  isImagePlane, isFbx, isAbc, frameHandle)
+            outputfiles = ndPyLibExportCam_exportCamera(publishpath, oFilename, isImagePlane, isFbx, isAbc, frameHandle, CameraScale)
 
             for o in outputfiles:
                 ndPyLibPlatform('output file : '+o)
@@ -224,11 +240,13 @@ def ndPyLibExportCam(isImagePlane, isFbx, isAbc, frameHandle):
 
 
 def ndPyLibExportCam2 (publishPath, oFilename):
-    ndPyLibExportCam_exportCamera(publishPath, oFilename, 1, 1, 1, 0)
+    FrameHandle = 0
+    CameraScale = 2
+    ndPyLibExportCam_exportCamera(publishPath, oFilename, 1, 1, 1, FrameHandle, CameraScale)
 
 
 if __name__ == '__main__':
     publishPath = r'C:\Users\k_ueda\Desktop\op'
-    oFilename = 'test
+    oFilename = 'test'
 
     ndPyLibExportCam2(publishPath, oFilename)
