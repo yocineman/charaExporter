@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 #------------------------------
-__version__ = '0.5.1'
+__version__ = '0.5.2'
 __author__ = "Yoshihisa Okano"
 #------------------------------
 
@@ -45,13 +45,16 @@ class GUI (QMainWindow):
         self.setWindowTitle('%s %s'%(self.WINDOW, __version__))
         self.setGeometry(400, 400, 400, 300)
         if mode == 'ZGR':
-            self.exportTgtList = ['nina', 'hikal', 'all']
+            self.exportTgtList = ['nina', 'hikal']
         else:
-            self.exportTgtList = ['ikka', 'juran', 'manato', 'tatsuya', 'naoto', 'SMO', 'UKI', 'YPI', 'FBTKN', 'TKN', 'all']
+            self.exportTgtList = ['ikka', 'juran', 'manato', 'tatsuya', 'naoto', 'SMO', 'UKI', 'YPI', 'FBTKN', 'TKN']
         self.exportTgtList.append('Cam')
+        self.exportTgtList.append('all')
         self.ui.comboBox.addItems(self.exportTgtList)
         self.ui.groupBox.installEventFilter(self)
 
+        self.ui.overrideValue_LineEdit.setEnabled(False)
+        self.ui.cameraScaleOverride_CheckBox.stateChanged.connect(self.overrideValue_LineEdit_stateChange)
 
     def eventFilter (self, object, event):
         if event.type() == QEvent.DragEnter:
@@ -69,74 +72,18 @@ class GUI (QMainWindow):
 
                     chara = self.ui.comboBox.currentText()
                     print chara
-                    # if chara == 'nina' or (chara == 'all' and self.mode == 'ZGR'):
-                    #     self.ui.progressBar.setValue(0)
 
-                    #     opc.createOutputDir('nina')
-
-                    #     abcOutput = opc.publishfullabcpath + '/' + 'nina.abc'
-                    #     hairOutput = opc.publishfullpath + '/' + 'hair.ma'
-                    #     ninaOutput = opc.publishfullpath + '/' + 'nina.ma'
-
-                    #     batch.abcExport(ninaSetup.nsChara, ninaSetup.abcSet, abcOutput, inputpath)
-                    #     self.ui.progressBar.setValue(30)
-
-                    #     abcFiles = os.listdir(opc.publishfullabcpath)
-                    #     for abc in abcFiles:
-                    #         ns = abc.replace('nina_', '').replace('.abc', '')
-                    #         hairOutput = opc.publishfullpath + '/' + 'hair_' + ns + '.ma'
-                    #         if '___' in ns:
-                    #             ns = ns.replace('___', ':')
-                    #         batch.hairExport(ninaSetup.assetHair, ns, ns+':'+ninaSetup.topNode, hairOutput, inputpath)
-                    #     self.ui.progressBar.setValue(60)
-
-                    #     for abc in abcFiles:
-                    #         ns = abc.replace('nina_', '').replace('.abc', '')
-                    #         abcOutput = opc.publishfullabcpath + '/' + abc
-                    #         ninaOutput = opc.publishfullpath + '/' + abc.replace('abc', 'ma')
-                    #         if '___' in ns:
-                    #             ns = ns.split('___')[-1]
-                    #         batch.abcAttach(ninaSetup.assetChara, ns, ns+':'+ninaSetup.topNode, abcOutput, ninaOutput)
-                    #     opc.makeCurrentDir()
-                    #     self.ui.progressBar.setValue(100)
-
-                    # if chara == 'hikal' or (chara == 'all' and self.mode == 'ZGR'):
-                    #     self.ui.progressBar.setValue(0)
-                    #     opc.createOutputDir('hikal')
-
-                    #     abcOutput = opc.publishfullabcpath + '/' + 'hikal.abc'
-                    #     hairOutput = opc.publishfullpath + '/' + 'hair.ma'
-                    #     hikalOutput = opc.publishfullpath + '/' + 'hikal.ma'
-
-                    #     batch.abcExport(hikalSetup.nsChara, hikalSetup.abcSet, abcOutput, inputpath)
-                    #     self.ui.progressBar.setValue(30)
-
-                    #     abcFiles = os.listdir(opc.publishfullabcpath)
-                    #     for abc in abcFiles:
-                    #         ns = abc.replace('hikal_', '').replace('.abc', '')
-                    #         hairOutput = opc.publishfullpath + '/' + 'hair_' + ns + '.ma'
-                    #         if '___' in ns:
-                    #             ns = ns.replace('___', ':')
-                    #         batch.hairExport(hikalSetup.assetHair, ns, ns+':'+hikalSetup.topNode, hairOutput, inputpath)
-                    #     self.ui.progressBar.setValue(60)
-
-                    #     for abc in abcFiles:
-                    #         ns = abc.replace('hikal_', '').replace('.abc', '')
-                    #         abcOutput = opc.publishfullabcpath + '/' + abc
-                    #         hikalOutput = opc.publishfullpath + '/' + abc.replace('abc', 'ma')
-                    #         if '___' in ns:
-                    #             ns = ns.split('___')[-1]
-                    #         batch.abcAttach(hikalSetup.assetChara, ns, ns+':'+hikalSetup.topNode, abcOutput, hikalOutput)
-                    #     opc.makeCurrentDir()
-                    #     self.ui.progressBar.setValue(100)
-
-                    # if self.mode != 'ZGR':
+                    camScale = -1
+                    if self.ui.cameraScaleOverride_CheckBox.isChecked():
+                        camScale = float(self.ui.overrideValue_LineEdit.text())
+                    else:
+                        camScale = -1
 
                     if chara != 'all':
                         if chara == 'TKN':
                             self.execExportAnim(chara, inputpath)
                         elif chara == 'Cam':
-                            self.execExportCam(inputpath)
+                            self.execExportCam(inputpath, camScale)
                         else:
                             self.execExport(chara, inputpath)
                     else:
@@ -146,12 +93,16 @@ class GUI (QMainWindow):
                             if chara == 'TKN':
                                 self.execExportAnim(chara, inputpath)
                             elif chara == 'Cam':
-                                self.execExportCam(inputpath)
+                                self.execExportCam(inputpath, camScale)
                             else:
                                 self.execExport(chara, inputpath)
 
                 # QMessageBox.information()
                 print '******************* end *********************'
+
+    def overrideValue_LineEdit_stateChange (self):
+        currentState = self.ui.cameraScaleOverride_CheckBox.isChecked()
+        self.ui.overrideValue_LineEdit.setEnabled(currentState)
 
     def execExport (self, charaName, inputpath):
         opc = util.outputPathConf(inputpath)
@@ -206,11 +157,11 @@ class GUI (QMainWindow):
 
             batch.animReplace(ns, opc.publishcurrentpath+'/anim/'+animFiles[0], opc.publishcurrentpath+'/'+ns+'.ma')
 
-    def execExportCam (self, inputpath):
+    def execExportCam (self, inputpath, camScale):
         opc = util.outputPathConf(inputpath)
         opc.createCamOutputDir()
 
-        batch.camExport(opc.publishfullpath, opc.sequence+opc.shot+'_cam', inputpath)
+        batch.camExport(opc.publishfullpath, opc.sequence+opc.shot+'_cam', camScale, inputpath)
         camFiles = os.listdir(opc.publishfullpath)
         for camFile in camFiles:
             srcFile = os.path.join(opc.publishfullpath, camFile)
