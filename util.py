@@ -76,6 +76,14 @@ class outputPathConf (object):
         # shutil.copytree(self._publishfullpath, currentDir)
         distutils.dir_util.copy_tree(self._publishfullpath, currentDir)
 
+    def removeDir (self):
+        if os.path.exists(self._publishpath+'/current'):
+            files = os.listdir(self._publishpath+'/current')
+            for f in files:
+                if '.ma' in f:
+                    return
+        shutil.rmtree(self._publishpath)
+
     @property
     def sequence (self):
         return self._sequence

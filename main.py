@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 #------------------------------
-__version__ = '0.5.3'
+__version__ = '0.6.0'
 __author__ = "Yoshihisa Okano"
 #------------------------------
 
@@ -42,14 +42,16 @@ class GUI (QMainWindow):
         self.ui = QUiLoader().load(self.ui_path)
         self.setCentralWidget(self.ui)
 
-        self.setWindowTitle('%s %s'%(self.WINDOW, __version__))
+        self.setWindowTitle('%s %s' % (self.WINDOW, __version__))
         self.setGeometry(400, 400, 400, 300)
         if mode == 'ZGR':
             self.exportTgtList = ['nina', 'hikal']
         else:
             self.exportTgtList = ['ikka', 'juran', 'manato', 'tatsuya', 'naoto', 'SMO', 'UKI', 'YPI', 'FBTKN', 'TKN']
+            self.exportTgtList.append('BG')
         self.exportTgtList.append('Cam')
         self.exportTgtList.append('all')
+        self.bgList = ['DCT_CtubeA', 'DCT_CtubeB', 'DCT_Cbunki', 'DCT_CNml', 'DCT_CtubeC017', 'DCT_Cescape']
         self.ui.comboBox.addItems(self.exportTgtList)
         self.ui.groupBox.installEventFilter(self)
 
@@ -82,6 +84,9 @@ class GUI (QMainWindow):
                     if chara != 'all':
                         if chara == 'TKN':
                             self.execExportAnim(chara, inputpath)
+                        elif chara == 'BG':
+                            for bg in self.bgList:
+                                self.execExportAnim(bg, inputpath)
                         elif chara == 'Cam':
                             self.execExportCam(inputpath, camScale)
                         else:
@@ -92,6 +97,9 @@ class GUI (QMainWindow):
                         for chara in charaList:
                             if chara == 'TKN':
                                 self.execExportAnim(chara, inputpath)
+                            elif chara == 'BG':
+                                for bg in self.bgList:
+                                    self.execExportAnim(bg, inputpath)
                             elif chara == 'Cam':
                                 self.execExportCam(inputpath, camScale)
                             else:
@@ -112,10 +120,13 @@ class GUI (QMainWindow):
         hairOutput = opc.publishfullpath + '/' + 'hair.abc'
         charaOutput = opc.publishfullpath + '/' + charaName + '.abc'
 
-        charaSetup = import_module(charaName+'Setup')
+        charaSetup = import_module('setting.'+charaName+'Setup')
         batch.abcExport(charaSetup.nsChara, charaSetup.abcSet, abcOutput, inputpath)
 
         abcFiles = os.listdir(opc.publishfullabcpath)
+        if len(abcFiles) == 0:
+            opc.removeDir()
+            return
         print abcFiles
         allOutput = []
         for abc in abcFiles:
@@ -142,20 +153,25 @@ class GUI (QMainWindow):
         opc.createOutputDir(charaName)
 
         output = opc.publishfullanimpath
-        charaSetup = import_module(charaName+'Setup')
-        regex = ["*_Cntrl","*_Cntrl_01","*_Cntrl_02","*_Cntrl_03","*_Cntrl_04","*Attr_CntrlShape","*Wire","*All_Grp","*_ctrl"]
+        charaSetup = import_module('setting.'+charaName+'Setup')
+        # regex = ["*_Cntrl","*_Cntrl_01","*_Cntrl_02","*_Cntrl_03","*_Cntrl_04","*Attr_CntrlShape","*Wire","*All_Grp","*_ctrl"]
+        regex = charaSetup.regex
         regex = ','.join(regex)
         batch.animExport(output, 'anim', charaSetup.nsChara, regex, inputpath)
 
         animFiles = os.listdir(opc.publishfullanimpath)
-        if len(animFiles) != 0:
-            ns = animFiles[0].replace('anim_', '').replace('.ma', '')
-            animOutput = opc.publishfullanimpath + '/' + animFiles[0]
+        if len(animFiles) == 0:
+            opc.removeDir()
+            return
+        for animFile in animFiles:
+            ns = animFile.replace('anim_', '').replace('.ma', '')
+            animOutput = opc.publishfullanimpath + '/' + animFile
             charaOutput = opc.publishfullpath + '/' + ns + '.ma'
             batch.animAttach(charaSetup.assetChara, ns, animOutput, charaOutput)
-            opc.makeCurrentDir()
+        opc.makeCurrentDir()
 
-            batch.animReplace(ns, opc.publishcurrentpath+'/anim/'+animFiles[0], opc.publishcurrentpath+'/'+ns+'.ma')
+        for animFile in animFiles:
+            batch.animReplace(ns, opc.publishcurrentpath+'/anim/'+animFile, opc.publishcurrentpath+'/'+ns+'.ma')
 
     def execExportCam (self, inputpath, camScale):
         opc = util.outputPathConf(inputpath)

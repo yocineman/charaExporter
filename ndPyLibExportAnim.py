@@ -76,6 +76,7 @@ def _exportAnim (publishpath, oFilename, namespaceList, regexArgs, isFilter):
     namespaces = _getNamespace()
 
     print namespaceList
+    print '-----------------'
     print namespaces
 
     allNodes = []

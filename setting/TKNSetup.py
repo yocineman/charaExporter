@@ -6,3 +6,4 @@ nsChara = ['[a-zA-Z0-9_:]*TKN2_A_bodyBroken[a-zA-Z0-9_]*', '[a-zA-Z0-9_:]*TKN2_A
 # nsHair = ''
 # topNode = 'geo_GP'
 # abcSet = ['ABCset']
+regex = ["*_Cntrl","*_Cntrl_01","*_Cntrl_02","*_Cntrl_03","*_Cntrl_04","*Attr_CntrlShape","*Wire","*All_Grp","*_ctrl"]
