@@ -165,6 +165,10 @@ def ndPyLibExportCam_exportCamera(publishpath, oFilename, isImagePlane, isFbx, i
         os.mkdir(publishpath)
 
     cmds.file(os.path.join(publishpath, oFilename+'.ma').replace('\\', '/'), force=True, options='v=0', typ='mayaAscii', pr=True, es=True)
+    
+    with open(os.path.join(publishpath, '..', 'sceneConf.txt').replace('\\', '/'), 'w') as f:
+        f.write(str(sframe)+'\n')
+        f.write(str(eframe)+'\n')
 
     if isFbx == 1:
         if cmds.pluginInfo('fbxmaya', q=True, l=True) == 0:
