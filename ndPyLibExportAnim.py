@@ -73,6 +73,10 @@ def _exportAnim (publishpath, oFilename, namespaceList, regexArgs, isFilter):
     sframe = mc.playbackOptions(q=True, min=True)
     eframe = mc.playbackOptions(q=True, max=True)
 
+    ###
+    sframe -= 10
+    eframe += 10
+
     namespaces = _getNamespace()
 
     print namespaceList

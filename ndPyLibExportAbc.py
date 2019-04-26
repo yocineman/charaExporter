@@ -145,6 +145,10 @@ def _exportAbc2 (outputPath, namespaceList, regexArgs):
     sframe = mc.playbackOptions(q=True, min=True)
     eframe = mc.playbackOptions(q=True, max=True)
 
+    ###
+    sframe -= 10
+    eframe += 10
+
     allNamespaces = []
     if len(namespaceList) == 0:
         allNamespaces = _getNamespace()

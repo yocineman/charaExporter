@@ -15,8 +15,10 @@ class outputPathConf (object):
         self.inputPath = inputPath.replace('\\', '/')
         self.isAnim = isAnim
         self.outputRootDir = 'charSet'
+        self.outputCamRootDir = 'Cam'
         if test:
             self.outputRootDir = 'test_charSet'
+            self.outputCamRootDir = 'test_Cam'
         print self.inputPath
         match = re.match('(P:/Project/[a-zA-Z0-9]+)/([a-zA-Z0-9]+)/([a-zA-Z0-9]+)/([a-zA-Z0-9]+)/([a-zA-Z0-9]+)', self.inputPath)
         if match is None:
@@ -40,7 +42,7 @@ class outputPathConf (object):
                 pass
 
     def createCamOutputDir (self):
-        self._publishpath = os.path.join(self._shotpath, 'publish', 'Cam', os.path.basename(self.inputPath))
+        self._publishpath = os.path.join(self._shotpath, 'publish', self.outputCamRootDir, os.path.basename(self.inputPath))
         self._publishfullpath = self._publishpath
         if not os.path.exists(self._publishpath):
             try:

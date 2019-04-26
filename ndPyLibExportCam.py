@@ -41,6 +41,10 @@ def ndPyLibExportCam_bakeCamera(frameHandle, CameraScale):
     sframe = cmds.playbackOptions(q=True, min=True) - frameHandle
     eframe = cmds.playbackOptions(q=True, max=True) + frameHandle
 
+    ###
+    sframe -= 10
+    eframe += 10
+
     cams = ndPyLibExportCam_searchCamera()
     shapeAttrs = ['fl','hfa','vfa','lsr','fs','fd','sa','coi','ncp','fcp']
 
@@ -128,6 +132,12 @@ def ndPyLibExportCam_exportCamera(publishpath, oFilename, isImagePlane, isFbx, i
     sframe = cmds.playbackOptions(q=True, min=True)-frameHandle
     eframe = cmds.playbackOptions(q=True, max=True)+frameHandle
 
+    ###
+    sframe_org = sframe
+    eframe_org = eframe
+    sframe -= 10
+    eframe += 10
+
     if isImagePlane!=1:
         if len(cmds.ls(type='imagePlane'))!=0:
             cmds.delete(cmds.ls(type='imagePlane'))
@@ -167,8 +177,8 @@ def ndPyLibExportCam_exportCamera(publishpath, oFilename, isImagePlane, isFbx, i
     cmds.file(os.path.join(publishpath, oFilename+'.ma').replace('\\', '/'), force=True, options='v=0', typ='mayaAscii', pr=True, es=True)
     
     with open(os.path.join(publishpath, '..', 'sceneConf.txt').replace('\\', '/'), 'w') as f:
-        f.write(str(sframe)+'\n')
-        f.write(str(eframe)+'\n')
+        f.write(str(sframe_org)+'\n')
+        f.write(str(eframe_org)+'\n')
 
     if isFbx == 1:
         if cmds.pluginInfo('fbxmaya', q=True, l=True) == 0:
