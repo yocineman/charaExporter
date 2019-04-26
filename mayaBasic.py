@@ -18,7 +18,8 @@ def saveAs (outputPath):
         mc.file(f=True, s=True, type='mayaBinary')
 
 def save ():
-    mc.file(s=True)
+    print 'save!!!'*10
+    mc.file(s=True, f=True)
 
 def replaceAsset (assetPath, namespace):
     mc.warning( 'replace start ')
@@ -37,7 +38,11 @@ def replaceAsset (assetPath, namespace):
     else:
         mc.error('can not replace')
 
-    mc.file(assetPath, loadReference=tgtRN)
+    # print assetPath, tgtRN
+    try:
+        mc.file(assetPath, loadReference=tgtRN)
+    except:
+        pass
     mc.warning('replace end')
 
 
@@ -60,6 +65,12 @@ def replaceABCPath (repAbcPath):
     abcNodes = mc.ls(type='AlembicNode')
     if len(abcNodes) != 0:
         mc.setAttr(abcNodes[0]+'.abc_File', repAbcPath, type='string')
+    print 'x' * 20
+
+def delUnknownNode ():
+    unknownNodes = mc.ls(type='unknown')
+    if len(unknownNodes) != 0:
+        mc.delete(unknownNodes)
 
 def setEnv ():
     os.environ['VRAY_FOR_MAYA2015_MAIN_X64'] = 'Y:\\users\\env\\vray\\maya2015_vray_adv_36004\\maya_vray'

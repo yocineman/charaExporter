@@ -11,9 +11,12 @@ import distutils.dir_util
 
 class outputPathConf (object):
 
-    def __init__ (self, inputPath, isAnim=False):
+    def __init__ (self, inputPath, isAnim=False, test=False):
         self.inputPath = inputPath.replace('\\', '/')
         self.isAnim = isAnim
+        self.outputRootDir = 'charSet'
+        if test:
+            self.outputRootDir = 'test_charSet'
         print self.inputPath
         match = re.match('(P:/Project/[a-zA-Z0-9]+)/([a-zA-Z0-9]+)/([a-zA-Z0-9]+)/([a-zA-Z0-9]+)/([a-zA-Z0-9]+)', self.inputPath)
         if match is None:
@@ -26,7 +29,7 @@ class outputPathConf (object):
         self._shotpath = os.path.join(self._project, 'shots', self._roll, self._sequence, self._shot)
 
     def createOutputDir (self, char):
-        self._publishpath = os.path.join(self._shotpath, 'publish', 'charSet', char)
+        self._publishpath = os.path.join(self._shotpath, 'publish', self.outputRootDir, char)
         if os.path.exists(self._publishpath):
             self.verInc()
         else:

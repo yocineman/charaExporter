@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 #------------------------------
-__version__ = '0.6.0'
+__version__ = '0.6.1'
 __author__ = "Yoshihisa Okano"
 #------------------------------
 
@@ -31,6 +31,10 @@ qtSignal = Signal
 qtSlot = Slot
 
 
+### debug mode
+testRun = False
+
+
 class GUI (QMainWindow):
     WINDOW = 'mem chara export'
     def __init__ (self, parent=None, mode='ZGR'):
@@ -42,10 +46,13 @@ class GUI (QMainWindow):
         self.ui = QUiLoader().load(self.ui_path)
         self.setCentralWidget(self.ui)
 
-        self.setWindowTitle('%s %s' % (self.WINDOW, __version__))
+        debug = ''
+        if testRun:
+            debug = '__debug__'
+        self.setWindowTitle('%s %s %s' % (self.WINDOW, __version__, debug))
         self.setGeometry(400, 400, 400, 300)
         if mode == 'ZGR':
-            self.exportTgtList = ['nina', 'hikal']
+            self.exportTgtList = ['nina', 'ninaScan', 'hikal']
         else:
             self.exportTgtList = ['ikka', 'juran', 'manato', 'tatsuya', 'naoto', 'SMO', 'UKI', 'YPI', 'FBTKN', 'TKN']
             self.exportTgtList.append('BG')
@@ -69,8 +76,6 @@ class GUI (QMainWindow):
                 url_list = mimedata.urls()
                 for url in url_list:
                     inputpath = url.toString().replace("file:///", "")
-
-                    # opc = util.outputPathConf(inputpath)
 
                     chara = self.ui.comboBox.currentText()
                     print chara
@@ -113,7 +118,7 @@ class GUI (QMainWindow):
         self.ui.overrideValue_LineEdit.setEnabled(currentState)
 
     def execExport (self, charaName, inputpath):
-        opc = util.outputPathConf(inputpath)
+        opc = util.outputPathConf(inputpath, test=testRun)
         opc.createOutputDir(charaName)
 
         abcOutput = opc.publishfullabcpath + '/' + charaName + '.abc'
@@ -144,12 +149,14 @@ class GUI (QMainWindow):
         opc.makeCurrentDir()
 
         for output in allOutput:
-            abcOutput = opc.publishcurrentpath + '/' + output[0] 
-            charaOutput = opc.publishcurrentpath + '/abc/' + output[1]
+            print '#' * 20
+            print output
+            charaOutput = opc.publishcurrentpath + '/' + output[0] 
+            abcOutput = opc.publishcurrentpath + '/abc/' + output[1]
             batch.repABC(charaOutput, abcOutput)
 
     def execExportAnim (self, charaName, inputpath):
-        opc = util.outputPathConf(inputpath, True)
+        opc = util.outputPathConf(inputpath, True, test=testRun)
         opc.createOutputDir(charaName)
 
         output = opc.publishfullanimpath
@@ -174,7 +181,7 @@ class GUI (QMainWindow):
             batch.animReplace(ns, opc.publishcurrentpath+'/anim/'+animFile, opc.publishcurrentpath+'/'+ns+'.ma')
 
     def execExportCam (self, inputpath, camScale):
-        opc = util.outputPathConf(inputpath)
+        opc = util.outputPathConf(inputpath, test=testRun)
         opc.createCamOutputDir()
 
         batch.camExport(opc.publishfullpath, opc.sequence+opc.shot+'_cam', camScale, inputpath)
