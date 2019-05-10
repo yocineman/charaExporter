@@ -19,6 +19,11 @@ def ndPyLibExportCam_searchCamera():
         camShapes.remove('leftShape')
         camShapes.remove('backShape')
         camShapes.remove('bottomShape')
+
+        camShapes.remove('front1Shape')
+        camShapes.remove('persp1Shape')
+        camShapes.remove('side1Shape')
+        camShapes.remove('top1Shape')
     except ValueError:
         pass
 
