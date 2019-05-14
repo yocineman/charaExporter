@@ -8,8 +8,20 @@ import maya.mel as mel
 
 from ndPyLibAnimIOExportContain import *
 
+# def _getNamespace ():
+#     namespaces = mc.namespaceInfo(lon=True)
+#     namespaces.remove('UI')
+#     namespaces.remove('shared')
+#     return namespaces
 def _getNamespace ():
     namespaces = mc.namespaceInfo(lon=True)
+    _nestedNS = []
+    for ns in namespaces:
+        nestedNS = mc.namespaceInfo(ns, lon=True)
+        print ns, nestedNS
+        if nestedNS != None:
+            _nestedNS += nestedNS
+    namespaces += _nestedNS
     namespaces.remove('UI')
     namespaces.remove('shared')
     return namespaces
