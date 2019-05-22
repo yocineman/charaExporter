@@ -9,6 +9,20 @@ import maya.mel as mel
 import sys
 import subprocess
 
+
+def Euler_filter(obj_list):
+    xyz = ['.rotateX', '.rotateY', '.rotateZ']
+    for obj in obj_list:
+        anim_cv = map(lambda x: cmds.connectionInfo(obj+x, sfd=True), xyz)
+        anim_cv = map(lambda x: x.rstrip('.output'), anim_cv)
+        try:
+            anim_cv = filter(lambda x: cmds.nodeType(x) in ['animCurveTL', 'animCurveTU', 'animCurveTA', 'animCurveTT'], anim_cv)
+            cmds.filterCurve(anim_cv, f='euler')
+        except:
+            print '# Euler FilterFailed: '+obj+' #'
+            continue
+        print '# Euler Filter Success: '+obj+' #'
+
 def ndPyLibExportCam_searchCamera():
     camShapes = cmds.ls(ca=True)
     try:
@@ -84,6 +98,8 @@ def ndPyLibExportCam_bakeCamera(frameHandle, CameraScale):
                 cmds.setKeyframe(toCam[i+1],t=cmds.currentTime(q=True), v=cmds.getAttr(fromCam[i+1]+'.'+thisAttr), at='.'+thisAttr)
                 # anim = cmds.listConnections(fromCam[i+1]+'.'+thisAttr)
                 # if anim is not None and len(anim) > 0:
+
+    Euler_filter(toCam[0:len(toCam):2])
         
     for i in range(0, len(cams), 2):
         cmds.setAttr(toCam[1]+'.'+thisAttr, cmds.getAttr(fromCam[1]+'.'+thisAttr))
