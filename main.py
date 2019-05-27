@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 #------------------------------
-__version__ = '0.6.4'
+__version__ = '0.6.4 mst'
 __author__ = "Yoshihisa Okano"
 #------------------------------
 
@@ -51,14 +51,14 @@ class GUI (QMainWindow):
             debug = '__debug__'
         self.setWindowTitle('%s %s %s' % (self.WINDOW, __version__, debug))
         self.setGeometry(400, 400, 400, 300)
-        if mode == 'ZGR':
-            self.exportTgtList = ['nina', 'ninaScan', 'hikal']
-        else:
-            self.exportTgtList = ['ikka', 'juran', 'manato', 'tatsuya', 'naoto', 'SMO', 'UKI', 'YPI', 'FBTKN', 'TKN']
+        # if mode == 'ZGR':
+        if True:
+            self.charaList = ['kesedoA', 'opekoA', 'pandoraA', 'noahA', 'handyCameraA']
+            self.exportTgtList = self.charaList[:]
             self.exportTgtList.append('BG')
         self.exportTgtList.append('Cam')
         self.exportTgtList.append('all')
-        self.bgList = ['DCT_CtubeA', 'DCT_CtubeB', 'DCT_Cbunki', 'DCT_CNml', 'DCT_CtubeC017', 'DCT_Cescape']
+        self.bgList = ['debrisA', 'ghosttownOutdoorsA', 'skyA']
         self.ui.comboBox.addItems(self.exportTgtList)
         self.ui.groupBox.installEventFilter(self)
 
@@ -87,7 +87,8 @@ class GUI (QMainWindow):
                         camScale = -1
 
                     if chara != 'all':
-                        if chara == 'TKN':
+                        print self.charaList
+                        if chara in self.charaList:
                             self.execExportAnim(chara, inputpath)
                         elif chara == 'BG':
                             for bg in self.bgList:
@@ -100,11 +101,12 @@ class GUI (QMainWindow):
                         charaList = self.exportTgtList
                         charaList.remove('all')
                         for chara in charaList:
-                            if chara == 'TKN':
+                            if chara in self.charaList:
                                 self.execExportAnim(chara, inputpath)
                             elif chara == 'BG':
                                 for bg in self.bgList:
                                     self.execExportAnim(bg, inputpath)
+                                pass
                             elif chara == 'Cam':
                                 self.execExportCam(inputpath, camScale)
                             else:
