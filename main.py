@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 #------------------------------
-__version__ = '0.6.4'
+__version__ = '0.6.5'
 __author__ = "Yoshihisa Okano"
 #------------------------------
 
@@ -54,7 +54,7 @@ class GUI (QMainWindow):
         if mode == 'ZGR':
             self.exportTgtList = ['nina', 'ninaScan', 'hikal']
         else:
-            self.exportTgtList = ['ikka', 'juran', 'manato', 'tatsuya', 'naoto', 'SMO', 'UKI', 'YPI', 'FBTKN', 'TKN']
+            self.exportTgtList = ['ikka', 'juran', 'manato', 'tatsuya', 'naoto', 'SMO', 'UKI', 'YPI', 'FBTKN', 'TKN', 'TKN_bodyBroken_leg']
             self.exportTgtList.append('BG')
         self.exportTgtList.append('Cam')
         self.exportTgtList.append('all')
@@ -87,7 +87,7 @@ class GUI (QMainWindow):
                         camScale = -1
 
                     if chara != 'all':
-                        if chara == 'TKN':
+                        if chara == 'TKN' or chara == 'TKN_bodyBroken_leg':
                             self.execExportAnim(chara, inputpath)
                         elif chara == 'BG':
                             for bg in self.bgList:
@@ -100,7 +100,7 @@ class GUI (QMainWindow):
                         charaList = self.exportTgtList
                         charaList.remove('all')
                         for chara in charaList:
-                            if chara == 'TKN':
+                            if chara == 'TKN' or chara == 'TKN_bodyBroken_leg':
                                 self.execExportAnim(chara, inputpath)
                             elif chara == 'BG':
                                 for bg in self.bgList:
