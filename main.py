@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 #------------------------------
-__version__ = '0.6.5 mst'
+__version__ = '0.6.6 mst'
 __author__ = "Yoshihisa Okano"
 #------------------------------
 
@@ -58,7 +58,7 @@ class GUI (QMainWindow):
             self.exportTgtList.append('BG')
         self.exportTgtList.append('Cam')
         self.exportTgtList.append('all')
-        self.bgList = ['debrisA', 'ghosttownOutdoorsA', 'skyA']
+        self.bgList = ['debrisA', 'ghosttownOutdoorsA', 'skyA', 'seaFloorA']
         self.ui.comboBox.addItems(self.exportTgtList)
         self.ui.groupBox.installEventFilter(self)
 
