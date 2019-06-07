@@ -20,7 +20,7 @@ class outputPathConf (object):
             self.outputRootDir = 'test_charSet'
             self.outputCamRootDir = 'test_Cam'
         print self.inputPath
-        match = re.match('(P:/Project/[a-zA-Z0-9]+)/([a-zA-Z0-9]+)/([a-zA-Z0-9]+)/([a-zA-Z0-9]+)/([a-zA-Z0-9]+)', self.inputPath)
+        match = re.match('(P:/Project/[a-zA-Z0-9_]+)/([a-zA-Z0-9]+)/([a-zA-Z0-9]+)/([a-zA-Z0-9]+)/([a-zA-Z0-9]+)', self.inputPath)
         if match is None:
             raise ValueError('directory structure is not n-design format')
 

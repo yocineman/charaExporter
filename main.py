@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 #------------------------------
-__version__ = '0.6.4 mst'
+__version__ = '0.6.5 mst'
 __author__ = "Yoshihisa Okano"
 #------------------------------
 
@@ -53,7 +53,7 @@ class GUI (QMainWindow):
         self.setGeometry(400, 400, 400, 300)
         # if mode == 'ZGR':
         if True:
-            self.charaList = ['kesedoA', 'opekoA', 'pandoraA', 'noahA', 'handyCameraA']
+            self.charaList = ['kesedoA', 'opekoA', 'pandoraA', 'noahA', 'handyCameraA', 'PRcarA', 'adaptorFlowerA', 'adaptorBigbugA']
             self.exportTgtList = self.charaList[:]
             self.exportTgtList.append('BG')
         self.exportTgtList.append('Cam')
