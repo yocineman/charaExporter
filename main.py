@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 #------------------------------
-__version__ = '0.6.6 mst'
+__version__ = '0.6.7 mst'
 __author__ = "Yoshihisa Okano"
 #------------------------------
 
@@ -97,6 +97,8 @@ class GUI (QMainWindow):
                             self.execExportCam(inputpath, camScale)
                         else:
                             self.execExport(chara, inputpath)
+
+                        util.addTimeLog(chara, inputpath)
                     else:
                         charaList = self.exportTgtList
                         charaList.remove('all')
@@ -111,6 +113,8 @@ class GUI (QMainWindow):
                                 self.execExportCam(inputpath, camScale)
                             else:
                                 self.execExport(chara, inputpath)
+
+                            util.addTimeLog(char, inputpath)
 
                 # QMessageBox.information()
                 print '******************* end *********************'
