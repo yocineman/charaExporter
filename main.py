@@ -58,7 +58,7 @@ class GUI (QMainWindow):
             self.exportTgtList.append('BG')
         self.exportTgtList.append('Cam')
         self.exportTgtList.append('all')
-        self.bgList = ['DCT_CtubeA', 'DCT_CtubeB', 'DCT_Cbunki', 'DCT_CNml', 'DCT_CtubeC017', 'DCT_Cescape']
+        self.bgList = ['DCT_CtubeA', 'DCT_CtubeB', 'DCT_Cbunki', 'DCT_CNml', 'DCT_CtubeC017', 'DCT_Cescape', 'DCT_CtubeWideA', 'DCT_CtubeWideB']
         self.ui.comboBox.addItems(self.exportTgtList)
         self.ui.groupBox.installEventFilter(self)
 
