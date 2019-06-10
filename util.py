@@ -73,8 +73,6 @@ class outputPathConf (object):
         except:
             pass
 
-        self._publishpath = os.path.join(self._shotpath, 'publish', self.outputRootDir, char)
-
     def makeCurrentDir (self):
         currentDir = os.path.join(self.publishpath, 'current')
         self._publishcurrentpath = currentDir
