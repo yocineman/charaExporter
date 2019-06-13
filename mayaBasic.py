@@ -12,14 +12,12 @@ def newScene ():
     mc.file(new=True)
 
 def saveAs (outputPath):
-    print 'save start'*5
     ext = os.path.splitext(outputPath)[1]
     mc.file(rn=outputPath)
     if ext == '.ma':
         mc.file(f=True, s=True, type='mayaAscii')
     else:
         mc.file(f=True, s=True, type='mayaBinary')
-    print 'save end'*5
 
 def save ():
     print 'save!!!'*10
@@ -80,10 +78,8 @@ def exportFile (outputPath, topNode):
     mc.file(outputPath, typ='mayaAscii', f=True, es=True, pr=True)
     mc.warning('export end')
 
-def loadAsset (assetPath , namespace):
-    print 'loadAsset start'*5
+def loadAsset (assetPath, namespace):
     mc.file(assetPath, r=True, namespace=namespace, mergeNamespacesOnClash=False, ignoreVersion=True)
-    print 'loadAsset end'*5
 
 def importAsset (animPath, namespace):
     with open(os.path.dirname(os.path.dirname(animPath))+'/cal_grb.txt') as f:
@@ -189,5 +185,4 @@ if __name__ == '__main__':
     loadAsset(assetPath, namespace)
 
     selHierarchy = mc.ls(namespace+':'+topNode, dag=True)
-
     attachABC(abcPath, selHierarchy)
