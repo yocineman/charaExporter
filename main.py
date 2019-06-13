@@ -93,11 +93,11 @@ class GUI (QMainWindow):
                             for bg in self.bgList:
                                 self.execExportAnim(bg, inputpath)
                         elif chara == 'Cam':
-                            self.execExportCam('cameraA', inputpath)
+                            self.execExportCam(chara, inputpath, camScale)
                         else:
                             self.execExport(chara, inputpath)
-
                         util.addTimeLog(chara, inputpath)
+
                     else:
                         charaList = self.exportTgtList
                         charaList.remove('all')
@@ -109,7 +109,7 @@ class GUI (QMainWindow):
                                     self.execExportAnim(bg, inputpath)
                                 pass
                             elif chara == 'Cam':
-                                self.execExportCam('cameraA', inputpath)
+                                self.execExportCam(chara, inputpath, camScale)
                             else:
                                 self.execExport(chara, inputpath)
 
@@ -184,15 +184,21 @@ class GUI (QMainWindow):
         for animFile in animFiles:
             batch.animReplace(ns, opc.publishcurrentpath+'/anim/'+animFile, opc.publishcurrentpath+'/'+ns+'.ma')
 
-    def execExportCam (self, cameraName, inputpath):#CameraName=CameraA
+    def execExportCam (self, cameraName, inputpath, camScale):#CameraName=CameraA
+        cameraSetup = import_module('setting.cameraAsetup')
+        ns = cameraSetup.nsCamera
+        ns = ','.join(ns)
+        ns = ns.split(',')
+        print ns
+        print ns[0]
+        print ns[1]
+        print ns[2]
+
         opc = util.outputPathConf(inputpath, True, test=testRun)
         opc.createOutputDir(cameraName)
         nsCamera = []
-
         output = opc.publishfullcampath
-        cameraSetup = import_module('setting.cameraASetup')
-
-        batch.camExport(output, 'camera', inputpath)
+        batch.camExport(output, 'camera', inputpath, camScale)
 
         camFiles = os.listdir(opc.publishfullcampath)
 
@@ -204,10 +210,6 @@ class GUI (QMainWindow):
             except:
                 pass
 
-        ns = []
-        ns.append('BG')
-        ns.append('chara')
-        ns.append('empty')
         count = 0
 
         for camFile in camFiles:

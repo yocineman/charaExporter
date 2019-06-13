@@ -46,11 +46,11 @@ def animExport (outputPath, oFilename, namespace, regex, scene):
     print cmd
     subprocess.call(cmd)
 
-def camExport (outputPath, oFilename, scene):
+def camExport (outputPath, oFilename, scene, camScale):
     cmd = []
     cmd.append(mayaBatch)
     cmd.append('-command')
-    cmd.append('''python(\"from ndPyLibExportCam3 import ndPyLibExportCam2;ndPyLibExportCam2(''' + "\'" + outputPath + "\'" + "," + "\'" + oFilename + "\'" + ''', 0);\")''')
+    cmd.append('''python(\"from ndPyLibExportCam3 import ndPyLibExportCam2;ndPyLibExportCam2(''' + "\'" + outputPath + "\'" + "," + "\'" + oFilename + "\'" + "," + str(camScale) + ''', 0);\")''')
 
     cmd.append('-file')
     cmd.append(scene)

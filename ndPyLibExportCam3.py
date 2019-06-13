@@ -6,6 +6,8 @@ import re, glob
 import maya.cmds as mc
 import maya.mel as mel
 
+from importlib import import_module
+
 from ndPyLibCamIOExportContain import *
 
 def _getNamespace ():
@@ -14,21 +16,10 @@ def _getNamespace ():
 
 
 def _getAllNodes ():
-
-    nodeShort = []
-
-    nodeShort.append('BG_cloCamera1')
-    nodeShort.append('BG_cloCamera_1AnimCam_grp')
-    nodeShort.append('chara_cloCamera1')
-    nodeShort.append('chara_cloCamera_1AnimCam_grp')
-    nodeShort.append('cloCamera1')
-    nodeShort.append('cloCamera_1AnimCam_grp')
-    nodeShort.append('BG_anim2D')
-    nodeShort.append('chara_anim2D')
-    nodeShort.append('anim2D')
-    nodeShort.append('BG_cloCamera_1_aim')
-    nodeShort.append('chara_cloCamera_1_aim')
-    nodeShort.append('cloCamera_1_aim')
+    cameraSetup = import_module('setting.cameraAsetup')
+    nodeShort = cameraSetup.keyNode
+    nodeShort = ','.join(nodeShort)
+    nodeShort = nodeShort.split(',')
     return nodeShort
 
 def _getConstraintAttributes (nodes):
@@ -64,7 +55,7 @@ def _getNoKeyAttributes (nodes):
     return attrs
 
 
-def _exportCam (publishpath, oFilename, isFilter):
+def _exportCam (publishpath, oFilename, CameraScale, isFilter):
     outputfiles = []
     sframe = mc.playbackOptions(q=True, min=True)
     eframe = mc.playbackOptions(q=True, max=True)
@@ -125,6 +116,9 @@ def _exportCam (publishpath, oFilename, isFilter):
     if len(attrs) != 0:
         mc.setKeyframe(attrs, t=sframe, insertBlend=False)
 
+    if CameraScale != -1:
+        mc.setKeyframe(attrs, t=sframe, v=CameraScale, at='.cs')
+
     attrs = _getConstraintAttributes(allNodes)
     attrs += _getPairBlendAttributes(allNodes)
     if len(attrs)!=0:
@@ -182,5 +176,5 @@ def ndPyLibExportCam (isFilter):
         publishpath = os.path.normpath(publishpath)
         os.makedirs(publishpath)
 
-def ndPyLibExportCam2 (publishpath, oFilename, isFilter):
-    _exportCam(publishpath, oFilename, isFilter)
+def ndPyLibExportCam2 (publishpath, oFilename, camScale,isFilter):
+    _exportCam(publishpath, oFilename, camScale, isFilter)
