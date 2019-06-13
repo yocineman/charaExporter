@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-assetChara = 'P:/proj/TMST/elm/BG/debrisA/rig/HH/maya/master/BGdebrisA_rig_HH.cur.ma'
+assetChara = 'P:/proj/TMST/elm/CH/adaptorBigbugA/rig/HH/maya/master/CHadaptorBigbugA_rig_HH.cur.ma'
 # assetHair = ''
 # nsChara = ['[a-zA-Z0-9_:]*TKN2_A_bodyBroken[a-zA-Z0-9_]*', '[a-zA-Z0-9_:]*Leg[a-zA-Z0-9_]*']
-nsChara = ['BGdebrisA[a-zA-Z0-9_:]*']
+nsChara = ['PRcarA[a-zA-Z0-9_:]*']
 # nsHair = ''
 # topNode = 'geo_GP'
 # abcSet = ['ABCset']

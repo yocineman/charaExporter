@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 #------------------------------
-__version__ = '0.6.4 mst'
+__version__ = '0.6.7 mst'
 __author__ = "Yoshihisa Okano"
 #------------------------------
 
@@ -52,12 +52,12 @@ class GUI (QMainWindow):
         self.setGeometry(400, 400, 400, 300)
         # if mode == 'ZGR':
         if True:
-            self.charaList = ['kesedoA', 'opekoA', 'pandoraA', 'noahA', 'handyCameraA']
+            self.charaList = ['kesedoA', 'opekoA', 'pandoraA', 'noahA', 'handyCameraA', 'PRcarA', 'adaptorFlowerA', 'adaptorBigbugA']
             self.exportTgtList = self.charaList[:]
             self.exportTgtList.append('BG')
         self.exportTgtList.append('Cam')
         self.exportTgtList.append('all')
-        self.bgList = ['debrisA', 'ghosttownOutdoorsA', 'skyA']
+        self.bgList = ['debrisA', 'ghosttownOutdoorsA', 'skyA', 'seaFloorA']
         self.ui.comboBox.addItems(self.exportTgtList)
         self.ui.groupBox.installEventFilter(self)
 
@@ -96,6 +96,8 @@ class GUI (QMainWindow):
                             self.execExportCam('cameraA', inputpath)
                         else:
                             self.execExport(chara, inputpath)
+
+                        util.addTimeLog(chara, inputpath)
                     else:
                         charaList = self.exportTgtList
                         charaList.remove('all')
@@ -110,6 +112,8 @@ class GUI (QMainWindow):
                                 self.execExportCam('cameraA', inputpath)
                             else:
                                 self.execExport(chara, inputpath)
+
+                            util.addTimeLog(char, inputpath)
 
                 # QMessageBox.information()
                 print '******************* end *********************'
