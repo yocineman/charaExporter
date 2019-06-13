@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
-
+import os
 import subprocess
+import shutil
 
-# mayaBatch = 'C:\\Program Files\\Autodesk\\Maya2015\\bin\\mayabatch.exe' 
-mayaBatch = 'C:\\Program Files\\Autodesk\\Maya2017\\bin\\mayabatch.exe' 
+# mayaBatch = 'C:\\Program Files\\Autodesk\\Maya2015\\bin\\mayabatch.exe'
+mayaBatch = 'C:\\Program Files\\Autodesk\\Maya2017\\bin\\mayabatch.exe'
 
 
 def abcExport (namespace, exportSet, outputPath, scene):
@@ -45,12 +46,33 @@ def animExport (outputPath, oFilename, namespace, regex, scene):
     print cmd
     subprocess.call(cmd)
 
+def camExport (outputPath, oFilename, scene):
+    cmd = []
+    cmd.append(mayaBatch)
+    cmd.append('-command')
+    cmd.append('''python(\"from ndPyLibExportCam3 import ndPyLibExportCam2;ndPyLibExportCam2(''' + "\'" + outputPath + "\'" + "," + "\'" + oFilename + "\'" + ''', 0);\")''')
+
+    cmd.append('-file')
+    cmd.append(scene)
+    print '=========='*10
+    print cmd
+    subprocess.call(cmd)
+
 def animAttach (assetPath, namespace, animPath, outputPath):
     cmd = []
     cmd.append(mayaBatch)
     cmd.append('-command')
     cmd.append('''python(\"from mayaBasic import *;import maya.cmds as mc;saveAs(''' + "\'" + outputPath + "\'" + ''');loadAsset(''' + "\'" + assetPath + "\'" + "," + "\'" + namespace + "\'"''');loadAsset(''' + "\'" + animPath + "\'" + "," + "\'" + namespace+'_anim' + "\'" + ''');saveAs(''' + "\'" + outputPath + "\'" + ''');\")''')
     print cmd
+    ret = subprocess.call(cmd)
+
+def camAttach (assetPath, namespace, animPath, outputPath):
+    cmd = []
+    cmd.append(mayaBatch)
+    cmd.append('-command')
+    cmd.append('''python(\"from mayaBasic import *;import maya.cmds as mc;saveAs(''' + "\'" + outputPath + "\'" + ''');importAsset(''' + "\'" + animPath + "\'"+ "," + "\'" + namespace + "\'" + ''');renameAsset('''+ "\'" + namespace + "\'"+ "," + "\'" + animPath + "\'"+ ''');loadAsset(''' + "\'" + animPath + "\'" + "," + "\'" + namespace+'_anim' + "\'" + ''');saveAs(''' + "\'" + outputPath + "\'" + ''');\")''')
+    print cmd
+
     ret = subprocess.call(cmd)
 
 def animReplace (namespace, animPath, scene):
@@ -60,17 +82,16 @@ def animReplace (namespace, animPath, scene):
     cmd.append('''python(\"from mayaBasic import *;replaceAsset(''' + "\'" + animPath + "\'" + "," + "\'" + namespace+'_anim' + "\'" + ''');save();\")''')
     cmd.append('-file')
     cmd.append(scene)
-    print cmd
+
     subprocess.call(cmd)
 
-def camExport (outputPath, oFilename, camScale, scene):
+def camReplace (namespace, animPath, scene):
     cmd = []
     cmd.append(mayaBatch)
     cmd.append('-command')
-    cmd.append('''python(\"from ndPyLibExportCam import ndPyLibExportCam2;ndPyLibExportCam2(''' + "\'" + outputPath + "\'" + "," + "\'" + oFilename + "\'" + "," + str(camScale) + ''');\")''')
+    cmd.append('''python(\"from mayaBasic import *;camreplaceAsset(''' + "\'" + animPath + "\'" + "," + "\'" +namespace+'_anim' + "\'" + ''');save();\")''')
     cmd.append('-file')
     cmd.append(scene)
-    print cmd
     subprocess.call(cmd)
 
 def repABC (scenePath, repAbcPath):

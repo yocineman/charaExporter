@@ -11,7 +11,7 @@ import distutils.dir_util
 
 class outputPathConf (object):
 
-    def __init__ (self, inputPath, isAnim=False, test=False):
+    def __init__ (self, inputPath, isAnim=False, test=True):
         self.inputPath = inputPath.replace('\\', '/')
         self.isAnim = isAnim
         self.outputRootDir = 'charSet'
@@ -41,12 +41,14 @@ class outputPathConf (object):
             except:
                 pass
 
-    def createCamOutputDir (self):
-        self._publishpath = os.path.join(self._shotpath, 'publish', self.outputCamRootDir, os.path.basename(self.inputPath))
-        self._publishfullpath = self._publishpath
-        if not os.path.exists(self._publishpath):
+    def createCamOutputDir (self, cameraName):
+        self._publishpath = os.path.join(self._shotpath, 'publish', self.outputCamRootDir, cameraName)
+        if os.path.exists(self._publishpath):
+            self.verInc()
+        else:
             try:
                 os.makedirs(self._publishpath)
+                self.verInc()
             except:
                 pass
 
@@ -64,12 +66,15 @@ class outputPathConf (object):
         self._publishfullpath = os.path.join(self._publishpath, self._currentVer)
         self._publishfullabcpath = os.path.join(self._publishfullpath, 'abc')
         self._publishfullanimpath = os.path.join(self._publishfullpath, 'anim')
+        self._publishfullcampath = os.path.join(self._publishfullpath, 'anim')
         try:
             os.mkdir(self._publishfullpath)
             if self.isAnim:
                 os.mkdir(self._publishfullanimpath)
-            else:
+            elif self.isAbc:
                 os.mkdir(self._publishfullabcpath)
+            else:
+                os.mkdir(self._publishfullcampath)
         except:
             pass
 
@@ -112,6 +117,10 @@ class outputPathConf (object):
     @property
     def publishfullanimpath (self):
         return self._publishfullanimpath.replace(os.path.sep, '/')
+
+    @property
+    def publishfullcampath (self):
+        return self._publishfullcampath.replace(os.path.sep, '/')
 
     @property
     def publishcurrentpath (self):

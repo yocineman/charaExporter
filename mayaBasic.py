@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import maya.cmds as mc
+import pymel.core as pm
 import maya.mel as mel
+import re
 
 import os
 
@@ -10,12 +12,14 @@ def newScene ():
     mc.file(new=True)
 
 def saveAs (outputPath):
+    print 'save start'*5
     ext = os.path.splitext(outputPath)[1]
     mc.file(rn=outputPath)
     if ext == '.ma':
         mc.file(f=True, s=True, type='mayaAscii')
     else:
         mc.file(f=True, s=True, type='mayaBinary')
+    print 'save end'*5
 
 def save ():
     print 'save!!!'*10
@@ -45,6 +49,30 @@ def replaceAsset (assetPath, namespace):
         pass
     mc.warning('replace end')
 
+def camreplaceAsset (assetPath, namespace):
+    mc.warning( 'replace start ')
+    # refs = mc.ls(type='reference')
+    # try:
+    #     print refs
+    #     # refs.remove('sharedReferenceNode')
+    # except:
+    #     pass
+    # tgtRN = ''
+    # for r in refs:
+    #     ns = mel.eval('referenceQuery -ns ' + r)[1:]
+    #     if namespace == ns:
+    #         tgtRN = r
+    #         break
+    # else:
+    #     mc.error('can not replace')
+
+    # # print assetPath, tgtRN
+    # try:
+    #     mc.file(assetPath, loadReference=tgtRN)
+    # except:
+    #     pass
+    mc.warning('replace end')
+
 
 def exportFile (outputPath, topNode):
     mc.warning('export start')
@@ -52,8 +80,58 @@ def exportFile (outputPath, topNode):
     mc.file(outputPath, typ='mayaAscii', f=True, es=True, pr=True)
     mc.warning('export end')
 
-def loadAsset (assetPath, namespace):
+def loadAsset (assetPath , namespace):
+    print 'loadAsset start'*5
     mc.file(assetPath, r=True, namespace=namespace, mergeNamespacesOnClash=False, ignoreVersion=True)
+    print 'loadAsset end'*5
+
+def importAsset (animPath, namespace):
+    with open(os.path.dirname(os.path.dirname(animPath))+'/cal_grb.txt') as f:
+        a = f.readline().strip()
+        b = f.readline().strip()
+        camtype = f.readline().strip()
+    print camtype
+    print os.path.dirname(os.path.dirname(animPath))
+
+    if camtype == 'aim':
+        print 'camtype is "aim_camera"'
+        camPath_neo = 'E:/users/ueda/camTestaim.ma'
+        # camPath_neo = r'P:\proj\TMST\elm\_cam\cam\rig\3D\maya\master\cam.cur.ma'
+    elif camtype == '2D':
+        print 'camtype is "2D_camera"'
+        camPath_neo = 'E:/users/ueda/camTest2D.ma'
+        # camPath_neo = r'P:\proj\TMST\elm\_cam\cam\rig\2D\maya\master\cam.cur.ma'
+    elif camtype == '3D':
+        print 'camtype is "3D_camera"'
+        camPath_neo = 'E:/users/ueda/camTest.ma'
+        # camPath_neo = r'P:\proj\TMST\elm\_cam\cam\rig\Aim\maya\master\camAim.cur.ma'
+    else:
+        print 'camtype cant unload....'
+
+    mc.file(camPath_neo,i=True, ignoreVersion=True, preserveReferences=True,mergeNamespacesOnClash=False, importFrameRate=True, importTimeRange='override')
+
+    # ---outputPath----
+    # E:/Project/b/shots/d/e/NBB062/publish/test_charSet/cameraA/v062/anim/BG.ma
+    # ----camPath----
+    # P:/proj/TMST/elm/_cam/cam/rig/3D/maya/master/cam.cur.ma
+    # print 'import Asset end'
+
+def renameAsset(namespace, animPath):
+    mc.select('cloCamera_grp',hi=True)
+    x=pm.ls(sl=True,)
+    for i in x:
+        i.rename(re.sub('^',namespace+'_',i.name()))
+
+    print os.path.dirname(os.path.dirname(animPath))+'/cal_grb.txt'
+
+    with open(os.path.dirname(os.path.dirname(animPath))+'/cal_grb.txt') as f:
+        a = f.readline().strip()
+        b = f.readline().strip()
+
+    x = pm.ls('NAX000')
+    x[0].rename(a)
+    y = pm.ls('frame_1_120')
+    y[0].rename(b)
 
 def attachABC (abcPath, hierarchyList):
     if not mc.pluginInfo('AbcImport', q=True, l=True):
@@ -111,4 +189,5 @@ if __name__ == '__main__':
     loadAsset(assetPath, namespace)
 
     selHierarchy = mc.ls(namespace+':'+topNode, dag=True)
+
     attachABC(abcPath, selHierarchy)

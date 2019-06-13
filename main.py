@@ -32,8 +32,7 @@ qtSlot = Slot
 
 
 ### debug mode
-testRun = False
-
+testRun = True
 
 class GUI (QMainWindow):
     WINDOW = 'mem chara export'
@@ -69,7 +68,7 @@ class GUI (QMainWindow):
         if event.type() == QEvent.DragEnter:
             event.acceptProposedAction()
             return True
-        
+
         if event.type() == QEvent.Drop:
             mimedata = event.mimeData()
             if mimedata.hasUrls:
@@ -94,7 +93,7 @@ class GUI (QMainWindow):
                             for bg in self.bgList:
                                 self.execExportAnim(bg, inputpath)
                         elif chara == 'Cam':
-                            self.execExportCam(inputpath, camScale)
+                            self.execExportCam('cameraA', inputpath)
                         else:
                             self.execExport(chara, inputpath)
                     else:
@@ -108,7 +107,7 @@ class GUI (QMainWindow):
                                     self.execExportAnim(bg, inputpath)
                                 pass
                             elif chara == 'Cam':
-                                self.execExportCam(inputpath, camScale)
+                                self.execExportCam('cameraA', inputpath)
                             else:
                                 self.execExport(chara, inputpath)
 
@@ -126,6 +125,7 @@ class GUI (QMainWindow):
         abcOutput = opc.publishfullabcpath + '/' + charaName + '.abc'
         hairOutput = opc.publishfullpath + '/' + 'hair.abc'
         charaOutput = opc.publishfullpath + '/' + charaName + '.abc'
+        cameraOutput = opc.publishfullpath + '/' + 'camera.abc'
 
         charaSetup = import_module('setting.'+charaName+'Setup')
         batch.abcExport(charaSetup.nsChara, charaSetup.abcSet, abcOutput, inputpath)
@@ -151,9 +151,7 @@ class GUI (QMainWindow):
         opc.makeCurrentDir()
 
         for output in allOutput:
-            print '#' * 20
-            print output
-            charaOutput = opc.publishcurrentpath + '/' + output[0] 
+            charaOutput = opc.publishcurrentpath + '/' + output[0]
             abcOutput = opc.publishcurrentpath + '/abc/' + output[1]
             batch.repABC(charaOutput, abcOutput)
 
@@ -182,12 +180,18 @@ class GUI (QMainWindow):
         for animFile in animFiles:
             batch.animReplace(ns, opc.publishcurrentpath+'/anim/'+animFile, opc.publishcurrentpath+'/'+ns+'.ma')
 
-    def execExportCam (self, inputpath, camScale):
-        opc = util.outputPathConf(inputpath, test=testRun)
-        opc.createCamOutputDir()
+    def execExportCam (self, cameraName, inputpath):#CameraName=CameraA
+        opc = util.outputPathConf(inputpath, True, test=testRun)
+        opc.createOutputDir(cameraName)
+        nsCamera = []
 
-        batch.camExport(opc.publishfullpath, opc.sequence+opc.shot+'_cam', camScale, inputpath)
-        camFiles = os.listdir(opc.publishfullpath)
+        output = opc.publishfullcampath
+        cameraSetup = import_module('setting.cameraASetup')
+
+        batch.camExport(output, 'camera', inputpath)
+
+        camFiles = os.listdir(opc.publishfullcampath)
+
         for camFile in camFiles:
             srcFile = os.path.join(opc.publishfullpath, camFile)
             dstDir = os.path.join(opc.publishfullpath, '..')
@@ -195,6 +199,31 @@ class GUI (QMainWindow):
                 shutil.copy(srcFile, dstDir)
             except:
                 pass
+
+        ns = []
+        ns.append('BG')
+        ns.append('chara')
+        ns.append('empty')
+        count = 0
+
+        for camFile in camFiles:
+            camanimOutput = opc.publishfullcampath + '/' + camFile
+
+            camOutput = opc.publishfullpath + '/' + ns[count] +'_cloCamera1.ma'
+            batch.camAttach(cameraSetup.assetCamera, ns[count], camanimOutput, camOutput)
+            opc.makeCurrentDir()
+
+            count= count + 1
+        opc.makeCurrentDir()
+
+        # count = 0
+        # for camFile in camFiles:
+        #     if ns[count] != 'empty':
+        #         batch.camReplace(ns[count], opc.publishcurrentpath+'/anim/'+camFile, opc.publishcurrentpath+'/'+ns[count]+'_cloCamera1.ma')
+        #     else:
+        #         batch.camReplace(ns[count], opc.publishcurrentpath+'/anim/'+camFile, opc.publishcurrentpath+'/cloCamera1.ma')
+        #     count = count + 1
+
 
 
 def run (*argv):
