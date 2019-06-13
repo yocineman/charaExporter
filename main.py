@@ -189,10 +189,6 @@ class GUI (QMainWindow):
         ns = cameraSetup.nsCamera
         ns = ','.join(ns)
         ns = ns.split(',')
-        print ns
-        print ns[0]
-        print ns[1]
-        print ns[2]
 
         opc = util.outputPathConf(inputpath, True, test=testRun)
         opc.createOutputDir(cameraName)

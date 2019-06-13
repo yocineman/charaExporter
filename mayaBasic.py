@@ -91,15 +91,21 @@ def importAsset (animPath, namespace):
 
     if camtype == 'aim':
         print 'camtype is "aim_camera"'
-        camPath_neo = 'E:/users/ueda/camTestaim.ma'
+        # camPath_neo = 'E:/users/ueda/camTestaim.ma'
+        camPath_neo = r'P:\proj\TMST\elm\_cam\cam\rig\Aim\maya\master\camAim.cur.del_mtoa.ma'
         # camPath_neo = r'P:\proj\TMST\elm\_cam\cam\rig\3D\maya\master\cam.cur.ma'
     elif camtype == '2D':
         print 'camtype is "2D_camera"'
-        camPath_neo = 'E:/users/ueda/camTest2D.ma'
+        camPath_neo = r'P:\proj\TMST\elm\_cam\cam\rig\2D\maya\master\cam2D_del_mtoa.cur.ma'
+        # camPath_neo = 'E:/users/ueda/camTest2D.ma'
         # camPath_neo = r'P:\proj\TMST\elm\_cam\cam\rig\2D\maya\master\cam.cur.ma'
     elif camtype == '3D':
         print 'camtype is "3D_camera"'
-        camPath_neo = 'E:/users/ueda/camTest.ma'
+        camPath_neo = r'P:\proj\TMST\elm\_cam\cam\rig\3D\maya\master\cam.cur.del_mtoa.ma'
+
+        # camPath_neo = 'E:/users/ueda/camTest.ma'
+        # camPath_neo = 'E:/users/ueda/camTest.ma'
+
         # camPath_neo = r'P:\proj\TMST\elm\_cam\cam\rig\Aim\maya\master\camAim.cur.ma'
     else:
         print 'camtype cant unload....'
