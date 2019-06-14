@@ -121,8 +121,12 @@ def importAsset (animPath, namespace):
 def renameAsset(namespace, animPath):
     mc.select('cloCamera_grp',hi=True)
     x=pm.ls(sl=True,)
-    for i in x:
-        i.rename(re.sub('^',namespace+'_',i.name()))
+    if not namespace:
+        for i in x:
+            i.rename(re.sub('^',namespace,i.name()))
+    else:
+        for i in x:
+            i.rename(re.sub('^',namespace+'_',i.name()))
 
     print os.path.dirname(os.path.dirname(animPath))+'/cal_grb.txt'
 

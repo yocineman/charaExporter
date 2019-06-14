@@ -77,7 +77,7 @@ def _exportCam (publishpath, oFilename, CameraScale, isFilter):
     # print namespaces
     tmpallNodes = []
     allNodes = []
-    tmpallNodes += _getAllNodes() #強引に4つに
+    tmpallNodes += _getAllNodes()
 
     print tmpallNodes
     characterSet = mc.ls(type='character')
@@ -125,6 +125,9 @@ def _exportCam (publishpath, oFilename, CameraScale, isFilter):
         mc.bakeResults(attrs, t=(sframe, eframe), sb=True)
 
     x = 0
+    print checkNodes
+    print namespaces
+    print '%%%%%%%%%%'*10
 
     for ns in namespaces:
         if checkNodes[x]== 0:
@@ -132,12 +135,15 @@ def _exportCam (publishpath, oFilename, CameraScale, isFilter):
             for n in allNodes:
                 pickNodes.append(n)
             if len(pickNodes) != 0:
-                outputfiles.append(publishpath+oFilename+'_'+ns+'_cloCamera1.ma')
-                ndPyLibAnimIOExportContain(isFilter, ['3', ''],publishpath, 'anim_'+ns+'_cloCamera1', pickNodes, 0, 0,ns)
-
-            x = x+2
+                if ns != 'empty':
+                    outputfiles.append(publishpath+oFilename+'_'+ns+'_cloCamera1.ma')
+                    ndPyLibAnimIOExportContain(isFilter, ['3', ''],publishpath, 'anim_'+ns+'_cloCamera1', pickNodes, 0, 0,ns)
+                else:
+                    outputfiles.append(publishpath+oFilename+'_'+'cloCamera1.ma')
+                    ndPyLibAnimIOExportContain(isFilter, ['3', ''],publishpath, 'anim_'+'cloCamera1', pickNodes, 0, 0,ns)
+            x = x+4
         else:
-            x = x+2
+            x = x+4
 
     return outputfiles
 

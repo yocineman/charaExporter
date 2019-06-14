@@ -11,7 +11,7 @@ import distutils.dir_util
 
 class outputPathConf (object):
 
-    def __init__ (self, inputPath, isAnim=False, test=True):
+    def __init__ (self, inputPath, isAnim=False, test=False):
         self.inputPath = inputPath.replace('\\', '/')
         self.isAnim = isAnim
         self.outputRootDir = 'charSet'

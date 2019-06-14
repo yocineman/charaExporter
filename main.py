@@ -32,7 +32,7 @@ qtSlot = Slot
 
 
 ### debug mode
-testRun = True
+testRun = False
 
 class GUI (QMainWindow):
     WINDOW = 'mem chara export'
@@ -207,12 +207,15 @@ class GUI (QMainWindow):
                 pass
 
         count = 0
-
         for camFile in camFiles:
             camanimOutput = opc.publishfullcampath + '/' + camFile
 
-            camOutput = opc.publishfullpath + '/' + ns[count] +'_cloCamera1.ma'
-            batch.camAttach(cameraSetup.assetCamera, ns[count], camanimOutput, camOutput)
+            a = camFile.lstrip('anim_')
+            b = a.rstrip('_cloCamera1.ma')
+
+            camOutput = opc.publishfullpath + '/' + a.rstrip('_')
+
+            batch.camAttach(cameraSetup.assetCamera, a.rstrip('_cloCamera1.ma'), camanimOutput, camOutput)
             opc.makeCurrentDir()
 
             count= count + 1
