@@ -96,7 +96,10 @@ class GUI (QMainWindow):
                             self.execExportCam(chara, inputpath, camScale)
                         else:
                             self.execExport(chara, inputpath)
-                        util.addTimeLog(chara, inputpath)
+                        try:
+                            util.addTimeLog(chara, inputpath)
+                        except:
+                            pass
 
                     else:
                         charaList = self.exportTgtList
@@ -113,7 +116,10 @@ class GUI (QMainWindow):
                             else:
                                 self.execExport(chara, inputpath)
 
-                            util.addTimeLog(char, inputpath)
+                            try:
+                                util.addTimeLog(chara, inputpath)
+                            except:
+                                pass
 
                 # QMessageBox.information()
                 print '******************* end *********************'
