@@ -150,6 +150,9 @@ def renameAsset(namespace, animPath):
     if namespace == 'ch':
         namespace = 'chara'
 
+    print namespace
+    print '$$$$$$$$$$$$$$$$$$$$'*3
+
     if namespace == 'empty':
         print os.path.dirname(os.path.dirname(animPath))+'/cal_grb.txt'
 
