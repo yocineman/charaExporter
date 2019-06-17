@@ -116,18 +116,12 @@ def _exportCam (publishpath, oFilename, CameraScale, isFilter):
     if len(attrs) != 0:
         mc.setKeyframe(attrs, t=sframe, insertBlend=False)
 
-    if CameraScale != -1:
-        mc.setKeyframe(attrs, t=sframe, v=CameraScale, at='.cs')
-
     attrs = _getConstraintAttributes(allNodes)
     attrs += _getPairBlendAttributes(allNodes)
     if len(attrs)!=0:
         mc.bakeResults(attrs, t=(sframe, eframe), sb=True)
 
     x = 0
-    print checkNodes
-    print namespaces
-    print '%%%%%%%%%%'*10
 
     for ns in namespaces:
         if checkNodes[x]== 0:

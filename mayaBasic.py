@@ -82,10 +82,19 @@ def loadAsset (assetPath, namespace):
     mc.file(assetPath, r=True, namespace=namespace, mergeNamespacesOnClash=False, ignoreVersion=True)
 
 def importAsset (animPath, namespace):
-    with open(os.path.dirname(os.path.dirname(animPath))+'/cal_grb.txt') as f:
-        a = f.readline().strip()
-        b = f.readline().strip()
-        camtype = f.readline().strip()
+    if namespace == 'ch':
+        namespace = 'chara'
+    if namespace == 'empty':
+        with open(os.path.dirname(os.path.dirname(animPath))+'/cal_grb.txt') as f:
+            a = f.readline().strip()
+            b = f.readline().strip()
+            camtype = f.readline().strip()
+    else:
+        with open(os.path.dirname(os.path.dirname(animPath))+'/'+namespace+'_cal_grb.txt') as f:
+            a = f.readline().strip()
+            b = f.readline().strip()
+            camtype = f.readline().strip()
+
     print camtype
     print os.path.dirname(os.path.dirname(animPath))
 
@@ -112,6 +121,7 @@ def importAsset (animPath, namespace):
 
     mc.file(camPath_neo,i=True, ignoreVersion=True, preserveReferences=True,mergeNamespacesOnClash=False, importFrameRate=True, importTimeRange='override')
 
+
     # ---outputPath----
     # E:/Project/b/shots/d/e/NBB062/publish/test_charSet/cameraA/v062/anim/BG.ma
     # ----camPath----
@@ -122,9 +132,9 @@ def renameAsset(namespace, animPath):
     mc.select('cloCamera_grp',hi=True)
     x=pm.ls(sl=True)
 
-    if not namespace:
+    if namespace == 'empty':
         for i in x:
-            i.rename(re.sub('^',namespace,i.name()))
+            i.rename(re.sub('^','',i.name()))
     else:
         if namespace=='ch':#応急措置
             for i in x:
@@ -137,17 +147,54 @@ def renameAsset(namespace, animPath):
                 i.rename(re.sub('^','BG_',i.name()))
                 print i
 
+    if namespace == 'ch':
+        namespace = 'chara'
 
-    print os.path.dirname(os.path.dirname(animPath))+'/cal_grb.txt'
+    if namespace == 'empty':
+        print os.path.dirname(os.path.dirname(animPath))+'/cal_grb.txt'
 
-    with open(os.path.dirname(os.path.dirname(animPath))+'/cal_grb.txt') as f:
-        a = f.readline().strip()
-        b = f.readline().strip()
+        with open(os.path.dirname(os.path.dirname(animPath))+'/cal_grb.txt') as f:
+            a = f.readline().strip()
+            b = f.readline().strip()
+    else:
+        print os.path.dirname(os.path.dirname(animPath))+'/'+namespace+'_cal_grb.txt'
+
+        with open(os.path.dirname(os.path.dirname(animPath))+'/'+namespace+'_cal_grb.txt') as f:
+            a = f.readline().strip()
+            b = f.readline().strip()
+
+
+
 
     x = pm.ls('NAX000')
     x[0].rename(a)
     y = pm.ls('frame_1_120')
     y[0].rename(b)
+
+def cameraScaleChange(namespace, animPath, cameraScale):
+
+    if namespace == 'ch':
+        namespace = 'chara'
+
+    if cameraScale !=-1:
+        if namespace == 'empty':
+            with open(os.path.dirname(os.path.dirname(animPath))+'/cal_grb.txt') as f:
+                a = f.readline().strip()
+                b = f.readline().strip()
+                c = f.readline().strip()
+                cameraScale = f.readline()
+        else:
+            with open(os.path.dirname(os.path.dirname(animPath))+'/'+namespace+'_cal_grb.txt') as f:
+                a = f.readline().strip()
+                b = f.readline().strip()
+                c = f.readline().strip()
+                cameraScale = f.readline()
+
+        print namespace
+        if namespace == 'empty':
+            mc.setKeyframe('cloCamera_1_animCamShape.cameraScale', v=float(cameraScale), at='.cs')
+        else:
+            mc.setKeyframe(namespace+'_'+namespace+'_cloCamera_1_animCamShape.cameraScale', v=float(cameraScale), at='.cs')
 
 def attachABC (abcPath, hierarchyList):
     if not mc.pluginInfo('AbcImport', q=True, l=True):

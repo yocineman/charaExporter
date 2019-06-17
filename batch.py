@@ -66,11 +66,13 @@ def animAttach (assetPath, namespace, animPath, outputPath):
     print cmd
     ret = subprocess.call(cmd)
 
-def camAttach (assetPath, namespace, animPath, outputPath):
+def camAttach (assetPath, namespace, animPath, outputPath, cameraScale):
+    if namespace == '':
+        namespace = 'empty'
     cmd = []
     cmd.append(mayaBatch)
     cmd.append('-command')
-    cmd.append('''python(\"from mayaBasic import *;import maya.cmds as mc;saveAs(''' + "\'" + outputPath + "\'" + ''');importAsset(''' + "\'" + animPath + "\'"+ "," + "\'" + namespace + "\'" + ''');renameAsset('''+ "\'" + namespace + "\'"+ "," + "\'" + animPath + "\'"+ ''');loadAsset(''' + "\'" + animPath + "\'" + "," + "\'" + namespace+'_anim' + "\'" + ''');saveAs(''' + "\'" + outputPath + "\'" + ''');\")''')
+    cmd.append('''python(\"from mayaBasic import *;import maya.cmds as mc;saveAs(''' + "\'" + outputPath + "\'" + ''');importAsset(''' + "\'" + animPath + "\'"+ "," + "\'" + namespace + "\'" + ''');renameAsset('''+ "\'" + namespace + "\'"+ "," + "\'" + animPath + "\'"+ ''');loadAsset(''' + "\'" + animPath + "\'" + "," + "\'" + namespace+'_anim' + "\'" + ''');cameraScaleChange(''' + "\'" + namespace + "\'" + "," +"\'" + animPath + "\'" + "," + "\'" + cameraScale + "\'"+ ''');saveAs(''' + "\'" + outputPath + "\'" + ''');\")''')
     print cmd
 
     ret = subprocess.call(cmd)

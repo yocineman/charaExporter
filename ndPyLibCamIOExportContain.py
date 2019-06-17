@@ -64,11 +64,23 @@ def ndPyLibAnimIOExportContain (isFilterCurve, inPfxInfo, inDirPath, inFileName,
     else:
         camtype = '3D'
 
-    f = open(os.path.dirname(inDirPath)+'/cal_grb.txt', mode = 'w')
+    if ns == 'empty':
+        cameraScale = pc.getAttr('cloCamera_1_animCam.cameraScale')
+    else:
+        if ns == 'ch':
+            ns = 'chara'
+        cameraScale = mc.getAttr(ns+'_cloCamera_1_animCam.cameraScale')
+    if ns == 'empty':
+        f = open(os.path.dirname(inDirPath)+'/' + 'cal_grb.txt', mode = 'w')
+    else:
+        f = open(os.path.dirname(inDirPath)+'/' + ns + '_cal_grb.txt', mode = 'w')
 
     f.write(x[0] + '\n')
     f.write(y[0] + '\n')
     f.write(camtype + '\n')
+
+    f.write(str(cameraScale) + '\n')
+
 
     f.close()
 

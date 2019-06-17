@@ -78,6 +78,7 @@ def ndPyLibAnimGetAnimNodeAndAttrFunc (inForNodes, inMode, isCheckAnimCurve, isC
             listNoAnimCurveNode.append(checkNode)
             listNoAnimCurveNodeCnt += 1
             mc.setKeyframe(checkNode, breakdown=0, hierarchy='none', controlPoints=0, shape=0)
+            mc.setKeyframe(attrs, t=sframe, v=1.2, at='.cs')
             retNodes = _GetAnimNodeAndAttrFunc(checkNode, inMode)
             if len(retNodes) <= 0:
                 print '[nd] Error No Animation Node.\n'

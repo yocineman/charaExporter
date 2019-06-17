@@ -220,8 +220,8 @@ class GUI (QMainWindow):
             b = a.rstrip('_cloCamera1.ma')
 
             camOutput = opc.publishfullpath + '/' + a.rstrip('_')
-
-            batch.camAttach(cameraSetup.assetCamera, a.rstrip('_cloCamera1.ma'), camanimOutput, camOutput)
+            cameraScale = str(camScale)
+            batch.camAttach(cameraSetup.assetCamera, a.rstrip('_cloCamera1.ma'), camanimOutput, camOutput, cameraScale)
             opc.makeCurrentDir()
 
             count= count + 1
