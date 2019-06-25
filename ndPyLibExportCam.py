@@ -93,6 +93,9 @@ def ndPyLibExportCam_bakeCamera(frameHandle, CameraScale):
 
             if CameraScale != -1:
                 cmds.setKeyframe(toCam[i+1],t=cmds.currentTime(q=True), v=CameraScale, at='.cs')
+            else:
+                camScale = cmds.getAttr(fromCam[i+1]+'.cameraScale')
+                cmds.setKeyframe(toCam[i+1],t=cmds.currentTime(q=True), v=camScale, at='.cs')
 
             for thisAttr in shapeAttrs:
                 cmds.setKeyframe(toCam[i+1],t=cmds.currentTime(q=True), v=cmds.getAttr(fromCam[i+1]+'.'+thisAttr), at='.'+thisAttr)
@@ -120,8 +123,8 @@ def ndPyLibExportCam_bakeCamera(frameHandle, CameraScale):
         for thisAttr in shapeAttrs:
             cmds.setAttr(toCam[i+1]+'.'+thisAttr,lock=True)
         
-        if CameraScale != -1:
-            cmds.setAttr(toCam[i+1]+'.cs',lock=True)
+        # if CameraScale != -1:
+        cmds.setAttr(toCam[i+1]+'.cs',lock=True)
 
         cmds.setAttr(toCam[i]+'.translate',lock=True)
         cmds.setAttr(toCam[i]+'.rotate',lock=True)
