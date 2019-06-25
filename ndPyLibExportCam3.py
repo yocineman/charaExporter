@@ -14,7 +14,6 @@ def _getNamespace ():
     #no using
     return namespaces
 
-
 def _getAllNodes ():
     cameraSetup = import_module('setting.cameraAsetup')
     nodeShort = cameraSetup.keyNode
@@ -43,8 +42,9 @@ def _getPairBlendAttributes (nodes):
 
 def _getNoKeyAttributes (nodes):
     attrs = []
+
     for n in nodes:
-        gAttrs = mc.listAttr(n, keyable=True)
+        gAttrs = mc.listAttr(n, k=True)
         if gAttrs is None: continue
         for attr in gAttrs:
             if '.' not in attr:
@@ -52,6 +52,24 @@ def _getNoKeyAttributes (nodes):
                     attrs.append(n+'.'+attr)
                     print 'find no key attribute : ' + n + '.' + attr
 
+    return attrs
+def _getNoKeyAttributes2 (nodes):
+    attrs = []
+    gAttrs = [u'focalLength',u'hfa',u'vfa',u'lsr',u'fs',u'fd',u'sa',u'coi',u'ncp',u'fcp']
+    spnodes = [u'cloCamera_1_animCamShape',u'BG_cloCamera_1_animCamShape',u'chara_cloCamera_1_animCamShape']
+
+    for n in spnodes:
+        for attr in gAttrs:
+            try:
+                if mc.listConnections(n+'.'+attr, s=True, d=False) is None:
+
+                    attrs.append(n+'.'+attr)
+                    print ' : ' + n + '.' + attr
+            except:
+                print 'find no key attribute : ' + n + '.' + attr
+                print ' !!! '+ n + '.' + attr + ' not found'
+                print n + ' probablly does not exist, or incorrect name.'
+    print attrs
     return attrs
 
 
@@ -113,13 +131,32 @@ def _exportCam (publishpath, oFilename, CameraScale, isFilter):
     mc.select(cl=True)
 
     attrs = _getNoKeyAttributes(allNodes)
+    for attr in attrs:
+        try:
+            mc.setAttr(attr,lock=False)
+        except:
+            pass
+
+
+
     if len(attrs) != 0:
         mc.setKeyframe(attrs, t=sframe, insertBlend=False)
 
     attrs = _getConstraintAttributes(allNodes)
     attrs += _getPairBlendAttributes(allNodes)
+    for attr in attrs:
+        try:
+            mc.setAttr(attr,lock=False)
+        except:
+            pass
+
+
     if len(attrs)!=0:
         mc.bakeResults(attrs, t=(sframe, eframe), sb=True)
+
+    attrs = _getNoKeyAttributes2(allNodes)
+    if len(attrs) != 0:
+        mc.setKeyframe(attrs, t=sframe, insertBlend=False)
 
     x = 0
 
@@ -135,9 +172,9 @@ def _exportCam (publishpath, oFilename, CameraScale, isFilter):
                 else:
                     outputfiles.append(publishpath+oFilename+'_'+'cloCamera1.ma')
                     ndPyLibAnimIOExportContain(isFilter, ['3', ''],publishpath, 'anim_'+'cloCamera1', pickNodes, 0, 0,ns)
-            x = x+4
+            x = x+6
         else:
-            x = x+4
+            x = x+6
 
     return outputfiles
 

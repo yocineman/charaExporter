@@ -175,29 +175,29 @@ def renameAsset(namespace, animPath):
     y[0].rename(b)
 
 def cameraScaleChange(namespace, animPath, cameraScale):
+    print ''
+    # if namespace == 'ch':
+    #     namespace = 'chara'
 
-    if namespace == 'ch':
-        namespace = 'chara'
+    # if cameraScale !=-1:
+    #     if namespace == 'empty':
+    #         with open(os.path.dirname(os.path.dirname(animPath))+'/cal_grb.txt') as f:
+    #             a = f.readline().strip()
+    #             b = f.readline().strip()
+    #             c = f.readline().strip()
+    #             cameraScale = f.readline()
+    #     else:
+    #         with open(os.path.dirname(os.path.dirname(animPath))+'/'+namespace+'_cal_grb.txt') as f:
+    #             a = f.readline().strip()
+    #             b = f.readline().strip()
+    #             c = f.readline().strip()
+    #             cameraScale = f.readline()
 
-    if cameraScale !=-1:
-        if namespace == 'empty':
-            with open(os.path.dirname(os.path.dirname(animPath))+'/cal_grb.txt') as f:
-                a = f.readline().strip()
-                b = f.readline().strip()
-                c = f.readline().strip()
-                cameraScale = f.readline()
-        else:
-            with open(os.path.dirname(os.path.dirname(animPath))+'/'+namespace+'_cal_grb.txt') as f:
-                a = f.readline().strip()
-                b = f.readline().strip()
-                c = f.readline().strip()
-                cameraScale = f.readline()
-
-        print namespace
-        if namespace == 'empty':
-            mc.setKeyframe('cloCamera_1_animCamShape.cameraScale', v=float(cameraScale), at='.cs')
-        else:
-            mc.setKeyframe(namespace+'_'+namespace+'_cloCamera_1_animCamShape.cameraScale', v=float(cameraScale), at='.cs')
+    #     print namespace
+    #     if namespace == 'empty':
+    #         mc.setKeyframe('cloCamera_1_animCamShape.cameraScale', v=float(cameraScale), at='.cs')
+    #     else:
+    #         mc.setKeyframe(namespace+'_'+namespace+'_cloCamera_1_animCamShape.cameraScale', v=float(cameraScale), at='.cs')
 
 def attachABC (abcPath, hierarchyList):
     if not mc.pluginInfo('AbcImport', q=True, l=True):

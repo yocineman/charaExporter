@@ -47,7 +47,7 @@ def ndPyLibAnimIOExportContain (isFilterCurve, inPfxInfo, inDirPath, inFileName,
     print inDirPath
     print 'inDirPath'
 
-    x = pc.ls('NBB???',type='transform')
+    x = pc.ls('NB*',type='transform')
     y = pc.listRelatives(x, ad=True)
 
     if ns != 'empty':
@@ -74,6 +74,10 @@ def ndPyLibAnimIOExportContain (isFilterCurve, inPfxInfo, inDirPath, inFileName,
         f = open(os.path.dirname(inDirPath)+'/' + 'cal_grb.txt', mode = 'w')
     else:
         f = open(os.path.dirname(inDirPath)+'/' + ns + '_cal_grb.txt', mode = 'w')
+
+    print '@@@@@@@@@@@@@@@@@@@@@'*4
+    print x[0]
+    print y[0]
 
     f.write(x[0] + '\n')
     f.write(y[0] + '\n')
