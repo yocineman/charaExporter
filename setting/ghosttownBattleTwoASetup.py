@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-assetChara = 'P:/proj/TMST/elm/PR/tablewareSetA/rig/HH/maya/master/PRtablewareSetA_rig_HH.cur.ma'
+assetChara = 'P:/proj/TMST/elm/BG/ghosttownBattleTwoA/rig/HH/maya/master/BGghosttownBattleTwoA_rig_HH.cur.ma'
 # assetHair = ''
 # nsChara = ['[a-zA-Z0-9_:]*TKN2_A_bodyBroken[a-zA-Z0-9_]*', '[a-zA-Z0-9_:]*Leg[a-zA-Z0-9_]*']
-nsChara = ['PRtablewareSetA[a-zA-Z0-9_:]*']
+nsChara = ['BGghosttownBattleTwoA[a-zA-Z0-9_:]*']
 # nsHair = ''
 # topNode = 'geo_GP'
 # abcSet = ['ABCset']

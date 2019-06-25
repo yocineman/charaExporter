@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 #------------------------------
-__version__ = '0.6.10 mst'
+__version__ = '0.6.11 mst'
 __author__ = "Yoshihisa Okano, Kei Ueda"
 #------------------------------
 

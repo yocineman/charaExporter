@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-assetChara = 'P:/proj/TMST/elm//BG/ghosttownOutdoorsA/rig/NN/maya/master/BGghosttownOutdoorsA_rig_NN.cur.ma'
+assetChara = 'P:/proj/TMST/elm/BG/ghosttownOutdoorsA/rig/NN/maya/master/BGghosttownOutdoorsA_rig_NN.cur.ma'
 # assetHair = ''
 # nsChara = ['[a-zA-Z0-9_:]*TKN2_A_bodyBroken[a-zA-Z0-9_]*', '[a-zA-Z0-9_:]*Leg[a-zA-Z0-9_]*']
 nsChara = ['BGghosttownOutdoorsA[a-zA-Z0-9_:]*']
