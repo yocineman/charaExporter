@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 #------------------------------
-__version__ = '0.6.7'
+__version__ = '0.6.8'
 __author__ = "Yoshihisa Okano"
 #------------------------------
 
@@ -53,12 +53,15 @@ class GUI (QMainWindow):
         self.setGeometry(400, 400, 400, 300)
         if mode == 'ZGR':
             self.exportTgtList = ['nina', 'ninaScan', 'hikal']
-        else:
+        elif mode == 'duct_c':
             self.exportTgtList = ['ikka', 'juran', 'manato', 'tatsuya', 'naoto', 'SMO', 'UKI', 'YPI', 'FBTKN', 'TKN', 'TKN_bodyBroken_leg']
             self.exportTgtList.append('BG')
+            self.bgList = ['DCT_CtubeA', 'DCT_CtubeB', 'DCT_Cbunki', 'DCT_CNml', 'DCT_CtubeC017', 'DCT_Cescape', 'DCT_CtubeWideA', 'DCT_CtubeWideB']
+        elif mode == 'CORA':
+            self.exportTgtList = []
+            pass
         self.exportTgtList.append('Cam')
         self.exportTgtList.append('all')
-        self.bgList = ['DCT_CtubeA', 'DCT_CtubeB', 'DCT_Cbunki', 'DCT_CNml', 'DCT_CtubeC017', 'DCT_Cescape', 'DCT_CtubeWideA', 'DCT_CtubeWideB']
         self.ui.comboBox.addItems(self.exportTgtList)
         self.ui.groupBox.installEventFilter(self)
 
@@ -96,6 +99,8 @@ class GUI (QMainWindow):
                             self.execExportCam(inputpath, camScale)
                         else:
                             self.execExport(chara, inputpath)
+
+                        util.addTimeLog(chara, inputpath)
                     else:
                         charaList = self.exportTgtList
                         charaList.remove('all')
@@ -109,6 +114,8 @@ class GUI (QMainWindow):
                                 self.execExportCam(inputpath, camScale)
                             else:
                                 self.execExport(chara, inputpath)
+
+                            util.addTimeLog(chara, inputpath)
 
                 # QMessageBox.information()
                 print '******************* end *********************'

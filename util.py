@@ -9,6 +9,7 @@ import distutils.dir_util
 # publishfullpath = publishpath + currentVer
 # publishfullabcpath = publishfullpath + 'abc'
 
+
 class outputPathConf (object):
 
     def __init__ (self, inputPath, isAnim=False, test=False):
@@ -89,6 +90,23 @@ class outputPathConf (object):
                     return
         shutil.rmtree(self._publishpath)
 
+    def setChar (self, char):
+        if char == 'Cam':
+            self._publishpath = os.path.join(self._shotpath, 'publish', self.outputCamRootDir, os.path.basename(self.inputPath)).replace(os.path.sep, '/')
+            self._publishfullpath = self._publishpath
+            self._currentVer = 'Cam'
+        else:
+            self._publishpath = os.path.join(self._shotpath, 'publish', self.outputRootDir, char).replace(os.path.sep, '/')
+            vers = os.listdir(self._publishpath)
+            if len(vers) == 0:
+                raise ValueError
+            vers.sort()
+            self._currentVer = vers[-1]
+            self._publishfullpath = os.path.join(self._publishpath, self._currentVer)
+            self._publishfullabcpath = os.path.join(self._publishfullpath, 'abc')
+            self._publishfullanimpath = os.path.join(self._publishfullpath, 'anim')
+            self._publishcurrentpath = self._publishpath+'/current'
+
     @property
     def sequence (self):
         return self._sequence
@@ -116,3 +134,25 @@ class outputPathConf (object):
     @property
     def publishcurrentpath (self):
         return self._publishcurrentpath.replace(os.path.sep, '/')
+
+    @property
+    def currentVer (self):
+        return self._currentVer
+
+
+def addTimeLog (char, inputpath, test=False):
+    from datetime import datetime
+    opc = outputPathConf(inputpath, True, test)
+    try:
+        opc.setChar(char)
+    except ValueError:
+        return
+
+    print opc.publishfullpath
+
+    with open(os.path.join(opc.publishpath, 'timelog.txt').replace(os.path.sep, '/'), 'a') as f:
+        f.write(datetime.now().strftime('%Y/%m/%d %H:%M:%S'))
+        f.write(' ' + opc.currentVer)
+        f.write(' ' + inputpath)
+        f.write(' ' + os.environ['USERNAME'])
+        f.write('\n')
