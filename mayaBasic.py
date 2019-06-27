@@ -49,13 +49,17 @@ def replaceAsset (assetPath, namespace):
 
 def camreplaceAsset (assetPath, namespace):
     mc.warning( 'replace start ')
-    # refs = mc.ls(type='reference')
-    # try:
-    #     print refs
-    #     # refs.remove('sharedReferenceNode')
-    # except:
-    #     pass
-    # tgtRN = ''
+    refs = mc.ls(type='reference')
+    try:
+        print refs
+        refs.remove('sharedReferenceNode')
+    except:
+        pass
+    tgtRN = ''
+    for r in refs:
+        if r in ['empty_animRN', 'BG_animRN', 'chara_animRN']:
+            tgtRN = r
+            break
     # for r in refs:
     #     ns = mel.eval('referenceQuery -ns ' + r)[1:]
     #     if namespace == ns:
@@ -66,7 +70,7 @@ def camreplaceAsset (assetPath, namespace):
 
     # # print assetPath, tgtRN
     try:
-        mc.file(assetPath, loadReference='empty_animRN')
+        mc.file(assetPath, loadReference=tgtRN)
     except:
         pass
     mc.warning('replace end')
