@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 #------------------------------
-__version__ = '0.6.8'
+__version__ = '0.6.10'
 __author__ = "Yoshihisa Okano"
 #------------------------------
 
@@ -58,7 +58,7 @@ class GUI (QMainWindow):
             self.exportTgtList.append('BG')
             self.bgList = ['DCT_CtubeA', 'DCT_CtubeB', 'DCT_Cbunki', 'DCT_CNml', 'DCT_CtubeC017', 'DCT_Cescape', 'DCT_CtubeWideA', 'DCT_CtubeWideB']
         elif mode == 'CORA':
-            self.exportTgtList = []
+            self.exportTgtList = ['LXM']
             pass
         self.exportTgtList.append('Cam')
         self.exportTgtList.append('all')
@@ -185,6 +185,7 @@ class GUI (QMainWindow):
         opc.makeCurrentDir()
 
         for animFile in animFiles:
+            ns = animFile.replace('anim_', '').replace('.ma', '')
             batch.animReplace(ns, opc.publishcurrentpath+'/anim/'+animFile, opc.publishcurrentpath+'/'+ns+'.ma')
 
     def execExportCam (self, inputpath, camScale):
