@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 #------------------------------
-__version__ = '0.6.11 mst'
+__version__ = '0.6.12 mst'
 __author__ = "Yoshihisa Okano, Kei Ueda"
 #------------------------------
 
@@ -190,6 +190,7 @@ class GUI (QMainWindow):
         opc.makeCurrentDir()
 
         for animFile in animFiles:
+            ns = animFile.replace('anim_', '').replace('.ma', '')
             batch.animReplace(ns, opc.publishcurrentpath+'/anim/'+animFile, opc.publishcurrentpath+'/'+ns+'.ma')
 
     def execExportCam (self, cameraName, inputpath, camScale):#CameraName=CameraA
@@ -205,6 +206,9 @@ class GUI (QMainWindow):
         batch.camExport(output, 'camera', inputpath, camScale)
 
         camFiles = os.listdir(opc.publishfullcampath)
+        print opc.publishfullcampath
+        # print opc.publishcurrentpath
+        print camFiles
 
         for camFile in camFiles:
             srcFile = os.path.join(opc.publishfullpath, camFile)
@@ -228,6 +232,11 @@ class GUI (QMainWindow):
 
             count= count + 1
         opc.makeCurrentDir()
+        # print opc.publishcurrentpath
+
+        for camFile in camFiles:
+            ns = camFile.replace('anim_', '').replace('.ma', '')
+            batch.camReplace(ns, opc.publishcurrentpath+'/anim/'+camFile, opc.publishcurrentpath+'/'+ns+'.ma')
 
         # count = 0
         # for camFile in camFiles:

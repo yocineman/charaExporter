@@ -65,10 +65,10 @@ def camreplaceAsset (assetPath, namespace):
     #     mc.error('can not replace')
 
     # # print assetPath, tgtRN
-    # try:
-    #     mc.file(assetPath, loadReference=tgtRN)
-    # except:
-    #     pass
+    try:
+        mc.file(assetPath, loadReference='empty_animRN')
+    except:
+        pass
     mc.warning('replace end')
 
 
