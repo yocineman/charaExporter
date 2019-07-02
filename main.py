@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 #------------------------------
-__version__ = '0.6.10'
+__version__ = '0.6.11'
 __author__ = "Yoshihisa Okano"
 #------------------------------
 
@@ -58,8 +58,9 @@ class GUI (QMainWindow):
             self.exportTgtList.append('BG')
             self.bgList = ['DCT_CtubeA', 'DCT_CtubeB', 'DCT_Cbunki', 'DCT_CNml', 'DCT_CtubeC017', 'DCT_Cescape', 'DCT_CtubeWideA', 'DCT_CtubeWideB']
         elif mode == 'CORA':
-            self.exportTgtList = ['LXM']
-            pass
+            self.exportTgtList = ['LXM', 'saki']
+            self.exportTgtList.append('BG')
+            self.bgList = ['ZGRCORin']
         self.exportTgtList.append('Cam')
         self.exportTgtList.append('all')
         self.ui.comboBox.addItems(self.exportTgtList)

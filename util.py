@@ -97,7 +97,11 @@ class outputPathConf (object):
             self._currentVer = 'Cam'
         else:
             self._publishpath = os.path.join(self._shotpath, 'publish', self.outputRootDir, char).replace(os.path.sep, '/')
-            vers = os.listdir(self._publishpath)
+            vers = []
+            try:
+                vers = os.listdir(self._publishpath)
+            except WindowsError:
+                raise ValueError
             if len(vers) == 0:
                 raise ValueError
             vers.sort()
