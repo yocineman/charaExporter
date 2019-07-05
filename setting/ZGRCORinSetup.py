@@ -4,4 +4,4 @@ assetChara = 'P:/Project/mem2/assets/bg/ZGR/CORin/publish/model/RenderHigh/maya/
 
 nsChara = ['[a-zA-Z0-9_:]*CORin[a-zA-Z0-9_]*']
 
-regex = ["*ZGRCORin"]
+regex = ["*ZGRCORin", "*COR_chrA_band"]

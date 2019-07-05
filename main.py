@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 #------------------------------
-__version__ = '0.6.11'
+__version__ = '0.6.12'
 __author__ = "Yoshihisa Okano"
 #------------------------------
 
@@ -51,6 +51,7 @@ class GUI (QMainWindow):
             debug = '__debug__'
         self.setWindowTitle('%s %s %s' % (self.WINDOW, __version__, debug))
         self.setGeometry(400, 400, 400, 300)
+        self.exportTgtList = []
         if mode == 'ZGR':
             self.exportTgtList = ['nina', 'ninaScan', 'hikal']
         elif mode == 'duct_c':
@@ -58,7 +59,7 @@ class GUI (QMainWindow):
             self.exportTgtList.append('BG')
             self.bgList = ['DCT_CtubeA', 'DCT_CtubeB', 'DCT_Cbunki', 'DCT_CNml', 'DCT_CtubeC017', 'DCT_Cescape', 'DCT_CtubeWideA', 'DCT_CtubeWideB']
         elif mode == 'CORA':
-            self.exportTgtList = ['LXM', 'saki']
+            self.exportTgtList = ['LXM', 'saki', 'LgtSetCORin', 'LgtSetAddCoreA']
             self.exportTgtList.append('BG')
             self.bgList = ['ZGRCORin']
         self.exportTgtList.append('Cam')
@@ -98,6 +99,8 @@ class GUI (QMainWindow):
                                 self.execExportAnim(bg, inputpath)
                         elif chara == 'Cam':
                             self.execExportCam(inputpath, camScale)
+                        elif chara in ['LgtSetAddCoreA', 'LgtSetCORin']:
+                            self.exportAnim(chara, inputpath)
                         else:
                             self.execExport(chara, inputpath)
 
@@ -113,6 +116,8 @@ class GUI (QMainWindow):
                                     self.execExportAnim(bg, inputpath)
                             elif chara == 'Cam':
                                 self.execExportCam(inputpath, camScale)
+                            elif chara in ['LgtSetAddCoreA', 'LgtSetCORin']:
+                                self.exportAnim(chara, inputpath)
                             else:
                                 self.execExport(chara, inputpath)
 
