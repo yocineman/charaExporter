@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 #------------------------------
-__version__ = '0.6.12'
+__version__ = '0.6.13'
 __author__ = "Yoshihisa Okano"
 #------------------------------
 
@@ -42,6 +42,7 @@ class GUI (QMainWindow):
         super(self.__class__, self).__init__(parent)
         self.ui_path = '.\\gui.ui'
         self.mode = mode
+        self.yeti = False
 
         self.ui = QUiLoader().load(self.ui_path)
         self.setCentralWidget(self.ui)
@@ -69,12 +70,13 @@ class GUI (QMainWindow):
 
         self.ui.overrideValue_LineEdit.setEnabled(False)
         self.ui.cameraScaleOverride_CheckBox.stateChanged.connect(self.overrideValue_LineEdit_stateChange)
+        self.ui.yeti_CheckBox.stateChanged.connect(self.yeti_checker)
 
     def eventFilter (self, object, event):
         if event.type() == QEvent.DragEnter:
             event.acceptProposedAction()
             return True
-        
+
         if event.type() == QEvent.Drop:
             mimedata = event.mimeData()
             if mimedata.hasUrls:
@@ -104,7 +106,7 @@ class GUI (QMainWindow):
                         else:
                             self.execExport(chara, inputpath)
 
-                        util.addTimeLog(chara, inputpath)
+                        util.addTimeLog(chara, inputpath,test=testRun)
                     else:
                         charaList = self.exportTgtList
                         charaList.remove('all')
@@ -121,7 +123,7 @@ class GUI (QMainWindow):
                             else:
                                 self.execExport(chara, inputpath)
 
-                            util.addTimeLog(chara, inputpath)
+                            util.addTimeLog(chara, inputpath,test=testRun)
 
                 # QMessageBox.information()
                 print '******************* end *********************'
@@ -129,6 +131,9 @@ class GUI (QMainWindow):
     def overrideValue_LineEdit_stateChange (self):
         currentState = self.ui.cameraScaleOverride_CheckBox.isChecked()
         self.ui.overrideValue_LineEdit.setEnabled(currentState)
+
+    def yeti_checker(self):
+        self.yeti = self.ui.yeti_CheckBox.isChecked()
 
     def execExport (self, charaName, inputpath):
         opc = util.outputPathConf(inputpath, test=testRun)
@@ -139,7 +144,7 @@ class GUI (QMainWindow):
         charaOutput = opc.publishfullpath + '/' + charaName + '.abc'
 
         charaSetup = import_module('setting.'+charaName+'Setup')
-        batch.abcExport(charaSetup.nsChara, charaSetup.abcSet, abcOutput, inputpath)
+        batch.abcExport(charaSetup.nsChara, charaSetup.abcSet, abcOutput, inputpath, self.yeti)
 
         abcFiles = os.listdir(opc.publishfullabcpath)
         if len(abcFiles) == 0:
@@ -164,7 +169,7 @@ class GUI (QMainWindow):
         for output in allOutput:
             print '#' * 20
             print output
-            charaOutput = opc.publishcurrentpath + '/' + output[0] 
+            charaOutput = opc.publishcurrentpath + '/' + output[0]
             abcOutput = opc.publishcurrentpath + '/abc/' + output[1]
             batch.repABC(charaOutput, abcOutput)
 

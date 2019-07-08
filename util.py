@@ -12,7 +12,7 @@ import distutils.dir_util
 
 class outputPathConf (object):
 
-    def __init__ (self, inputPath, isAnim=False, test=False):
+    def __init__ (self, inputPath, isAnim=False, test=True):
         self.inputPath = inputPath.replace('\\', '/')
         self.isAnim = isAnim
         self.outputRootDir = 'charSet'
@@ -144,7 +144,7 @@ class outputPathConf (object):
         return self._currentVer
 
 
-def addTimeLog (char, inputpath, test=False):
+def addTimeLog (char, inputpath, test):
     from datetime import datetime
     opc = outputPathConf(inputpath, True, test)
     try:
