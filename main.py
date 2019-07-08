@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 #------------------------------
-__version__ = '0.6.12'
+__version__ = '0.6.13'
 __author__ = "Yoshihisa Okano"
 #------------------------------
 
@@ -191,6 +191,8 @@ class GUI (QMainWindow):
         opc.makeCurrentDir()
 
         for animFile in animFiles:
+            if animFile[:5] != 'anim_': continue
+            if animFile[-3:] != '.ma': continue
             ns = animFile.replace('anim_', '').replace('.ma', '')
             batch.animReplace(ns, opc.publishcurrentpath+'/anim/'+animFile, opc.publishcurrentpath+'/'+ns+'.ma')
 
