@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 #------------------------------
-__version__ = '0.6.14 mst'
+__version__ = '0.6.15 mst'
 __author__ = "Yoshihisa Okano, Kei Ueda"
 #------------------------------
 
@@ -54,7 +54,7 @@ class GUI (QMainWindow):
         if True:
             self.charaList = ['kesedoA', 'opekoA', 'pandoraA', 'noahA', 'handyCameraA', 'PRcarA', 'adaptorFlowerA', 'adaptorBigbugA', 
             'kesedoNoteA', 'kesedoPenA', 'baggageA', 'billBundleA', 'canningMeatA', 'dramA', 'foodSetA', 'meatBallA', 'safeTableA', 'solidFoodA',
-            'tableLampA', 'tablewareSetA', 'spannerA', 'toolBoxA', 'pandraBoxA', 'pandraBox']
+            'tableLampA', 'tablewareSetA', 'spannerA', 'toolBoxA', 'pandraBoxA', 'pandraBox', 'NoahWandA']
             self.exportTgtList = self.charaList[:]
             self.exportTgtList.append('BG')
         self.exportTgtList.append('Cam')
