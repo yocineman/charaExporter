@@ -54,7 +54,7 @@ class GUI (QMainWindow):
         self.exportTgtList = []
         if mode == 'ZGR':
             self.exportTgtList = ['nina', 'ninaScan', 'hikal']
-        elif mode == 'duct_c':
+        elif mode == 'DUCT_C':
             self.exportTgtList = ['ikka', 'juran', 'manato', 'tatsuya', 'naoto', 'SMO', 'UKI', 'YPI', 'FBTKN', 'TKN', 'TKN_bodyBroken_leg']
             self.exportTgtList.append('BG')
             self.bgList = ['DCT_CtubeA', 'DCT_CtubeB', 'DCT_Cbunki', 'DCT_CNml', 'DCT_CtubeC017', 'DCT_Cescape', 'DCT_CtubeWideA', 'DCT_CtubeWideB']
