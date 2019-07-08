@@ -106,6 +106,8 @@ class outputPathConf (object):
                 raise ValueError
             vers.sort()
             self._currentVer = vers[-1]
+            if vers[0] > vers[-1]:
+                self._currentVer = vers[0]
             self._publishfullpath = os.path.join(self._publishpath, self._currentVer)
             self._publishfullabcpath = os.path.join(self._publishfullpath, 'abc')
             self._publishfullanimpath = os.path.join(self._publishfullpath, 'anim')
