@@ -2,8 +2,7 @@
 import sys
 import os
 import subprocess
-import time
-import ctypes
+
 # import psutil
 # mayaBatch = 'C:\\Program Files\\Autodesk\\Maya2015\\bin\\mayabatch.exe'
 mayaBatch = 'C:\\Program Files\\Autodesk\\Maya2017\\bin\\mayabatch.exe'
@@ -11,11 +10,12 @@ pythonBatch = 'C:\\Program Files\\Shotgun\\Python\\python.exe'
 
 def abcExport (namespace, exportSet, outputPath, scene, yeti):
     if yeti:
+        print "load yeti"
         env_load()
     nw_cmd = []
     nw_cmd.append(mayaBatch)
     nw_cmd.append('-command')
-    nw_cmd.append('''python(\"import sys;sys.path.append('C:/Users/k_ueda/Desktop/charaExporter2');from ndPyLibExportAbcx import ndPyLibExportAbc2;ndPyLibExportAbc2(''' + str(namespace) +''', ''' + str(exportSet) + ''',''' + "\'" + outputPath + "\'" + ''')\")''')
+    nw_cmd.append('''python(\"import sys;sys.path.append('P:/Project/mem2/Library/Tool/maya/scripts/python/charaExporter__');from ndPyLibExportAbc import ndPyLibExportAbc2;ndPyLibExportAbc2(''' + str(namespace) +''', ''' + str(exportSet) + ''',''' + "\'" + outputPath + "\'" + ''')\")''')
     nw_cmd.append('-file')
     nw_cmd.append(scene)
 
@@ -25,7 +25,7 @@ def hairExport (assetPath, namespace, topNode, outputPath, scene):
     cmd = []
     cmd.append(mayaBatch)
     cmd.append('-command')
-    cmd.append('''python(\"from mayaBasic import *;replaceAsset(''' + "\'" + assetPath + "\'" + ',' + "\'" + namespace + "\'" + ''');exportFile(''' + "\'" + outputPath + "\'" + ',' + "\'" + topNode + "\'" + ''')\")''')
+    cmd.append('''python(\"import sys;sys.path.append('P:/Project/mem2/Library/Tool/maya/scripts/python/charaExporter__');from mayaBasic import *;replaceAsset(''' + "\'" + assetPath + "\'" + ',' + "\'" + namespace + "\'" + ''');exportFile(''' + "\'" + outputPath + "\'" + ',' + "\'" + topNode + "\'" + ''')\")''')
     cmd.append('-file')
     cmd.append(scene)
     print cmd
@@ -35,7 +35,7 @@ def abcAttach (assetPath, namespace,topNode, abcPath, outputPath):
     cmd = []
     cmd.append(mayaBatch)
     cmd.append('-command')
-    cmd.append('''python(\"from mayaBasic import *;import maya.cmds as mc;saveAs(''' + "\'" + outputPath + "\'" + ''');loadAsset(''' + "\'" + assetPath + "\'" + "," + "\'" + namespace + "\'"''');selHierarchy=mc.ls(''' + "\'" + topNode + "\'" + ''', dag=True);attachABC(''' + "\'" + abcPath + "\'" + ''',selHierarchy);saveAs(''' + "\'" + outputPath + "\'" + ''')\")''')
+    cmd.append('''python(\"import sys;sys.path.append('P:/Project/mem2/Library/Tool/maya/scripts/python/charaExporter__');from mayaBasic import *;import maya.cmds as mc;saveAs(''' + "\'" + outputPath + "\'" + ''');loadAsset(''' + "\'" + assetPath + "\'" + "," + "\'" + namespace + "\'"''');selHierarchy=mc.ls(''' + "\'" + topNode + "\'" + ''', dag=True);attachABC(''' + "\'" + abcPath + "\'" + ''',selHierarchy);saveAs(''' + "\'" + outputPath + "\'" + ''')\")''')
     print cmd
     ret = subprocess.call(cmd)
 
@@ -44,7 +44,7 @@ def animExport (outputPath, oFilename, namespace, regex, scene):
     cmd = []
     cmd.append(mayaBatch)
     cmd.append('-command')
-    cmd.append('''python(\"from ndPyLibExportAnim import ndPyLibExportAnim2;ndPyLibExportAnim2(''' + "\'" + outputPath + "\'" + "," + "\'" + oFilename + "\'" + "," + str(namespace) + "," + "\'" + regex + "\'"  + ''', 0);\")''')
+    cmd.append('''python(\"import sys; sys.path.append('P:/Project/mem2/Library/Tool/maya/scripts/python/charaExporter__');from ndPyLibExportAnim import ndPyLibExportAnim2;ndPyLibExportAnim2(''' + "\'" + outputPath + "\'" + "," + "\'" + oFilename + "\'" + "," + str(namespace) + "," + "\'" + regex + "\'"  + ''', 0);\")''')
     cmd.append('-file')
     cmd.append(scene)
     print cmd
@@ -54,7 +54,7 @@ def animAttach (assetPath, namespace, animPath, outputPath):
     cmd = []
     cmd.append(mayaBatch)
     cmd.append('-command')
-    cmd.append('''python(\"from mayaBasic import *;import maya.cmds as mc;saveAs(''' + "\'" + outputPath + "\'" + ''');loadAsset(''' + "\'" + assetPath + "\'" + "," + "\'" + namespace + "\'"''');loadAsset(''' + "\'" + animPath + "\'" + "," + "\'" + namespace+'_anim' + "\'" + ''');saveAs(''' + "\'" + outputPath + "\'" + ''');\")''')
+    cmd.append('''python(\"import sys;sys.path.append('P:/Project/mem2/Library/Tool/maya/scripts/python/charaExporter__');from mayaBasic import *;import maya.cmds as mc;saveAs(''' + "\'" + outputPath + "\'" + ''');loadAsset(''' + "\'" + assetPath + "\'" + "," + "\'" + namespace + "\'"''');loadAsset(''' + "\'" + animPath + "\'" + "," + "\'" + namespace+'_anim' + "\'" + ''');saveAs(''' + "\'" + outputPath + "\'" + ''');\")''')
     print cmd
     ret = subprocess.call(cmd)
 
@@ -62,7 +62,7 @@ def animReplace (namespace, animPath, scene):
     cmd = []
     cmd.append(mayaBatch)
     cmd.append('-command')
-    cmd.append('''python(\"from mayaBasic import *;replaceAsset(''' + "\'" + animPath + "\'" + "," + "\'" + namespace+'_anim' + "\'" + ''');save();\")''')
+    cmd.append('''python(\"import sys;sys.path.append('P:/Project/mem2/Library/Tool/maya/scripts/python/charaExporter__');from mayaBasic import *;replaceAsset(''' + "\'" + animPath + "\'" + "," + "\'" + namespace+'_anim' + "\'" + ''');save();\")''')
     cmd.append('-file')
     cmd.append(scene)
     print cmd
@@ -73,7 +73,7 @@ def camExport (outputPath, oFilename, camScale, scene):
     cmd = []
     cmd.append(mayaBatch)
     cmd.append('-command')
-    cmd.append('''python(\"from ndPyLibExportCam import ndPyLibExportCam2;ndPyLibExportCam2(''' + "\'" + outputPath + "\'" + "," + "\'" + oFilename + "\'" + "," + str(camScale) + ''');\")''')
+    cmd.append('''python(\"import sys;sys.path.append('P:/Project/mem2/Library/Tool/maya/scripts/python/charaExporter__');from ndPyLibExportCam import ndPyLibExportCam2;ndPyLibExportCam2(''' + "\'" + outputPath + "\'" + "," + "\'" + oFilename + "\'" + "," + str(camScale) + ''');\")''')
     cmd.append('-file')
     cmd.append(scene)
     print cmd
@@ -83,7 +83,7 @@ def repABC (scenePath, repAbcPath):
     cmd = []
     cmd.append(mayaBatch)
     cmd.append('-command')
-    cmd.append('''python(\"from mayaBasic import *;replaceABCPath(''' + "\'" + repAbcPath + "\'" + ''');save();\")''')
+    cmd.append('''python(\"import sys;sys.path.append('P:/Project/mem2/Library/Tool/maya/scripts/python/charaExporter__');from mayaBasic import *;replaceABCPath(''' + "\'" + repAbcPath + "\'" + ''');save();\")''')
     cmd.append('-file')
     cmd.append(scenePath)
     print cmd

@@ -23,10 +23,10 @@ def _getNamespace ():
     namespaces.remove('shared')
     return namespaces
 
-def _getAllNodes (namespace, regexArgs):
+def _getAllNodes (outputPath, namespace, regexArgs):
     if len(regexArgs) == 0:
         regexArgs = ['*']
-    
+
     nodes = []
     for regex in regexArgs:
         regexN = ''
@@ -39,6 +39,21 @@ def _getAllNodes (namespace, regexArgs):
             nodes += objs
         if len(objSets) != 0:
             nodes += objSets
+        yetiobjs = mc.ls(namespace+':yetiSet')
+        if len(yetiobjs) != 0:
+        #     nodes += yetiobjs
+        #     nodes += mc.sets(namespace+':yetiSet',q=True)
+            dirname = os.path.dirname(outputPath)
+            dirname = os.path.dirname(dirname)
+            inyeticasch = mc.getAttr(namespace+":pgYetiMaya"+namespace+"Shape.cacheFileName")
+            outyeticasch = mc.getAttr(namespace+":pgYetiMaya"+namespace+"Shape.outputCacheFileName")
+            outputFile = os.path.join(dirname,'yetimem.txt')
+            with open(outputFile, 'w') as fp:
+                fp.write(inyeticasch)
+                fp.write('\n')
+                fp.write(outyeticasch)
+
+
 
     return nodes
 
@@ -55,7 +70,7 @@ def _exportAbc (publishpath, oFilename, namespaceList, regexArgs):
 
     allNodes = {}
     for ns in allNamespaces:
-        allNodes[ns] = _getAllNodes(ns, regexArgs)
+        allNodes[ns] = _getAllNodes(publishpath, ns, regexArgs)
 
     if not mc.pluginInfo('AbcExport', q=True, l=True):
         mc.loadPlugin('AbcExport')
@@ -103,7 +118,7 @@ def ndPyLibExportAbc (namespaceList, regexArgs, outputFile=None, isLatest=1):
         mc.warning('aaaaaa')
         mc.warning('directory structure is not n-design format')
         return
-    
+
     project  = match.group(1)
     roll     = match.group(3)
     sequence = match.group(4)
@@ -152,6 +167,7 @@ def _exportAbc2 (outputPath, namespaceList, regexArgs):
     allNamespaces = []
     if len(namespaceList) == 0:
         allNamespaces = _getNamespace()
+
     else:
         # allNamespaces = namespaceList
         tmpNS = _getNamespace()
@@ -163,7 +179,7 @@ def _exportAbc2 (outputPath, namespaceList, regexArgs):
 
     allNodes = {}
     for ns in allNamespaces:
-        allNodes[ns] = _getAllNodes(ns, regexArgs)
+        allNodes[ns] = _getAllNodes(outputPath, ns, regexArgs)
 
     if not mc.pluginInfo('AbcExport', q=True, l=True):
         mc.loadPlugin('AbcExport')

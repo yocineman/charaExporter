@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 #------------------------------
-__version__ = '0.6.13'
+__version__ = '0.6.14'
 __author__ = "Yoshihisa Okano"
 #------------------------------
 
@@ -102,7 +102,7 @@ class GUI (QMainWindow):
                         elif chara == 'Cam':
                             self.execExportCam(inputpath, camScale)
                         elif chara in ['LgtSetAddCoreA', 'LgtSetCORin']:
-                            self.exportAnim(chara, inputpath)
+                            self.execExportAnim(chara, inputpath)
                         else:
                             self.execExport(chara, inputpath)
 
@@ -119,7 +119,7 @@ class GUI (QMainWindow):
                             elif chara == 'Cam':
                                 self.execExportCam(inputpath, camScale)
                             elif chara in ['LgtSetAddCoreA', 'LgtSetCORin']:
-                                self.exportAnim(chara, inputpath)
+                                self.execExportAnim(chara, inputpath)
                             else:
                                 self.execExport(chara, inputpath)
 
