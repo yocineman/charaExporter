@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 #------------------------------
-__version__ = '0.6.14'
+__version__ = '0.7.00'
 __author__ = "Yoshihisa Okano"
 #------------------------------
 
@@ -56,7 +56,7 @@ class GUI (QMainWindow):
         if mode == 'ZGR':
             self.exportTgtList = ['nina', 'ninaScan', 'hikal']
         elif mode == 'DUCT_C':
-            self.exportTgtList = ['ikka', 'juran', 'manato', 'tatsuya', 'naoto', 'SMO', 'UKI', 'YPI', 'FBTKN', 'TKN', 'TKN_bodyBroken_leg']
+            self.exportTgtList = ['ikka', 'juran', 'manato', 'tatsuya', 'naoto', 'SMO', 'UKI', 'YPI', 'FBTKN', 'TKN', 'TKN_bodyBroken_leg', 'TKN2ancAlong']
             self.exportTgtList.append('BG')
             self.bgList = ['DCT_CtubeA', 'DCT_CtubeB', 'DCT_Cbunki', 'DCT_CNml', 'DCT_CtubeC017', 'DCT_Cescape', 'DCT_CtubeWideA', 'DCT_CtubeWideB']
         elif mode == 'CORA':
