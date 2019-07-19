@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 #------------------------------
-__version__ = '0.7.1'
+__version__ = '0.7.2'
 __author__ = "Yoshihisa Okano"
 #------------------------------
 
@@ -37,12 +37,14 @@ testRun = False
 
 class GUI (QMainWindow):
     WINDOW = 'mem chara export'
-    def __init__ (self, parent=None, mode='ZGR'):
+
+    def __init__(self, parent=None, mode='ZGR'):
         print mode
         super(self.__class__, self).__init__(parent)
         self.ui_path = '.\\gui.ui'
         self.mode = mode
         self.yeti = False
+        self.stepValue = 1.0
 
         self.ui = QUiLoader().load(self.ui_path)
         self.setCentralWidget(self.ui)
@@ -56,11 +58,14 @@ class GUI (QMainWindow):
         if mode == 'ZGR':
             self.exportTgtList = ['nina', 'ninaScan', 'hikal']
         elif mode == 'DUCT_C':
-            self.exportTgtList = ['ikka', 'juran', 'manato', 'tatsuya', 'naoto', 'SMO', 'UKI', 'YPI', 'FBTKN', 'TKN', 'TKN_bodyBroken_leg', 'TKN2ancAlong']
+            self.exportTgtList = ['ikka', 'juran', 'manato', 'tatsuya', 'naoto', 'SMO',
+                                    'UKI', 'YPI', 'FBTKN', 'TKN', 'TKN_bodyBroken_leg', 'TKN2ancAlong']
             self.exportTgtList.append('BG')
-            self.bgList = ['DCT_CtubeA', 'DCT_CtubeB', 'DCT_Cbunki', 'DCT_CNml', 'DCT_CtubeC017', 'DCT_Cescape', 'DCT_CtubeWideA', 'DCT_CtubeWideB']
+            self.bgList = ['DCT_CtubeA', 'DCT_CtubeB', 'DCT_Cbunki', 'DCT_CNml',
+                            'DCT_CtubeC017', 'DCT_Cescape', 'DCT_CtubeWideA', 'DCT_CtubeWideB']
         elif mode == 'CORA':
-            self.exportTgtList = ['LXM', 'saki', 'LgtSetCORin', 'LgtSetAddCoreA']
+            self.exportTgtList = ['LXM', 'saki',
+                                    'LgtSetCORin', 'LgtSetAddCoreA']
             self.exportTgtList.append('BG')
             self.bgList = ['ZGRCORin']
         self.exportTgtList.append('Cam')
@@ -69,10 +74,15 @@ class GUI (QMainWindow):
         self.ui.groupBox.installEventFilter(self)
 
         self.ui.overrideValue_LineEdit.setEnabled(False)
-        self.ui.cameraScaleOverride_CheckBox.stateChanged.connect(self.overrideValue_LineEdit_stateChange)
+        self.ui.cameraScaleOverride_CheckBox.stateChanged.connect(
+            self.overrideValue_LineEdit_stateChange)
         self.ui.yeti_CheckBox.stateChanged.connect(self.yeti_checker)
 
-    def eventFilter (self, object, event):
+        self.ui.stepValue_LineEdit.setEnabled(False)
+        self.ui.stepValue_CheckBox.stateChanged.connect(
+            self.stepValue_LineEdit_stateChange)
+
+    def eventFilter(self, object, event):
         if event.type() == QEvent.DragEnter:
             event.acceptProposedAction()
             return True
@@ -81,6 +91,7 @@ class GUI (QMainWindow):
             mimedata = event.mimeData()
             if mimedata.hasUrls:
                 url_list = mimedata.urls()
+                print url_list
                 for url in url_list:
                     inputpath = url.toString().replace("file:///", "")
 
@@ -93,8 +104,14 @@ class GUI (QMainWindow):
                     else:
                         camScale = -1
 
+                    if self.ui.stepValue_CheckBox.isChecked():
+                        self.stepValue = float(
+                            self.ui.stepValue_LineEdit.text())
+                    else:
+                        self.stepValue = 1.0
+
                     if chara != 'all':
-                        if chara == 'TKN' or chara == 'TKN_bodyBroken_leg':
+                        if chara == 'TKN' or chara == 'TKN_bodyBroken_leg' or char == 'TKN2ancAlong':
                             self.execExportAnim(chara, inputpath)
                         elif chara == 'BG':
                             for bg in self.bgList:
@@ -106,12 +123,12 @@ class GUI (QMainWindow):
                         else:
                             self.execExport(chara, inputpath)
 
-                        util.addTimeLog(chara, inputpath,test=testRun)
+                        util.addTimeLog(chara, inputpath, test=testRun)
                     else:
                         charaList = self.exportTgtList
                         charaList.remove('all')
                         for chara in charaList:
-                            if chara == 'TKN' or chara == 'TKN_bodyBroken_leg':
+                            if chara == 'TKN' or chara == 'TKN_bodyBroken_leg' or char == 'TKN2ancAlong':
                                 self.execExportAnim(chara, inputpath)
                             elif chara == 'BG':
                                 for bg in self.bgList:
@@ -123,19 +140,23 @@ class GUI (QMainWindow):
                             else:
                                 self.execExport(chara, inputpath)
 
-                            util.addTimeLog(chara, inputpath,test=testRun)
+                            util.addTimeLog(chara, inputpath, test=testRun)
 
                 # QMessageBox.information()
                 print '******************* end *********************'
 
-    def overrideValue_LineEdit_stateChange (self):
+    def overrideValue_LineEdit_stateChange(self):
         currentState = self.ui.cameraScaleOverride_CheckBox.isChecked()
         self.ui.overrideValue_LineEdit.setEnabled(currentState)
+
+    def stepValue_LineEdit_stateChange(self):
+        currentState = self.ui.stepValue_CheckBox.isChecked()
+        self.ui.stepValue_LineEdit.setEnabled(currentState)
 
     def yeti_checker(self):
         self.yeti = self.ui.yeti_CheckBox.isChecked()
 
-    def execExport (self, charaName, inputpath):
+    def execExport(self, charaName, inputpath):
         opc = util.outputPathConf(inputpath, test=testRun)
         opc.createOutputDir(charaName)
 
@@ -144,7 +165,8 @@ class GUI (QMainWindow):
         charaOutput = opc.publishfullpath + '/' + charaName + '.abc'
 
         charaSetup = import_module('setting.'+charaName+'Setup')
-        batch.abcExport(charaSetup.nsChara, charaSetup.abcSet, abcOutput, inputpath, self.yeti)
+        batch.abcExport(charaSetup.nsChara, charaSetup.abcSet,
+                        abcOutput, inputpath, self.yeti, self.stepValue)
 
         abcFiles = os.listdir(opc.publishfullabcpath)
         if len(abcFiles) == 0:
@@ -158,11 +180,13 @@ class GUI (QMainWindow):
             if '___' in ns:
                 ns = ns.replace('___', ':')
             if charaSetup.assetHair != '':
-                batch.hairExport(charaSetup.assetHair, ns, ns+':'+charaSetup.topNode, hairOutput, inputpath)
+                batch.hairExport(charaSetup.assetHair, ns, ns +
+                                    ':'+charaSetup.topNode, hairOutput, inputpath)
 
             abcOutput = opc.publishfullabcpath + '/' + abc
             charaOutput = opc.publishfullpath + '/' + abc.replace('abc', 'ma')
-            batch.abcAttach(charaSetup.assetChara, ns, ns+':'+charaSetup.topNode, abcOutput, charaOutput)
+            batch.abcAttach(charaSetup.assetChara, ns, ns+':' +
+                            charaSetup.topNode, abcOutput, charaOutput)
             allOutput.append([abc.replace('abc', 'ma'), abc])
         opc.makeCurrentDir()
 
@@ -173,7 +197,7 @@ class GUI (QMainWindow):
             abcOutput = opc.publishcurrentpath + '/abc/' + output[1]
             batch.repABC(charaOutput, abcOutput)
 
-    def execExportAnim (self, charaName, inputpath):
+    def execExportAnim(self, charaName, inputpath):
         opc = util.outputPathConf(inputpath, True, test=testRun)
         opc.createOutputDir(charaName)
 
@@ -192,20 +216,25 @@ class GUI (QMainWindow):
             ns = animFile.replace('anim_', '').replace('.ma', '')
             animOutput = opc.publishfullanimpath + '/' + animFile
             charaOutput = opc.publishfullpath + '/' + ns + '.ma'
-            batch.animAttach(charaSetup.assetChara, ns, animOutput, charaOutput)
+            batch.animAttach(charaSetup.assetChara, ns,
+                                animOutput, charaOutput)
         opc.makeCurrentDir()
 
         for animFile in animFiles:
-            if animFile[:5] != 'anim_': continue
-            if animFile[-3:] != '.ma': continue
+            if animFile[:5] != 'anim_':
+                continue
+            if animFile[-3:] != '.ma':
+                continue
             ns = animFile.replace('anim_', '').replace('.ma', '')
-            batch.animReplace(ns, opc.publishcurrentpath+'/anim/'+animFile, opc.publishcurrentpath+'/'+ns+'.ma')
+            batch.animReplace(ns, opc.publishcurrentpath+'/anim/' +
+                                animFile, opc.publishcurrentpath+'/'+ns+'.ma')
 
-    def execExportCam (self, inputpath, camScale):
+    def execExportCam(self, inputpath, camScale):
         opc = util.outputPathConf(inputpath, test=testRun)
         opc.createCamOutputDir()
 
-        batch.camExport(opc.publishfullpath, opc.sequence+opc.shot+'_cam', camScale, inputpath)
+        batch.camExport(opc.publishfullpath, opc.sequence +
+                        opc.shot+'_cam', camScale, inputpath)
         camFiles = os.listdir(opc.publishfullpath)
         for camFile in camFiles:
             srcFile = os.path.join(opc.publishfullpath, camFile)
@@ -216,7 +245,7 @@ class GUI (QMainWindow):
                 pass
 
 
-def run (*argv):
+def run(*argv):
     app = QApplication.instance()
     if app is None:
         app = QApplication(sys.argv)
@@ -228,6 +257,7 @@ def run (*argv):
     ui.show()
 
     app.exec_()
+
 
 if __name__ == '__main__':
     run(sys.argv[1:])

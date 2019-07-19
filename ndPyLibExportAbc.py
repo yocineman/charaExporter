@@ -156,7 +156,7 @@ def ndPyLibExportAbc (namespaceList, regexArgs, outputFile=None, isLatest=1):
     #     for o in outputfiles:
 
 
-def _exportAbc2 (outputPath, namespaceList, regexArgs):
+def _exportAbc2 (outputPath, namespaceList, regexArgs, step_value):
     sframe = mc.playbackOptions(q=True, min=True)
     eframe = mc.playbackOptions(q=True, max=True)
 
@@ -202,6 +202,8 @@ def _exportAbc2 (outputPath, namespaceList, regexArgs):
         strAbc = strAbc + '-writeVisibility '
         strAbc = strAbc + '-eulerFilter '
         strAbc = strAbc + '-dataFormat ogawa '
+        strAbc = strAbc + '-step '
+        strAbc = strAbc + step_value + ' '
         for pn in pickNodes:
             strAbc = strAbc + '-root '
             strAbc = strAbc + pn + ' '
@@ -211,7 +213,10 @@ def _exportAbc2 (outputPath, namespaceList, regexArgs):
         print 'AbcExport -j ' + strAbc
         mel.eval('AbcExport -j ' + '"' + strAbc + '"')
 
-def ndPyLibExportAbc2 (namespaceList, regexArgs, outputPath):
+def ndPyLibExportAbc2 (namespaceList, regexArgs, outputPath, step_value):
     print 'x'*20
     print regexArgs
-    _exportAbc2(outputPath, namespaceList, regexArgs)
+    print namespaceList
+    print outputPath
+    print step_value
+    _exportAbc2(outputPath, namespaceList, regexArgs, step_value)
