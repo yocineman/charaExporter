@@ -128,7 +128,7 @@ class GUI (QMainWindow):
                         charaList = self.exportTgtList
                         charaList.remove('all')
                         for chara in charaList:
-                            if chara == 'TKN' or chara == 'TKN_bodyBroken_leg' or char == 'TKN2ancAlong':
+                            if chara == 'TKN' or chara == 'TKN_bodyBroken_leg' or chara == 'TKN2ancAlong':
                                 self.execExportAnim(chara, inputpath)
                             elif chara == 'BG':
                                 for bg in self.bgList:
@@ -206,7 +206,7 @@ class GUI (QMainWindow):
         # regex = ["*_Cntrl","*_Cntrl_01","*_Cntrl_02","*_Cntrl_03","*_Cntrl_04","*Attr_CntrlShape","*Wire","*All_Grp","*_ctrl"]
         regex = charaSetup.regex
         regex = ','.join(regex)
-        batch.animExport(output, 'anim', charaSetup.nsChara, regex, inputpath)
+        batch.animExport(output, 'anim', charaSetup.nsChara, regex, inputpath, self.yeti)
 
         animFiles = os.listdir(opc.publishfullanimpath)
         if len(animFiles) == 0:
