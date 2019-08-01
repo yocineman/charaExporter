@@ -79,6 +79,7 @@ def _exportAbc (publishpath, oFilename, namespaceList, regexArgs):
     for ns in allNamespaces:
         pickNodes = []
         pickNodes = allNodes[ns]
+        print pickNodes
         if len(pickNodes) == 0: continue
         outputfile = os.path.join(publishpath, oFilename+'_'+ns+'.abc')
         outputfile = outputfile.replace(os.path.sep, '/')
@@ -169,13 +170,24 @@ def _exportAbc2 (outputPath, namespaceList, regexArgs, step_value):
         allNamespaces = _getNamespace()
 
     else:
-        # allNamespaces = namespaceList
+        print namespaceList
+        print '>>>>>>>>>>>>>'
+        # for x in namespaceList:
+        #     allNamespaces.append(x)
+
+        allNamespaces = []
+
         tmpNS = _getNamespace()
+        print tmpNS
+
         for _nsList in namespaceList:
             for _ns in tmpNS:
                 match = re.match(_nsList, _ns)
+                print _nsList + ' ' + _ns
                 if match != None:
                     allNamespaces.append(_ns)
+
+        print allNamespaces
 
     allNodes = {}
     for ns in allNamespaces:
@@ -189,14 +201,20 @@ def _exportAbc2 (outputPath, namespaceList, regexArgs, step_value):
         pickNodes = allNodes[ns]
         if len(pickNodes) == 0: continue
 
+        print pickNodes
+
         if ':' in ns:
             ns = ns.replace(':', '___')
         outputPath_ns = outputPath.replace('.abc', '_'+ns+'.abc')
+
+        print sframe
+        print eframe
 
         strAbc = ''
         strAbc = strAbc + '-frameRange '
         strAbc = strAbc + str(sframe) + ' '
         strAbc = strAbc + str(eframe) + ' '
+
         strAbc = strAbc + '-uvWrite '
         # strAbc = strAbc + '-worldSpace '
         strAbc = strAbc + '-writeVisibility '
@@ -211,7 +229,7 @@ def _exportAbc2 (outputPath, namespaceList, regexArgs, step_value):
         strAbc = strAbc + outputPath_ns
 
         print 'AbcExport -j ' + strAbc
-        mel.eval('AbcExport -j ' + '"' + strAbc + '"')
+        mel.eval('AbcExport -verbose -j ' + '"' + strAbc + '"')
 
 def ndPyLibExportAbc2 (namespaceList, regexArgs, outputPath, step_value):
     print 'x'*20

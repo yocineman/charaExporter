@@ -54,11 +54,36 @@ def exportFile (outputPath, topNode):
 def loadAsset (assetPath, namespace):
     mc.file(assetPath, r=True, namespace=namespace, mergeNamespacesOnClash=False, ignoreVersion=True)
 
-def attachABC (abcPath, hierarchyList):
+def attachABC (abcPath,namespace,hierarchyList):
     if not mc.pluginInfo('AbcImport', q=True, l=True):
         mc.loadPlugin('AbcImport')
     hierarchy = ' '.join(hierarchyList)
     mel.eval('AbcImport -mode import -fitTimeRange -debug -connect ' + '\"' + hierarchy + '\" ' + '\"' + abcPath + '\"')
+
+    outputFile = os.path.dirname(os.path.dirname(abcPath))+'/yetimem.txt'
+    print outputFile
+    print namespace
+
+    if not os.path.exists(outputFile):
+        return
+
+    with open(outputFile, 'r') as fp:
+
+        inyeticasch = fp.readline()
+        outyeticasch = fp.readline()
+
+        print inyeticasch.rstrip('\n')
+        print outyeticasch.rstrip('\n')
+
+        print namespace+':pgYetiMaya'+namespace+'Shape.cacheFileName'
+
+        mc.setAttr(namespace+':pgYetiMaya'+namespace+'Shape.cacheFileName', inyeticasch.rstrip('\n'), type='string')
+        mc.setAttr(namespace+':pgYetiMaya'+namespace+'Shape.outputCacheFileName', outyeticasch.rstrip('\n'), type='string')
+        # setAttr - type "string" _LXM:pgYetiMaya_LXMShape.cacheFileName "a"
+        # setAttr - type "string" _LXM:pgYetiMaya_LXMShape.outputCacheFileName "b"
+
+
+
 
 def replaceABCPath (repAbcPath):
     abcNodes = mc.ls(type='AlembicNode')

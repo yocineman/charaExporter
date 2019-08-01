@@ -35,12 +35,14 @@ def abcAttach (assetPath, namespace,topNode, abcPath, outputPath):
     cmd = []
     cmd.append(mayaBatch)
     cmd.append('-command')
-    cmd.append('''python(\"import sys;sys.path.append('P:/Project/mem2/Library/Tool/maya/scripts/python/charaExporter');from mayaBasic import *;import maya.cmds as mc;saveAs(''' + "\'" + outputPath + "\'" + ''');loadAsset(''' + "\'" + assetPath + "\'" + "," + "\'" + namespace + "\'"''');selHierarchy=mc.ls(''' + "\'" + topNode + "\'" + ''', dag=True);attachABC(''' + "\'" + abcPath + "\'" + ''',selHierarchy);saveAs(''' + "\'" + outputPath + "\'" + ''')\")''')
+    cmd.append('''python(\"import sys;sys.path.append('P:/Project/mem2/Library/Tool/maya/scripts/python/charaExporter');from mayaBasic import *;import maya.cmds as mc;saveAs(''' + "\'" + outputPath + "\'" + ''');loadAsset(''' + "\'" + assetPath + "\'" + "," + "\'" + namespace + "\'"''');selHierarchy=mc.ls(''' + "\'" + topNode + "\'" + ''', dag=True);attachABC(''' + "\'" + abcPath + "\'" + ","+"\'"+namespace+"\'"+''',selHierarchy);saveAs(''' + "\'" + outputPath + "\'" + ''')\")''')
     print cmd
     ret = subprocess.call(cmd)
 
-def animExport (outputPath, oFilename, namespace, regex, scene):
-    env_load()
+def animExport (outputPath, oFilename, namespace, regex, scene, yeti):
+    if yeti:
+        print "loading yeti"
+        env_load()
     cmd = []
     cmd.append(mayaBatch)
     cmd.append('-command')

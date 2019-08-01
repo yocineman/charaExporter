@@ -53,18 +53,18 @@ def run(args, **kwargs):
     #-----------------------------------
     env = util_env.getEnvDict(envDict, env=os.environ, expand=True)
 
-    #-----------------------------------
-    import subprocess
-    if fork:
-        args = [u'start', ''] + args
+    # #-----------------------------------
+    # import subprocess
+    # if fork:
+    #     args = [u'start', ''] + args
 
-    # proc = subprocess.Popen(args, shell=True, env=env, close_fds=True)
-    if fork:
-        return (0)
-    else:
-        proc.wait()
-        return (proc.returncode)
-    time.sleep(5)
+    # # proc = subprocess.Popen(args, shell=True, env=env, close_fds=True)
+    # if fork:
+    #     return (0)
+    # else:
+    #     proc.wait()
+    #     return (proc.returncode)
+    # time.sleep(5)
 
 #-----------------------------------
 #-----------------------------------
