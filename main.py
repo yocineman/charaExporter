@@ -52,7 +52,7 @@ class GUI (QMainWindow):
         debug = ''
         if testRun:
             debug = '__debug__'
-        self.setWindowTitle('%s %s %s' % (self.WINDOW, __version__, debug))
+        self.setWindowTitle('%s %s %s %s' % (self.WINDOW, __version__, self.mode,debug))
         self.setGeometry(400, 400, 400, 300)
         self.exportTgtList = []
         if mode == 'ZGR':
@@ -111,7 +111,7 @@ class GUI (QMainWindow):
                         self.stepValue = 1.0
 
                     if chara != 'all':
-                        if chara == 'TKN' or chara == 'TKN_bodyBroken_leg' or char == 'TKN2ancAlong':
+                        if chara == 'TKN' or chara == 'TKN_bodyBroken_leg' or chara == 'TKN2ancAlong':
                             self.execExportAnim(chara, inputpath)
                         elif chara == 'BG':
                             for bg in self.bgList:
