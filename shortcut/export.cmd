@@ -1,5 +1,6 @@
 
-pushd P:\Project\mem2\Library\Tool\maya\scripts\python\charaExporter
+pushd %~dp0
+cd ../pycode
 
 "C:\Program Files\Shotgun\Python\python.exe" main.py "%1"
 
