@@ -49,7 +49,12 @@ def _getAllNodes (outputPath, namespace, regexArgs):
             outyeticasch = mc.getAttr(namespace+":pgYetiMaya"+namespace+"Shape.outputCacheFileName")
             outputFile = os.path.join(dirname,'yetimem.txt')
             try:
-
+                with open(outputFile, 'w') as fp:
+                    fp.write(inyeticasch)
+                    fp.write('\n')
+                    fp.write(outyeticasch)
+            except:
+                pass
 
 
     return nodes
