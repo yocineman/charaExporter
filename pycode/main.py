@@ -12,7 +12,6 @@ import shutil
 import util
 import batch
 from importlib import import_module
-
 # import ninaSetup
 # import hikalSetup
 # import ikkaSetup
@@ -41,7 +40,7 @@ class GUI (QMainWindow):
     def __init__(self, parent=None, mode='ZGR'):
         print mode
         super(self.__class__, self).__init__(parent)
-        self.ui_path = '.\\gui.ui'
+        self.ui_path = '.\\pycode\\gui.ui'
         self.mode = mode
         self.yeti = False
         self.stepValue = 1.0
@@ -80,7 +79,7 @@ class GUI (QMainWindow):
         self.ui.stepValue_LineEdit.setEnabled(False)
         self.ui.stepValue_CheckBox.stateChanged.connect(
             self.stepValue_LineEdit_stateChange)
-        self.ui.start_button.clicked.connect(self.execExport)
+        self.ui.start_button.clicked.connect(self.push_start_button)
 
     def eventFilter(self, object, event):
         if event.type() == QEvent.DragEnter:
@@ -96,9 +95,9 @@ class GUI (QMainWindow):
                     inputpath = url.toString().replace("file:///", "")
                 self.ui.path_line.setText(inputpath)
 
-    def execExport(self):
-
-        inputpath = self.ui.path_line.text
+    def push_start_button(self):
+        print 'aaaaaaaaaaaaaaa'
+        inputpath = self.ui.path_line.text()
 
         chara = self.ui.comboBox.currentText()
         print chara
@@ -194,6 +193,7 @@ class GUI (QMainWindow):
 
     def yeti_checker(self):
         self.yeti = self.ui.yeti_CheckBox.isChecked()
+        print self.yeti
 
     def execExport(self, charaName, inputpath):
 
@@ -205,7 +205,7 @@ class GUI (QMainWindow):
         hairOutput = opc.publishfullpath + '/' + 'hair.abc'
         charaOutput = opc.publishfullpath + '/' + charaName + '.abc'
 
-        charaSetup = import_module('setting.'+charaName+'Setup')
+        charaSetup = import_module('./setting.'+charaName+'Setup',package=None)
         batch.abcExport(charaSetup.nsChara, charaSetup.abcSet,
                         abcOutput, inputpath, self.yeti, self.stepValue)
 
@@ -243,7 +243,7 @@ class GUI (QMainWindow):
         opc.createOutputDir(charaName)
 
         output = opc.publishfullanimpath
-        charaSetup = import_module('setting.'+charaName+'Setup')
+        charaSetup = import_module('setting.'+charaName+'Setup',package=None)
         # regex = ["*_Cntrl","*_Cntrl_01","*_Cntrl_02","*_Cntrl_03","*_Cntrl_04","*Attr_CntrlShape","*Wire","*All_Grp","*_ctrl"]
         regex = charaSetup.regex
         regex = ','.join(regex)
@@ -301,4 +301,4 @@ def run(*argv):
 
 
 if __name__ == '__main__':
-    run(sys.argv[1:])
+    run(sys.argv[:])

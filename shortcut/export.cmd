@@ -1,8 +1,8 @@
 
 pushd %~dp0
-cd ../pycode
+cd ../
 
-"C:\Program Files\Shotgun\Python\python.exe" main.py "%1"
+"C:\Program Files\Shotgun\Python\python.exe" ./pycode/main.py "%1"
 
 popd
 

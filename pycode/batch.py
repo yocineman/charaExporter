@@ -15,10 +15,13 @@ def abcExport (namespace, exportSet, outputPath, scene, yeti, step_value):
         print this_dir
         print "######################################"
         env_load()
+
+    print this_dir.replace("\\","/")
+
     nw_cmd = []
     nw_cmd.append(mayaBatch)
     nw_cmd.append('-command')
-    nw_cmd.append('''python(\"import sys;sys.path.append(''' + "\'" + this_dir + "\'" + ''');from ndPyLibExportAbc import ndPyLibExportAbc2;ndPyLibExportAbc2(''' + str(namespace) + ''', ''' + str(exportSet) + ''',''' + "\'" + outputPath + "\'" + ''',''' + "\'" + str(step_value) + "\'" + ''')\")''')
+    nw_cmd.append('''python(\"import sys;sys.path.append(''' + "\'"+this_dir.replace("\\","/")+"\'"+ ''');from ndPyLibExportAbc import ndPyLibExportAbc2;ndPyLibExportAbc2(''' + str(namespace) + ''', ''' + str(exportSet) + ''',''' + "\'" + outputPath + "\'" + ''','''  + "\'" + str(step_value) + "\'" + ''')\")''')
     nw_cmd.append('-file')
     nw_cmd.append(scene)
 

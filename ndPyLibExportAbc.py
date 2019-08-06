@@ -47,7 +47,7 @@ def _getAllNodes (outputPath, namespace, regexArgs):
             dirname = os.path.dirname(dirname)
             inyeticasch = mc.getAttr(namespace+":pgYetiMaya"+namespace+"Shape.cacheFileName")
             outyeticasch = mc.getAttr(namespace+":pgYetiMaya"+namespace+"Shape.outputCacheFileName")
-            outputFile = os.path.join(dirname,'yetimem.txt'
+            outputFile = os.path.join(dirname,'yetimem.txt')
             try:
                 with open(outputFile, 'w') as fp:
                     fp.write(inyeticasch)
