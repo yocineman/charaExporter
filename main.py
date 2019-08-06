@@ -9,8 +9,8 @@ import sys
 import os
 import shutil
 
-import util
-import batch
+from pycode import util
+from pycode import batch
 from importlib import import_module
 # import ninaSetup
 # import hikalSetup
@@ -205,7 +205,7 @@ class GUI (QMainWindow):
         hairOutput = opc.publishfullpath + '/' + 'hair.abc'
         charaOutput = opc.publishfullpath + '/' + charaName + '.abc'
 
-        charaSetup = import_module('./setting.'+charaName+'Setup',package=None)
+        charaSetup = import_module('setting.'+charaName+'Setup')
         batch.abcExport(charaSetup.nsChara, charaSetup.abcSet,
                         abcOutput, inputpath, self.yeti, self.stepValue)
 
@@ -243,7 +243,7 @@ class GUI (QMainWindow):
         opc.createOutputDir(charaName)
 
         output = opc.publishfullanimpath
-        charaSetup = import_module('setting.'+charaName+'Setup',package=None)
+        charaSetup = import_module('setting.'+charaName+'Setup')
         # regex = ["*_Cntrl","*_Cntrl_01","*_Cntrl_02","*_Cntrl_03","*_Cntrl_04","*Attr_CntrlShape","*Wire","*All_Grp","*_ctrl"]
         regex = charaSetup.regex
         regex = ','.join(regex)
