@@ -15,10 +15,13 @@ def abcExport (namespace, exportSet, outputPath, scene, yeti, step_value):
         print this_dir
         print "######################################"
         env_load()
+
+    print this_dir.replace("\\","/")
+
     nw_cmd = []
     nw_cmd.append(mayaBatch)
     nw_cmd.append('-command')
-    nw_cmd.append('''python(\"import sys;sys.path.append(''' + "\'" + this_dir + "\'" + ''');from ndPyLibExportAbc import ndPyLibExportAbc2;ndPyLibExportAbc2(''' + str(namespace) + ''', ''' + str(exportSet) + ''',''' + "\'" + outputPath + "\'" + ''',''' + "\'" + str(step_value) + "\'" + ''')\")''')
+    nw_cmd.append('''python(\"import sys;sys.path.append(''' + "\'"+this_dir.replace("\\","/")+"\'"+ ''');from ndPyLibExportAbc import ndPyLibExportAbc2;ndPyLibExportAbc2(''' + str(namespace) + ''', ''' + str(exportSet) + ''',''' + "\'" + outputPath + "\'" + ''','''  + "\'" + str(step_value) + "\'" + ''')\")''')
     nw_cmd.append('-file')
     nw_cmd.append(scene)
 
@@ -31,7 +34,7 @@ def hairExport (assetPath, namespace, topNode, outputPath, scene):
     cmd = []
     cmd.append(mayaBatch)
     cmd.append('-command')
-    cmd.append('''python(\"import sys;sys.path.append(''' +  "\'" + this_dir + "\'"  +''');from mayaBasic import *;replaceAsset(''' + "\'" + assetPath + "\'" + ',' + "\'" + namespace + "\'" + ''');exportFile(''' + "\'" + outputPath + "\'" + ',' + "\'" + topNode + "\'" + ''')\")''')
+    cmd.append('''python(\"import sys;sys.path.append(''' + "\'"+this_dir.replace("\\","/")+"\'"+ ''');from mayaBasic import *;replaceAsset(''' + "\'" + assetPath + "\'" + ',' + "\'" + namespace + "\'" + ''');exportFile(''' + "\'" + outputPath + "\'" + ',' + "\'" + topNode + "\'" + ''')\")''')
     cmd.append('-file')
     cmd.append(scene)
     print cmd
@@ -41,7 +44,7 @@ def abcAttach (assetPath, namespace,topNode, abcPath, outputPath):
     cmd = []
     cmd.append(mayaBatch)
     cmd.append('-command')
-    cmd.append('''python(\"import sys;sys.path.append(''' +  "\'" + this_dir + "\'"  +''');from mayaBasic import *;import maya.cmds as mc;saveAs(''' + "\'" + outputPath + "\'" + ''');loadAsset(''' + "\'" + assetPath + "\'" + "," + "\'" + namespace + "\'"''');selHierarchy=mc.ls(''' + "\'" + topNode + "\'" + ''', dag=True);attachABC(''' + "\'" + abcPath + "\'" + ","+"\'"+namespace+"\'"+''',selHierarchy);saveAs(''' + "\'" + outputPath + "\'" + ''')\")''')
+    cmd.append('''python(\"import sys;sys.path.append(''' + "\'"+this_dir.replace("\\","/")+"\'"+ ''');from mayaBasic import *;import maya.cmds as mc;saveAs(''' + "\'" + outputPath + "\'" + ''');loadAsset(''' + "\'" + assetPath + "\'" + "," + "\'" + namespace + "\'"''');selHierarchy=mc.ls(''' + "\'" + topNode + "\'" + ''', dag=True);attachABC(''' + "\'" + abcPath + "\'" + ","+"\'"+namespace+"\'"+''',selHierarchy);saveAs(''' + "\'" + outputPath + "\'" + ''')\")''')
     print cmd
     ret = subprocess.call(cmd)
 
@@ -52,7 +55,7 @@ def animExport (outputPath, oFilename, namespace, regex, scene, yeti):
     cmd = []
     cmd.append(mayaBatch)
     cmd.append('-command')
-    cmd.append('''python(\"import sys; sys.path.append(''' +  "\'" + this_dir + "\'"  +''');from ndPyLibExportAnim import ndPyLibExportAnim2;ndPyLibExportAnim2(''' + "\'" + outputPath + "\'" + "," + "\'" + oFilename + "\'" + "," + str(namespace) + "," + "\'" + regex + "\'"  + ''', 0);\")''')
+    cmd.append('''python(\"import sys; sys.path.append(''' + "\'"+this_dir.replace("\\","/")+"\'"+ ''');from ndPyLibExportAnim import ndPyLibExportAnim2;ndPyLibExportAnim2(''' + "\'" + outputPath + "\'" + "," + "\'" + oFilename + "\'" + "," + str(namespace) + "," + "\'" + regex + "\'"  + ''', 0);\")''')
     cmd.append('-file')
     cmd.append(scene)
     print cmd
@@ -62,7 +65,7 @@ def animAttach (assetPath, namespace, animPath, outputPath):
     cmd = []
     cmd.append(mayaBatch)
     cmd.append('-command')
-    cmd.append('''python(\"import sys;sys.path.append(''' +  "\'" + this_dir + "\'"  +''');from mayaBasic import *;import maya.cmds as mc;saveAs(''' + "\'" + outputPath + "\'" + ''');loadAsset(''' + "\'" + assetPath + "\'" + "," + "\'" + namespace + "\'"''');loadAsset(''' + "\'" + animPath + "\'" + "," + "\'" + namespace+'_anim' + "\'" + ''');saveAs(''' + "\'" + outputPath + "\'" + ''');\")''')
+    cmd.append('''python(\"import sys;sys.path.append(''' + "\'"+this_dir.replace("\\","/")+"\'"+ ''');from mayaBasic import *;import maya.cmds as mc;saveAs(''' + "\'" + outputPath + "\'" + ''');loadAsset(''' + "\'" + assetPath + "\'" + "," + "\'" + namespace + "\'"''');loadAsset(''' + "\'" + animPath + "\'" + "," + "\'" + namespace+'_anim' + "\'" + ''');saveAs(''' + "\'" + outputPath + "\'" + ''');\")''')
     print cmd
     ret = subprocess.call(cmd)
 
@@ -70,7 +73,7 @@ def animReplace (namespace, animPath, scene):
     cmd = []
     cmd.append(mayaBatch)
     cmd.append('-command')
-    cmd.append('''python(\"import sys;sys.path.append(''' +  "\'" + this_dir + "\'"  +''');from mayaBasic import *;replaceAsset(''' + "\'" + animPath + "\'" + "," + "\'" + namespace+'_anim' + "\'" + ''');save();\")''')
+    cmd.append('''python(\"import sys;sys.path.append(''' + "\'"+this_dir.replace("\\","/")+"\'"+ ''');from mayaBasic import *;replaceAsset(''' + "\'" + animPath + "\'" + "," + "\'" + namespace+'_anim' + "\'" + ''');save();\")''')
     cmd.append('-file')
     cmd.append(scene)
     print cmd
@@ -81,7 +84,7 @@ def camExport (outputPath, oFilename, camScale, scene):
     cmd = []
     cmd.append(mayaBatch)
     cmd.append('-command')
-    cmd.append('''python(\"import sys;sys.path.append(''' +  "\'" + this_dir + "\'"  +''');from ndPyLibExportCam import ndPyLibExportCam2;ndPyLibExportCam2(''' + "\'" + outputPath + "\'" + "," + "\'" + oFilename + "\'" + "," + str(camScale) + ''');\")''')
+    cmd.append('''python(\"import sys;sys.path.append(''' + "\'"+this_dir.replace("\\","/")+"\'"+ ''');from ndPyLibExportCam import ndPyLibExportCam2;ndPyLibExportCam2(''' + "\'" + outputPath + "\'" + "," + "\'" + oFilename + "\'" + "," + str(camScale) + ''');\")''')
     cmd.append('-file')
     cmd.append(scene)
     print cmd
@@ -91,7 +94,7 @@ def repABC (scenePath, repAbcPath):
     cmd = []
     cmd.append(mayaBatch)
     cmd.append('-command')
-    cmd.append('''python(\"import sys;sys.path.append(''' +  "\'" + this_dir + "\'"  +''');from mayaBasic import *;replaceABCPath(''' + "\'" + repAbcPath + "\'" + ''');save();\")''')
+    cmd.append('''python(\"import sys;sys.path.append(''' + "\'"+this_dir.replace("\\","/")+"\'"+ ''');from mayaBasic import *;replaceABCPath(''' + "\'" + repAbcPath + "\'" + ''');save();\")''')
     cmd.append('-file')
     cmd.append(scenePath)
     print cmd
