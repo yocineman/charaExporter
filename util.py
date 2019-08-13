@@ -150,7 +150,8 @@ def addTimeLog (char, inputpath, test=False):
     opc.setChar(char)
 
     print opc.publishfullpath
-
+    print os.path.join(opc.publishpath, 'timelog.txt')
+    print "###############################"
     with open(os.path.join(opc.publishpath, 'timelog.txt').replace(os.path.sep, '/'), 'a') as f:
         f.write(datetime.now().strftime('%Y/%m/%d %H:%M:%S'))
         f.write(' ' + opc.currentVer)

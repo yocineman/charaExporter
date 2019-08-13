@@ -26,7 +26,7 @@ def _getNamespace ():
 def _getAllNodes (namespace, regexArgs):
     if len(regexArgs) == 0:
         regexArgs = ['*']
-    
+
     nodes = []
     for regex in regexArgs:
         regexN = ''
@@ -98,12 +98,12 @@ def ndPyLibExportAbc (namespaceList, regexArgs, outputFile=None, isLatest=1):
     filepath = mc.file(q=True, sceneName=True)
     filename = os.path.basename(filepath)
 
-    match = re.match('(P:/Project/[a-zA-Z0-9]+)/([a-zA-Z0-9]+)/([a-zA-Z0-9]+)/([a-zA-Z0-9]+)/([a-zA-Z0-9]+)', filepath)
+    match = re.match('(P:/Project/[a-zA-Z0-9_]+)/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+)', filepath)
     if match is None:
         mc.warning('aaaaaa')
         mc.warning('directory structure is not n-design format')
         return
-    
+
     project  = match.group(1)
     roll     = match.group(3)
     sequence = match.group(4)

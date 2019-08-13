@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 #------------------------------
-__version__ = '0.6.18 mst'
+__version__ = '0.6.15 mst'
 __author__ = "Yoshihisa Okano, Kei Ueda"
 #------------------------------
 
@@ -34,11 +34,9 @@ qtSlot = Slot
 ### debug mode
 testRun = False
 
-
 class GUI (QMainWindow):
-    WINDOW = 'MST_2019 chara export'
-
-    def __init__(self, parent=None, mode='episode_6'):
+    WINDOW = 'mem chara export'
+    def __init__ (self, parent=None, mode='ZGR'):
         print mode
         super(self.__class__, self).__init__(parent)
         self.ui_path = '.\\gui.ui'
@@ -46,107 +44,93 @@ class GUI (QMainWindow):
 
         self.ui = QUiLoader().load(self.ui_path)
         self.setCentralWidget(self.ui)
-        self.folderPath = ''
+
         debug = ''
         if testRun:
             debug = '__debug__'
-        self.setWindowTitle('%s %s %s %s' %
-                            (self.WINDOW, __version__, mode, debug))
-
-        if mode == 'episode_2':
+        self.setWindowTitle('%s %s %s' % (self.WINDOW, __version__, debug))
+        self.setGeometry(400, 400, 400, 300)
+        # if mode == 'ZGR':
+        if True:
             self.charaList = ['kesedoA', 'opekoA', 'pandoraA', 'noahA', 'handyCameraA', 'PRcarA', 'adaptorFlowerA', 'adaptorBigbugA',
-                              'kesedoNoteA', 'kesedoPenA', 'baggageA', 'billBundleA', 'canningMeatA', 'dramA', 'foodSetA', 'meatBallA', 'safeTableA', 'solidFoodA',
-                              'tableLampA', 'tablewareSetA', 'spannerA', 'toolBoxA', 'pandraBoxA', 'pandraBox', 'NoahWandA']
+            'kesedoNoteA', 'kesedoPenA', 'baggageA', 'billBundleA', 'canningMeatA', 'dramA', 'foodSetA', 'meatBallA', 'safeTableA', 'solidFoodA',
+            'tableLampA', 'tablewareSetA', 'spannerA', 'toolBoxA', 'pandraBoxA', 'pandraBox', 'NoahWandA']
             self.exportTgtList = self.charaList[:]
             self.exportTgtList.append('BG')
-            self.bgList = ['debrisA', 'ghosttownOutdoorsA',
-                           'skyA', 'seaFloorA', 'ghosttownBattleTwoA']
-
-        elif mode == 'episode_6':
-            self.charaList = ['adaptorFlowerA', 'aqTentacleB', 'aqBodyA', 'aqHeadA', 'arkRingA',
-                              'aqBodyCutA', 'noahBeastA', 'pandoraA', 'kesedoA', 'opekoA',
-                              'bigHandA', 'arkA', 'aqFlowerA']
-            self.exportTgtList = self.charaList[:]
-            self.exportTgtList.append('BG')
-            self.bgList = ['canyonLastBattleA', 'skyA',
-                           'animalColonyCloseA', 'arkCockpitA', 'arkLaboB', 'earthA']
-
         self.exportTgtList.append('Cam')
         self.exportTgtList.append('all')
+        self.bgList = ['debrisA', 'ghosttownOutdoorsA', 'skyA', 'seaFloorA', 'ghosttownBattleTwoA']
         self.ui.comboBox.addItems(self.exportTgtList)
+        self.ui.groupBox.installEventFilter(self)
 
         self.ui.overrideValue_LineEdit.setEnabled(False)
-        self.ui.cameraScaleOverride_CheckBox.stateChanged.connect(
-            self.overrideValue_LineEdit_stateChange)
-        self.ui.path_open_button.clicked.connect(self.push_path_button)
-        self.ui.export_start_button.clicked.connect(self.export_start)
+        self.ui.cameraScaleOverride_CheckBox.stateChanged.connect(self.overrideValue_LineEdit_stateChange)
 
-    def export_start(self):
+    def eventFilter (self, object, event):
+        if event.type() == QEvent.DragEnter:
+            event.acceptProposedAction()
+            return True
 
-        inputpath = self.ui.path_line.text()
+        if event.type() == QEvent.Drop:
+            mimedata = event.mimeData()
+            if mimedata.hasUrls:
+                url_list = mimedata.urls()
+                for url in url_list:
+                    inputpath = url.toString().replace("file:///", "")
 
-        chara = self.ui.comboBox.currentText()
-        print chara
+                    chara = self.ui.comboBox.currentText()
+                    print chara
 
-        camScale = -1
-        if self.ui.cameraScaleOverride_CheckBox.isChecked():
-            camScale = float(self.ui.overrideValue_LineEdit.text())
-        else:
-            camScale = -1
+                    camScale = -1
+                    if self.ui.cameraScaleOverride_CheckBox.isChecked():
+                        camScale = float(self.ui.overrideValue_LineEdit.text())
+                    else:
+                        camScale = -1
 
-        if chara != 'all':
-            print self.charaList
-            if chara in self.charaList:
-                self.execExportAnim(chara, inputpath)
-            elif chara == 'BG':
-                for bg in self.bgList:
-                    self.execExportAnim(bg, inputpath)
-            elif chara == 'Cam':
-                self.execExportCam(chara, inputpath, camScale)
-            else:
-                self.execExport(chara, inputpath)
-            try:
-                util.addTimeLog(chara, inputpath, test=testRun)
-            except:
-                pass
+                    if chara != 'all':
+                        print self.charaList
+                        if chara in self.charaList:
+                            self.execExportAnim(chara, inputpath)
+                        elif chara == 'BG':
+                            for bg in self.bgList:
+                                self.execExportAnim(bg, inputpath)
+                        elif chara == 'Cam':
+                            self.execExportCam(chara, inputpath, camScale)
+                        else:
+                            self.execExport(chara, inputpath)
+                        try:
+                            util.addTimeLog(chara, inputpath)
+                        except:
+                            pass
 
-        else:
-            charaList = self.exportTgtList
-            charaList.remove('all')
-            for chara in charaList:
-                if chara in self.charaList:
-                    self.execExportAnim(chara, inputpath)
-                elif chara == 'BG':
-                    for bg in self.bgList:
-                        self.execExportAnim(bg, inputpath)
-                    pass
-                elif chara == 'Cam':
-                    self.execExportCam(chara, inputpath, camScale)
-                else:
-                    self.execExport(chara, inputpath)
+                    else:
+                        charaList = self.exportTgtList
+                        charaList.remove('all')
+                        for chara in charaList:
+                            if chara in self.charaList:
+                                self.execExportAnim(chara, inputpath)
+                            elif chara == 'BG':
+                                for bg in self.bgList:
+                                    self.execExportAnim(bg, inputpath)
+                                pass
+                            elif chara == 'Cam':
+                                self.execExportCam(chara, inputpath, camScale)
+                            else:
+                                self.execExport(chara, inputpath)
 
-                try:
-                    util.addTimeLog(chara, inputpath, test=testRun)
-                except:
-                    pass
+                            try:
+                                util.addTimeLog(chara, inputpath)
+                            except:
+                                pass
 
-        # QMessageBox.information()
-        print '******************* end *********************'
+                # QMessageBox.information()
+                print '******************* end *********************'
 
-    def push_path_button(self):
-        try:
-            self.folderPath = QFileDialog.getOpenFileName(self)
-            self.ui.path_line.setText(self.folderPath[0])
-        except:
-            # print 'Folder Path not found.'
-            QMessageBox.information(self, "Folder Path not found")
-
-    def overrideValue_LineEdit_stateChange(self):
+    def overrideValue_LineEdit_stateChange (self):
         currentState = self.ui.cameraScaleOverride_CheckBox.isChecked()
         self.ui.overrideValue_LineEdit.setEnabled(currentState)
 
-    def execExport(self, charaName, inputpath):
-        print inputpath
+    def execExport (self, charaName, inputpath):
         opc = util.outputPathConf(inputpath, test=testRun)
         opc.createOutputDir(charaName)
 
@@ -154,15 +138,9 @@ class GUI (QMainWindow):
         hairOutput = opc.publishfullpath + '/' + 'hair.abc'
         charaOutput = opc.publishfullpath + '/' + charaName + '.abc'
         cameraOutput = opc.publishfullpath + '/' + 'camera.abc'
-        if self.mode == 'episode_2':
-            charaSetup = import_module('setting2.'+charaName+'Setup')
-            print '2'
-        elif self.mode == 'episode_6':
-            charaSetup = import_module('setting6.'+charaName+'Setup')
-            print '6'
 
-        batch.abcExport(charaSetup.nsChara, charaSetup.abcSet,
-                        abcOutput, inputpath)
+        charaSetup = import_module('setting.'+charaName+'Setup')
+        batch.abcExport(charaSetup.nsChara, charaSetup.abcSet, abcOutput, inputpath)
 
         abcFiles = os.listdir(opc.publishfullabcpath)
         if len(abcFiles) == 0:
@@ -176,13 +154,11 @@ class GUI (QMainWindow):
             if '___' in ns:
                 ns = ns.replace('___', ':')
             if charaSetup.assetHair != '':
-                batch.hairExport(charaSetup.assetHair, ns, ns +
-                                 ':'+charaSetup.topNode, hairOutput, inputpath)
+                batch.hairExport(charaSetup.assetHair, ns, ns+':'+charaSetup.topNode, hairOutput, inputpath)
 
             abcOutput = opc.publishfullabcpath + '/' + abc
             charaOutput = opc.publishfullpath + '/' + abc.replace('abc', 'ma')
-            batch.abcAttach(charaSetup.assetChara, ns, ns+':' +
-                            charaSetup.topNode, abcOutput, charaOutput)
+            batch.abcAttach(charaSetup.assetChara, ns, ns+':'+charaSetup.topNode, abcOutput, charaOutput)
             allOutput.append([abc.replace('abc', 'ma'), abc])
         opc.makeCurrentDir()
 
@@ -191,15 +167,12 @@ class GUI (QMainWindow):
             abcOutput = opc.publishcurrentpath + '/abc/' + output[1]
             batch.repABC(charaOutput, abcOutput)
 
-    def execExportAnim(self, charaName, inputpath):
+    def execExportAnim (self, charaName, inputpath):
         opc = util.outputPathConf(inputpath, True, test=testRun)
         opc.createOutputDir(charaName)
 
         output = opc.publishfullanimpath
-        if self.mode == 'episode_2':
-            charaSetup = import_module('setting2.'+charaName+'Setup')
-        if self.mode == 'episode_6':
-            charaSetup = import_module('setting6.'+charaName+'Setup')
+        charaSetup = import_module('setting.'+charaName+'Setup')
         # regex = ["*_Cntrl","*_Cntrl_01","*_Cntrl_02","*_Cntrl_03","*_Cntrl_04","*Attr_CntrlShape","*Wire","*All_Grp","*_ctrl"]
         regex = charaSetup.regex
         regex = ','.join(regex)
@@ -213,16 +186,14 @@ class GUI (QMainWindow):
             ns = animFile.replace('anim_', '').replace('.ma', '')
             animOutput = opc.publishfullanimpath + '/' + animFile
             charaOutput = opc.publishfullpath + '/' + ns + '.ma'
-            batch.animAttach(charaSetup.assetChara, ns,
-                             animOutput, charaOutput)
+            batch.animAttach(charaSetup.assetChara, ns, animOutput, charaOutput)
         opc.makeCurrentDir()
 
         for animFile in animFiles:
             ns = animFile.replace('anim_', '').replace('.ma', '')
-            batch.animReplace(ns, opc.publishcurrentpath+'/anim/' +
-                              animFile, opc.publishcurrentpath+'/'+ns+'.ma')
+            batch.animReplace(ns, opc.publishcurrentpath+'/anim/'+animFile, opc.publishcurrentpath+'/'+ns+'.ma')
 
-    def execExportCam(self, cameraName, inputpath, camScale):  # CameraName=CameraA
+    def execExportCam (self, cameraName, inputpath, camScale):#CameraName=CameraA
         cameraSetup = import_module('setting.cameraAsetup')
         ns = cameraSetup.nsCamera
         ns = ','.join(ns)
@@ -256,18 +227,16 @@ class GUI (QMainWindow):
 
             camOutput = opc.publishfullpath + '/' + a.rstrip('_')
             cameraScale = str(camScale)
-            batch.camAttach(cameraSetup.assetCamera, a.rstrip(
-                '_cloCamera1.ma'), camanimOutput, camOutput, cameraScale)
+            batch.camAttach(cameraSetup.assetCamera, a.rstrip('_cloCamera1.ma'), camanimOutput, camOutput, cameraScale)
             opc.makeCurrentDir()
 
-            count = count + 1
+            count= count + 1
         opc.makeCurrentDir()
         # print opc.publishcurrentpath
 
         for camFile in camFiles:
             ns = camFile.replace('anim_', '').replace('.ma', '')
-            batch.camReplace(ns, opc.publishcurrentpath+'/anim/' +
-                             camFile, opc.publishcurrentpath+'/'+ns+'.ma')
+            batch.camReplace(ns, opc.publishcurrentpath+'/anim/'+camFile, opc.publishcurrentpath+'/'+ns+'.ma')
 
         # count = 0
         # for camFile in camFiles:
@@ -278,7 +247,8 @@ class GUI (QMainWindow):
         #     count = count + 1
 
 
-def run(*argv):
+
+def run (*argv):
     app = QApplication.instance()
     if app is None:
         app = QApplication(sys.argv)
@@ -291,7 +261,5 @@ def run(*argv):
 
     app.exec_()
 
-
 if __name__ == '__main__':
-    print sys.argv
     run(sys.argv[1:])

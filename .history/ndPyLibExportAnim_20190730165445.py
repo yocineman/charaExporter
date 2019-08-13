@@ -107,7 +107,7 @@ def _exportAnim (publishpath, oFilename, namespaceList, regexArgs, isFilter):
         mc.delete(characterSet)
 
     mc.select(allNodes)
-    print allNodes
+
     baseAnimationLayer = mc.animLayer(q=True, r=True)
 
     if baseAnimationLayer!=None:

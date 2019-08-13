@@ -86,10 +86,10 @@ def ndPyLibAnimIOExportContain (isFilterCurve, inPfxInfo, inDirPath, inFileName,
         f = open(os.path.dirname(inDirPath)+'/' + ns + '_cal_grb.txt', mode = 'w')
     print inDirPath
     print '@@@@@@@@@@@@@@@@@@@@@'*4
-    print q[0][0]
+    print x[0]
     print y[0]
 
-    f.write(q[0][0] + '\n')
+    f.write(x[0] + '\n')
     f.write(y[0] + '\n')
     f.write(camtype + '\n')
 

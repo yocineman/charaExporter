@@ -4,7 +4,6 @@ from ndPyLibCamGetAnimNodeAndAttr import *
 import pymel.core as pc
 import maya.cmds as mc
 import os
-import re
 
 def ndPyLibAnimIOExportContain (isFilterCurve, inPfxInfo, inDirPath, inFileName, inForNodes, isCheckAnimCurve, isCheckConstraint, ns):
     retNodes = []
@@ -48,18 +47,9 @@ def ndPyLibAnimIOExportContain (isFilterCurve, inPfxInfo, inDirPath, inFileName,
     print inDirPath
     print 'inDirPath'
 
-    q = []
-    xi = mc.ls('*')
-    for xj in xi:
-        z = re.match('[a-zA-Z][a-zA-Z][a-zA-Z][0-9][0-9][0-9]', xj)
-        try:
-            q.append(mc.ls(z.group(0)))
-        except:
-            pass
-    if len(q)== 0:
-        pass
-    else:
-        y = pc.listRelatives(q, ad=True)
+    x = pc.ls('NB*',type='transform')
+    y = pc.listRelatives(x, ad=True)
+
     if ns != 'empty':
         check2D = pc.ls(ns+'_anim2D')
         checkaim = pc.ls(ns+'_cloCamera_1_aim')
@@ -86,10 +76,10 @@ def ndPyLibAnimIOExportContain (isFilterCurve, inPfxInfo, inDirPath, inFileName,
         f = open(os.path.dirname(inDirPath)+'/' + ns + '_cal_grb.txt', mode = 'w')
     print inDirPath
     print '@@@@@@@@@@@@@@@@@@@@@'*4
-    print q[0][0]
+    print x[0]
     print y[0]
 
-    f.write(q[0][0] + '\n')
+    f.write(x[0] + '\n')
     f.write(y[0] + '\n')
     f.write(camtype + '\n')
 

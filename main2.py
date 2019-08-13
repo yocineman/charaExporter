@@ -32,7 +32,7 @@ qtSlot = Slot
 
 
 ### debug mode
-testRun = False
+testRun = True
 
 
 class GUI (QMainWindow):
@@ -65,7 +65,7 @@ class GUI (QMainWindow):
         elif mode == 'episode_6':
             self.charaList = ['adaptorFlowerA', 'aqTentacleB', 'aqBodyA', 'aqHeadA', 'arkRingA',
                               'aqBodyCutA', 'noahBeastA', 'pandoraA', 'kesedoA', 'opekoA',
-                              'bigHandA', 'arkA', 'aqFlowerA']
+                              'bigHandA', 'arkA']
             self.exportTgtList = self.charaList[:]
             self.exportTgtList.append('BG')
             self.bgList = ['canyonLastBattleA', 'skyA',

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 #------------------------------
-__version__ = '0.6.18 mst'
+__version__ = '0.6.17 mst'
 __author__ = "Yoshihisa Okano, Kei Ueda"
 #------------------------------
 
@@ -32,13 +32,13 @@ qtSlot = Slot
 
 
 ### debug mode
-testRun = False
+testRun = True
 
 
 class GUI (QMainWindow):
     WINDOW = 'MST_2019 chara export'
 
-    def __init__(self, parent=None, mode='episode_6'):
+    def __init__(self, parent=None, mode='episode_2'):
         print mode
         super(self.__class__, self).__init__(parent)
         self.ui_path = '.\\gui.ui'
@@ -63,13 +63,12 @@ class GUI (QMainWindow):
                            'skyA', 'seaFloorA', 'ghosttownBattleTwoA']
 
         elif mode == 'episode_6':
-            self.charaList = ['adaptorFlowerA', 'aqTentacleB', 'aqBodyA', 'aqHeadA', 'arkRingA',
-                              'aqBodyCutA', 'noahBeastA', 'pandoraA', 'kesedoA', 'opekoA',
-                              'bigHandA', 'arkA', 'aqFlowerA']
+            self.charaList = ['adaptorFlowerA', 'aqTentacleB', 'aqBodyA', 'aqHeadA',
+                              'aqBodyCutA', 'noahBeastA', 'pandporaA', 'kededoA', 'opecoA']
             self.exportTgtList = self.charaList[:]
             self.exportTgtList.append('BG')
             self.bgList = ['canyonLastBattleA', 'skyA',
-                           'animalColonyCloseA', 'arkCockpitA', 'arkLaboB', 'earthA']
+                           'animalClonyCloseA', 'arkCockpitA', 'arkLaboB', 'earthA']
 
         self.exportTgtList.append('Cam')
         self.exportTgtList.append('all')
@@ -106,7 +105,7 @@ class GUI (QMainWindow):
             else:
                 self.execExport(chara, inputpath)
             try:
-                util.addTimeLog(chara, inputpath, test=testRun)
+                util.addTimeLog(chara, inputpath, self.testRun)
             except:
                 pass
 
@@ -126,7 +125,7 @@ class GUI (QMainWindow):
                     self.execExport(chara, inputpath)
 
                 try:
-                    util.addTimeLog(chara, inputpath, test=testRun)
+                    util.addTimeLog(chara, inputpath, self.testRun)
                 except:
                     pass
 
@@ -156,10 +155,8 @@ class GUI (QMainWindow):
         cameraOutput = opc.publishfullpath + '/' + 'camera.abc'
         if self.mode == 'episode_2':
             charaSetup = import_module('setting2.'+charaName+'Setup')
-            print '2'
         elif self.mode == 'episode_6':
             charaSetup = import_module('setting6.'+charaName+'Setup')
-            print '6'
 
         batch.abcExport(charaSetup.nsChara, charaSetup.abcSet,
                         abcOutput, inputpath)
@@ -293,5 +290,4 @@ def run(*argv):
 
 
 if __name__ == '__main__':
-    print sys.argv
     run(sys.argv[1:])

@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-assetChara = 'P:/proj/TMST/elm/PR/noahWandA/rig/HH/maya/master/PRnoahWandA_rig_HH.cur.ma'
+assetChara = 'P:/proj/TMST/elm/PR/canningMeatA/rig/HH/maya/master/PRcanningMeatA_rig_HH.cur.ma'
 # assetHair = ''
 # nsChara = ['[a-zA-Z0-9_:]*TKN2_A_bodyBroken[a-zA-Z0-9_]*', '[a-zA-Z0-9_:]*Leg[a-zA-Z0-9_]*']
-nsChara = ['PRnoahWandA[a-zA-Z0-9_:]*']
+nsChara = ['PRcanningMeatA[a-zA-Z0-9_:]*']
 # nsHair = ''
 # topNode = 'geo_GP'
 # abcSet = ['ABCset']

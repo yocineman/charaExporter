@@ -94,6 +94,7 @@ def importAsset (animPath, namespace):
             b = f.readline().strip()
             camtype = f.readline().strip()
     else:
+        print animPath
         with open(os.path.dirname(os.path.dirname(animPath))+'/'+namespace+'_cal_grb.txt') as f:
             a = f.readline().strip()
             b = f.readline().strip()
