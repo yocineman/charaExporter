@@ -58,7 +58,7 @@ def attachABC (abcPath,namespace,hierarchyList):
     if not mc.pluginInfo('AbcImport', q=True, l=True):
         mc.loadPlugin('AbcImport')
     hierarchy = ' '.join(hierarchyList)
-    mel.eval('AbcImport -mode import -fitTimeRange -debug -connect ' + '\"' + hierarchy + '\" ' + '\"' + abcPath + '\"')
+    mel.eval('AbcImport -mode import -fitTimeRange -connect ' + '\"' + hierarchy + '\" ' + '\"' + abcPath + '\"')
 
     outputFile = os.path.dirname(os.path.dirname(abcPath))+'/yetimem.txt'
     print outputFile

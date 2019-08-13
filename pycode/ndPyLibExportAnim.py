@@ -80,7 +80,7 @@ def _getNoKeyAttributes (nodes):
     return attrs
 
 
-def _exportAnim (publishpath, oFilename, namespaceList, regexArgs, isFilter):
+def _exportAnim (publishpath, oFilename, namespaceList, regexArgs, isFilter, bakeAnim):
     outputfiles = []
     sframe = mc.playbackOptions(q=True, min=True)
     eframe = mc.playbackOptions(q=True, max=True)
@@ -129,14 +129,18 @@ def _exportAnim (publishpath, oFilename, namespaceList, regexArgs, isFilter):
     if len(attrs)!=0:
         mc.bakeResults(attrs, t=(sframe, eframe), sb=True)
 
+    print namespaces
     for ns in namespaces:
+        if ':' in ns: continue
         pickNodes = []
         for n in allNodes:
             if ns+':' in n:
+                print ns
                 pickNodes.append(n)
         if len(pickNodes) != 0:
+            # ns = ns.replace(':', '___')
             outputfiles.append(publishpath+oFilename+'_'+ns+'.ma')
-            ndPyLibAnimIOExportContain(isFilter, ['3', ''], publishpath, oFilename+'_'+ns, pickNodes, 0, 0)
+            ndPyLibAnimIOExportContain(isFilter, ['3', ''], publishpath, oFilename+'_'+ns, pickNodes, 0, 0 , (sframe, eframe), bakeAnim)
     
     return outputfiles
 
@@ -174,8 +178,8 @@ def ndPyLibExportAnim (regexArgs, isFilter):
         publishpath = os.path.normpath(publishpath)
         os.makedirs(publishpath)
 
-def ndPyLibExportAnim2 (publishpath, oFilename, namespaceList, regexArgs, isFilter):
+def ndPyLibExportAnim2 (publishpath, oFilename, namespaceList, regexArgs, isFilter, bakeAnim):
     regexArgs = regexArgs.split(',')
     print 'aaaaa'
     print regexArgs
-    _exportAnim(publishpath, oFilename, namespaceList, regexArgs, isFilter)
+    _exportAnim(publishpath, oFilename, namespaceList, regexArgs, isFilter, bakeAnim)

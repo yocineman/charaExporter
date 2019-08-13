@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 #------------------------------
-__version__ = '0.7.3'
+__version__ = '0.8.0'
 __author__ = "Yoshihisa Okano"
 #------------------------------
 
@@ -9,10 +9,9 @@ import sys
 import os
 import shutil
 
-import util
-import batch
+from pycode import util
+from pycode import batch
 from importlib import import_module
-
 # import ninaSetup
 # import hikalSetup
 # import ikkaSetup
@@ -32,7 +31,7 @@ qtSlot = Slot
 
 
 ### debug mode
-testRun = False
+# testRun = True
 
 
 class GUI (QMainWindow):
@@ -41,46 +40,48 @@ class GUI (QMainWindow):
     def __init__(self, parent=None, mode='ZGR'):
         print mode
         super(self.__class__, self).__init__(parent)
-        self.ui_path = '.\\gui.ui'
+        self.ui_path = '.\\pycode\\gui.ui'
         self.mode = mode
         self.yeti = False
         self.stepValue = 1.0
+        self.bakeAnim = False
 
         self.ui = QUiLoader().load(self.ui_path)
         self.setCentralWidget(self.ui)
+        self.testRun = False
 
         debug = ''
-        if testRun:
+        if self.testRun:
             debug = '__debug__'
-        self.setWindowTitle('%s %s %s %s' % (self.WINDOW, __version__, self.mode,debug))
+        self.setWindowTitle('%s %s %s ' % (self.WINDOW, __version__, debug))
         self.setGeometry(400, 400, 400, 300)
         self.exportTgtList = []
-        if mode == 'ZGR':
-            self.exportTgtList = ['nina', 'ninaScan', 'hikal']
-        elif mode == 'DUCT_C':
-            self.exportTgtList = ['ikka', 'juran', 'manato', 'tatsuya', 'naoto', 'SMO',
-                                    'UKI', 'YPI', 'FBTKN', 'TKN', 'TKN_bodyBroken_leg', 'TKN2ancAlong']
-            self.exportTgtList.append('BG')
-            self.bgList = ['DCT_CtubeA', 'DCT_CtubeB', 'DCT_Cbunki', 'DCT_CNml',
-                            'DCT_CtubeC017', 'DCT_Cescape', 'DCT_CtubeWideA', 'DCT_CtubeWideB']
-        elif mode == 'CORA':
-            self.exportTgtList = ['LXM', 'saki',
-                                    'LgtSetCORin', 'LgtSetAddCoreA']
-            self.exportTgtList.append('BG')
-            self.bgList = ['ZGRCORin']
+
+        self.modeList = ['ZGR', 'DUCT_C', 'CORA']
+
+        self.ui.mode_comboBox.addItems(self.modeList)
+        self.ui.mode_comboBox.currentIndexChanged.connect(self.mode_comboBox_changed)
+
+        self.ui.groupBox.installEventFilter(self)
+
+        self.ui.debug_checkBox.stateChanged.connect(self.debug_checkBox_changed)
+
+        self.exportTgtList = ['nina', 'ninaScan', 'hikal']
         self.exportTgtList.append('Cam')
         self.exportTgtList.append('all')
+
         self.ui.comboBox.addItems(self.exportTgtList)
-        self.ui.groupBox.installEventFilter(self)
 
         self.ui.overrideValue_LineEdit.setEnabled(False)
         self.ui.cameraScaleOverride_CheckBox.stateChanged.connect(
             self.overrideValue_LineEdit_stateChange)
         self.ui.yeti_CheckBox.stateChanged.connect(self.yeti_checker)
+        self.ui.bakeAnim_CheckBox.stateChanged.connect(self.bakeAnim_checker)
 
         self.ui.stepValue_LineEdit.setEnabled(False)
         self.ui.stepValue_CheckBox.stateChanged.connect(
             self.stepValue_LineEdit_stateChange)
+        self.ui.start_button.clicked.connect(self.push_start_button)
 
     def eventFilter(self, object, event):
         if event.type() == QEvent.DragEnter:
@@ -94,56 +95,99 @@ class GUI (QMainWindow):
                 print url_list
                 for url in url_list:
                     inputpath = url.toString().replace("file:///", "")
+                self.ui.path_line.setText(inputpath)
 
-                    chara = self.ui.comboBox.currentText()
-                    print chara
+    def push_start_button(self):
+        print 'aaaaaaaaaaaaaaa'
+        inputpath = self.ui.path_line.text()
 
-                    camScale = -1
-                    if self.ui.cameraScaleOverride_CheckBox.isChecked():
-                        camScale = float(self.ui.overrideValue_LineEdit.text())
-                    else:
-                        camScale = -1
+        chara = self.ui.comboBox.currentText()
+        print chara
+        if chara == None:
+            print 'Not Selected!!!!!!!'
+            return 0
 
-                    if self.ui.stepValue_CheckBox.isChecked():
-                        self.stepValue = float(
-                            self.ui.stepValue_LineEdit.text())
-                    else:
-                        self.stepValue = 1.0
+        camScale = -1
+        if self.ui.cameraScaleOverride_CheckBox.isChecked():
+            camScale = float(self.ui.overrideValue_LineEdit.text())
+        else:
+            camScale = -1
 
-                    if chara != 'all':
-                        if chara == 'TKN' or chara == 'TKN_bodyBroken_leg' or chara == 'TKN2ancAlong':
-                            self.execExportAnim(chara, inputpath)
-                        elif chara == 'BG':
-                            for bg in self.bgList:
-                                self.execExportAnim(bg, inputpath)
-                        elif chara == 'Cam':
-                            self.execExportCam(inputpath, camScale)
-                        elif chara in ['LgtSetAddCoreA', 'LgtSetCORin']:
-                            self.execExportAnim(chara, inputpath)
-                        else:
-                            self.execExport(chara, inputpath)
+        if self.ui.stepValue_CheckBox.isChecked():
+            self.stepValue = float(
+                self.ui.stepValue_LineEdit.text())
+        else:
+            self.stepValue = 1.0
 
-                        util.addTimeLog(chara, inputpath, test=testRun)
-                    else:
-                        charaList = self.exportTgtList
-                        charaList.remove('all')
-                        for chara in charaList:
-                            if chara == 'TKN' or chara == 'TKN_bodyBroken_leg' or chara == 'TKN2ancAlong':
-                                self.execExportAnim(chara, inputpath)
-                            elif chara == 'BG':
-                                for bg in self.bgList:
-                                    self.execExportAnim(bg, inputpath)
-                            elif chara == 'Cam':
-                                self.execExportCam(inputpath, camScale)
-                            elif chara in ['LgtSetAddCoreA', 'LgtSetCORin']:
-                                self.execExportAnim(chara, inputpath)
-                            else:
-                                self.execExport(chara, inputpath)
+        if chara != 'all':
+            if chara == 'TKN' or chara == 'TKN_bodyBroken_leg' or chara == 'TKN2ancAlong':
+                self.execExportAnim(chara, inputpath)
+            elif chara == 'BG':
+                for bg in self.bgList:
+                    self.execExportAnim(bg, inputpath)
+            elif chara == 'Cam':
+                self.execExportCam(inputpath, camScale)
+            elif chara in ['LgtSetAddCoreA', 'LgtSetCORin']:
+                self.execExportAnim(chara, inputpath)
+            else:
+                self.execExport(chara, inputpath)
 
-                            util.addTimeLog(chara, inputpath, test=testRun)
+            util.addTimeLog(chara, inputpath, test=self.testRun)
+        else:
+            charaList = self.exportTgtList
+            charaList.remove('all')
+            for chara in charaList:
+                if chara == 'TKN' or chara == 'TKN_bodyBroken_leg' or chara == 'TKN2ancAlong':
+                    self.execExportAnim(chara, inputpath)
+                elif chara == 'BG':
+                    for bg in self.bgList:
+                        self.execExportAnim(bg, inputpath)
+                elif chara == 'Cam':
+                    self.execExportCam(inputpath, camScale)
+                elif chara in ['LgtSetAddCoreA', 'LgtSetCORin']:
+                    self.execExportAnim(chara, inputpath)
+                else:
+                    self.execExport(chara, inputpath)
 
-                # QMessageBox.information()
-                print '******************* end *********************'
+                util.addTimeLog(chara, inputpath, test=self.testRun)
+
+    # QMessageBox.information()
+        print '******************* end *********************'
+
+    def mode_comboBox_changed(self):
+        currentState = self.ui.mode_comboBox.currentText()
+        self.mode = currentState
+
+        if self.mode == 'ZGR':
+            self.exportTgtList = ['nina', 'ninaScan', 'hikal']
+        elif self.mode == 'DUCT_C':
+            self.exportTgtList = ['ikka', 'juran', 'manato', 'tatsuya', 'naoto', 'SMO',
+                                    'UKI', 'YPI', 'FBTKN', 'TKN', 'TKN_bodyBroken_leg', 'TKN2ancAlong']
+            self.exportTgtList.append('BG')
+            self.bgList = ['DCT_CtubeA', 'DCT_CtubeB', 'DCT_Cbunki', 'DCT_CNml',
+                            'DCT_CtubeC017', 'DCT_Cescape', 'DCT_CtubeWideA', 'DCT_CtubeWideB']
+        elif self.mode == 'CORA':
+            self.exportTgtList = ['LXM', 'saki',
+                                    'LgtSetCORin', 'LgtSetAddCoreA']
+            self.exportTgtList.append('BG')
+            self.bgList = ['ZGRCORin']
+
+        self.exportTgtList.append('Cam')
+        self.exportTgtList.append('all')
+
+        self.ui.comboBox.clear()
+        self.ui.comboBox.addItems(self.exportTgtList)
+
+        print self.mode
+
+    def debug_checkBox_changed(self):
+        currentState = self.ui.debug_checkBox.isChecked()
+        print currentState
+        self.testRun = currentState
+        debug = ''
+        if self.testRun:
+            debug = '__debug__'
+        self.setWindowTitle('%s %s %s ' % (self.WINDOW, __version__, debug))
 
     def overrideValue_LineEdit_stateChange(self):
         currentState = self.ui.cameraScaleOverride_CheckBox.isChecked()
@@ -155,9 +199,15 @@ class GUI (QMainWindow):
 
     def yeti_checker(self):
         self.yeti = self.ui.yeti_CheckBox.isChecked()
+        print self.yeti
+
+    def bakeAnim_checker (self):
+        self.bakeAnim = self.ui.bakeAnim_CheckBox.isChecked()
 
     def execExport(self, charaName, inputpath):
-        opc = util.outputPathConf(inputpath, test=testRun)
+
+        print self.testRun
+        opc = util.outputPathConf(inputpath, test=self.testRun)
         opc.createOutputDir(charaName)
 
         abcOutput = opc.publishfullabcpath + '/' + charaName + '.abc'
@@ -198,7 +248,7 @@ class GUI (QMainWindow):
             batch.repABC(charaOutput, abcOutput)
 
     def execExportAnim(self, charaName, inputpath):
-        opc = util.outputPathConf(inputpath, True, test=testRun)
+        opc = util.outputPathConf(inputpath, True, test=self.testRun)
         opc.createOutputDir(charaName)
 
         output = opc.publishfullanimpath
@@ -206,7 +256,7 @@ class GUI (QMainWindow):
         # regex = ["*_Cntrl","*_Cntrl_01","*_Cntrl_02","*_Cntrl_03","*_Cntrl_04","*Attr_CntrlShape","*Wire","*All_Grp","*_ctrl"]
         regex = charaSetup.regex
         regex = ','.join(regex)
-        batch.animExport(output, 'anim', charaSetup.nsChara, regex, inputpath, self.yeti)
+        batch.animExport(output, 'anim', charaSetup.nsChara, regex, inputpath, self.yeti, self.bakeAnim)
 
         animFiles = os.listdir(opc.publishfullanimpath)
         if len(animFiles) == 0:
@@ -214,6 +264,7 @@ class GUI (QMainWindow):
             return
         for animFile in animFiles:
             ns = animFile.replace('anim_', '').replace('.ma', '')
+            # ns_ = ns.replace('___', ':')
             animOutput = opc.publishfullanimpath + '/' + animFile
             charaOutput = opc.publishfullpath + '/' + ns + '.ma'
             batch.animAttach(charaSetup.assetChara, ns,
@@ -226,15 +277,16 @@ class GUI (QMainWindow):
             if animFile[-3:] != '.ma':
                 continue
             ns = animFile.replace('anim_', '').replace('.ma', '')
+            # ns_ = ns.replace('___', ':')
             batch.animReplace(ns, opc.publishcurrentpath+'/anim/' +
                                 animFile, opc.publishcurrentpath+'/'+ns+'.ma')
 
     def execExportCam(self, inputpath, camScale):
-        opc = util.outputPathConf(inputpath, test=testRun)
+        opc = util.outputPathConf(inputpath, test=self.testRun)
         opc.createCamOutputDir()
 
         batch.camExport(opc.publishfullpath, opc.sequence +
-                        opc.shot+'_cam', camScale, inputpath)
+                        opc.shot+'_cam', camScale, inputpath, self.yeti)
         camFiles = os.listdir(opc.publishfullpath)
         for camFile in camFiles:
             srcFile = os.path.join(opc.publishfullpath, camFile)
@@ -260,4 +312,4 @@ def run(*argv):
 
 
 if __name__ == '__main__':
-    run(sys.argv[1:])
+    run(sys.argv[:])

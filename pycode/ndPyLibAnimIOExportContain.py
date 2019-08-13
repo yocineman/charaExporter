@@ -4,7 +4,7 @@ from ndPyLibAnimGetAnimNodeAndAttr import *
 import maya.cmds as mc
 import os
 
-def ndPyLibAnimIOExportContain (isFilterCurve, inPfxInfo, inDirPath, inFileName, inForNodes, isCheckAnimCurve, isCheckConstraint):
+def ndPyLibAnimIOExportContain (isFilterCurve, inPfxInfo, inDirPath, inFileName, inForNodes, isCheckAnimCurve, isCheckConstraint, frameRange, bakeAnim):
     retNodes = []
     addCmd = []
 
@@ -35,6 +35,23 @@ def ndPyLibAnimIOExportContain (isFilterCurve, inPfxInfo, inDirPath, inFileName,
                 rn = mc.rename(retNodes[i*2+1], buf[1])
                 retNodes[i*2+1] = rn
             mc.select(retNodes[i*2+1], add=True)
+
+    # print '*'*30
+    # print 'bakeTest'
+    # print retNodes
+    if bakeAnim:
+        animNodes = retNodes[1:len(retNodes):2]
+        bakeList = []
+        for animNode in animNodes:
+            bakeList += mc.listConnections(animNode+'.output', s=False, d=True, p=True)
+        ### bakeResult cannot bake 'scene time warp' animation
+        for t in range(int(frameRange[0]),int(frameRange[1]+1)):
+            mc.currentTime(t)
+            currentTime = mc.currentTime(q=True)
+            print currentTime
+            for bake in bakeList:
+                obj, attr = bake.split('.')
+                mc.setKeyframe(obj, t=currentTime, at=attr)
     
     if isFilterCurve:
         mc.filterCurve()
@@ -49,7 +66,9 @@ def ndPyLibAnimIOExportContain (isFilterCurve, inPfxInfo, inDirPath, inFileName,
     # print retNodes
     for i in range(len(retNodes)/2):
         print retNodes[i*2+1], inPfxInfo, NS[pfxSw], retNodes[i*2]
-        cmd = 'connectAttr \"' + retNodes[i*2+1] + '.output\" \":' + inPfxInfo[1] + NS[pfxSw] + retNodes[i*2] + '\";\n'
+        node = retNodes[i*2].split('|')[-1]
+        # cmd = 'connectAttr \"' + retNodes[i*2+1] + '.output\" \":' + inPfxInfo[1] + NS[pfxSw] + retNodes[i*2] + '\";\n'
+        cmd = 'connectAttr \"' + retNodes[i*2+1] + '.output\" \":' + inPfxInfo[1] + NS[pfxSw] + node + '\";\n'
         addCmd.append(cmd)
 
     try:
