@@ -48,14 +48,14 @@ def abcAttach (assetPath, namespace,topNode, abcPath, outputPath):
     print cmd
     ret = subprocess.call(cmd)
 
-def animExport (outputPath, oFilename, namespace, regex, scene, yeti):
+def animExport (outputPath, oFilename, namespace, regex, scene, yeti, bakeAnim):
     if yeti:
         print "loading yeti"
         env_load()
     cmd = []
     cmd.append(mayaBatch)
     cmd.append('-command')
-    cmd.append('''python(\"import sys; sys.path.append(''' + "\'"+this_dir.replace("\\","/")+"\'"+ ''');from ndPyLibExportAnim import ndPyLibExportAnim2;ndPyLibExportAnim2(''' + "\'" + outputPath + "\'" + "," + "\'" + oFilename + "\'" + "," + str(namespace) + "," + "\'" + regex + "\'"  + ''', 0);\")''')
+    cmd.append('''python(\"import sys; sys.path.append(''' + "\'"+this_dir.replace("\\","/")+"\'"+ ''');from ndPyLibExportAnim import ndPyLibExportAnim2;ndPyLibExportAnim2(''' + "\'" + outputPath + "\'" + "," + "\'" + oFilename + "\'" + "," + str(namespace) + "," + "\'" + regex + "\'" + ", 1, " + str(bakeAnim)  + ''');\")''')
     cmd.append('-file')
     cmd.append(scene)
     print cmd
@@ -79,8 +79,9 @@ def animReplace (namespace, animPath, scene):
     print cmd
     subprocess.call(cmd)
 
-def camExport (outputPath, oFilename, camScale, scene):
-    env_load()
+def camExport (outputPath, oFilename, camScale, scene, yeti):
+    if yeti:
+        env_load()
     cmd = []
     cmd.append(mayaBatch)
     cmd.append('-command')

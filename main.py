@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 #------------------------------
-__version__ = '0.7.3'
+__version__ = '0.8.0'
 __author__ = "Yoshihisa Okano"
 #------------------------------
 
@@ -31,7 +31,7 @@ qtSlot = Slot
 
 
 ### debug mode
-testRun = True
+# testRun = True
 
 
 class GUI (QMainWindow):
@@ -44,13 +44,14 @@ class GUI (QMainWindow):
         self.mode = mode
         self.yeti = False
         self.stepValue = 1.0
+        self.bakeAnim = False
 
         self.ui = QUiLoader().load(self.ui_path)
         self.setCentralWidget(self.ui)
         self.testRun = False
 
         debug = ''
-        if testRun:
+        if self.testRun:
             debug = '__debug__'
         self.setWindowTitle('%s %s %s ' % (self.WINDOW, __version__, debug))
         self.setGeometry(400, 400, 400, 300)
@@ -75,6 +76,7 @@ class GUI (QMainWindow):
         self.ui.cameraScaleOverride_CheckBox.stateChanged.connect(
             self.overrideValue_LineEdit_stateChange)
         self.ui.yeti_CheckBox.stateChanged.connect(self.yeti_checker)
+        self.ui.bakeAnim_CheckBox.stateChanged.connect(self.bakeAnim_checker)
 
         self.ui.stepValue_LineEdit.setEnabled(False)
         self.ui.stepValue_CheckBox.stateChanged.connect(
@@ -182,6 +184,10 @@ class GUI (QMainWindow):
         currentState = self.ui.debug_checkBox.isChecked()
         print currentState
         self.testRun = currentState
+        debug = ''
+        if self.testRun:
+            debug = '__debug__'
+        self.setWindowTitle('%s %s %s ' % (self.WINDOW, __version__, debug))
 
     def overrideValue_LineEdit_stateChange(self):
         currentState = self.ui.cameraScaleOverride_CheckBox.isChecked()
@@ -195,10 +201,13 @@ class GUI (QMainWindow):
         self.yeti = self.ui.yeti_CheckBox.isChecked()
         print self.yeti
 
+    def bakeAnim_checker (self):
+        self.bakeAnim = self.ui.bakeAnim_CheckBox.isChecked()
+
     def execExport(self, charaName, inputpath):
 
         print self.testRun
-        opc = util.outputPathConf(inputpath, test=testRun)
+        opc = util.outputPathConf(inputpath, test=self.testRun)
         opc.createOutputDir(charaName)
 
         abcOutput = opc.publishfullabcpath + '/' + charaName + '.abc'
@@ -239,7 +248,7 @@ class GUI (QMainWindow):
             batch.repABC(charaOutput, abcOutput)
 
     def execExportAnim(self, charaName, inputpath):
-        opc = util.outputPathConf(inputpath, True, test=testRun)
+        opc = util.outputPathConf(inputpath, True, test=self.testRun)
         opc.createOutputDir(charaName)
 
         output = opc.publishfullanimpath
@@ -247,7 +256,7 @@ class GUI (QMainWindow):
         # regex = ["*_Cntrl","*_Cntrl_01","*_Cntrl_02","*_Cntrl_03","*_Cntrl_04","*Attr_CntrlShape","*Wire","*All_Grp","*_ctrl"]
         regex = charaSetup.regex
         regex = ','.join(regex)
-        batch.animExport(output, 'anim', charaSetup.nsChara, regex, inputpath, self.yeti)
+        batch.animExport(output, 'anim', charaSetup.nsChara, regex, inputpath, self.yeti, self.bakeAnim)
 
         animFiles = os.listdir(opc.publishfullanimpath)
         if len(animFiles) == 0:
@@ -255,6 +264,7 @@ class GUI (QMainWindow):
             return
         for animFile in animFiles:
             ns = animFile.replace('anim_', '').replace('.ma', '')
+            # ns_ = ns.replace('___', ':')
             animOutput = opc.publishfullanimpath + '/' + animFile
             charaOutput = opc.publishfullpath + '/' + ns + '.ma'
             batch.animAttach(charaSetup.assetChara, ns,
@@ -267,15 +277,16 @@ class GUI (QMainWindow):
             if animFile[-3:] != '.ma':
                 continue
             ns = animFile.replace('anim_', '').replace('.ma', '')
+            # ns_ = ns.replace('___', ':')
             batch.animReplace(ns, opc.publishcurrentpath+'/anim/' +
                                 animFile, opc.publishcurrentpath+'/'+ns+'.ma')
 
     def execExportCam(self, inputpath, camScale):
-        opc = util.outputPathConf(inputpath, test=testRun)
+        opc = util.outputPathConf(inputpath, test=self.testRun)
         opc.createCamOutputDir()
 
         batch.camExport(opc.publishfullpath, opc.sequence +
-                        opc.shot+'_cam', camScale, inputpath)
+                        opc.shot+'_cam', camScale, inputpath, self.yeti)
         camFiles = os.listdir(opc.publishfullpath)
         for camFile in camFiles:
             srcFile = os.path.join(opc.publishfullpath, camFile)
