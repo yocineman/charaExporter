@@ -7,8 +7,8 @@ import maya.cmds as mc
 import maya.mel as mel
 
 
-def norefresh (func):
-    def _norefresh (*args):
+def norefresh(func):
+    def _norefresh(*args):
         try:
             mc.refresh(suspend=True)
             return func(*args)
@@ -17,13 +17,14 @@ def norefresh (func):
     return _norefresh
 
 
-def _getNamespace ():
+def _getNamespace():
     namespaces = mc.namespaceInfo(lon=True, r=True)
     namespaces.remove('UI')
     namespaces.remove('shared')
     return namespaces
 
-def _getAllNodes (outputPath, namespace, regexArgs):
+
+def _getAllNodes(outputPath, namespace, regexArgs):
     if len(regexArgs) == 0:
         regexArgs = ['*']
 
@@ -61,9 +62,6 @@ def _getAllNodes (outputPath, namespace, regexArgs):
 
 @norefresh
 def _exportAbc (publishpath, oFilename, namespaceList, regexArgs):
-    sframe = mc.playbackOptions(q=True, min=True)
-    eframe = mc.playbackOptions(q=True, max=True)
-
     allNamespaces = []
     if len(namespaceList) == 0:
         allNamespaces = _getNamespace()
@@ -76,6 +74,8 @@ def _exportAbc (publishpath, oFilename, namespaceList, regexArgs):
 
     if not mc.pluginInfo('AbcExport', q=True, l=True):
         mc.loadPlugin('AbcExport')
+
+    frameHandle = 5
 
     outputfiles = []
     for ns in allNamespaces:
@@ -159,13 +159,17 @@ def ndPyLibExportAbc (namespaceList, regexArgs, outputFile=None, isLatest=1):
     #     for o in outputfiles:
 
 
-def _exportAbc2 (outputPath, namespaceList, regexArgs, step_value):
+def _exportAbc2 (outputPath, namespaceList, regexArgs, step_value, framerange_output=False):
     sframe = mc.playbackOptions(q=True, min=True)
     eframe = mc.playbackOptions(q=True, max=True)
 
     ###
     sframe -= 10
     eframe += 10
+    if framerange_output == 'True':
+        with open(os.path.join(publishpath, '..', 'sceneConf.txt').replace('\\', '/'), 'w') as f:
+            f.write(str(sframe)+'\n')
+            f.write(str(eframe)+'\n')
 
     allNamespaces = []
     if len(namespaceList) == 0:
@@ -233,10 +237,10 @@ def _exportAbc2 (outputPath, namespaceList, regexArgs, step_value):
         print 'AbcExport -j ' + strAbc
         mel.eval('AbcExport -verbose -j ' + '"' + strAbc + '"')
 
-def ndPyLibExportAbc2 (namespaceList, regexArgs, outputPath, step_value):
+def ndPyLibExportAbc2 (namespaceList, regexArgs, outputPath, step_value, framerange_output=False):
     print 'x'*20
     print regexArgs
     print namespaceList
     print outputPath
     print step_value
-    _exportAbc2(outputPath, namespaceList, regexArgs, step_value)
+    _exportAbc2(outputPath, namespaceList, regexArgs, step_value, framerange_output)
