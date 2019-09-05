@@ -12,11 +12,12 @@ import distutils.dir_util
 
 class outputPathConf (object):
 
-    def __init__ (self, inputPath, isAnim=False, test=False):
+    def __init__ (self, inputPath, isAnim=False, test=False, overlap=0):
         self.inputPath = inputPath.replace('\\', '/')
         self.isAnim = isAnim
         self.outputRootDir = 'charSet'
         self.outputCamRootDir = 'Cam'
+        self.overlap = overlap
         if test:
             self.outputRootDir = 'test_charSet'
             self.outputCamRootDir = 'test_Cam'
@@ -60,13 +61,21 @@ class outputPathConf (object):
             currentVer = vers[-1]
             currentVerNum = int(currentVer[1:])
             nextVerNum = currentVerNum + 1
-            nextVer = 'v' + str(nextVerNum).zfill(3)
+            if self.overlap == 1:
+                nextVer = 'v'+str(currentVerNum).zfill(3)
+            else:
+                nextVer = 'v' + str(nextVerNum).zfill(3)
             self._currentVer = nextVer
         self._publishfullpath = os.path.join(self._publishpath, self._currentVer)
         self._publishfullabcpath = os.path.join(self._publishfullpath, 'abc')
         self._publishfullanimpath = os.path.join(self._publishfullpath, 'anim')
-        try:
+        print self._publishfullpath
+        if os.path.exists(self._publishfullpath):
+            pass
+        else:
             os.mkdir(self._publishfullpath)
+            print 'mkdir' + self._publishfullpath
+        try:
             if self.isAnim:
                 os.mkdir(self._publishfullanimpath)
             else:

@@ -25,6 +25,8 @@ def _getNamespace():
 
 
 def _getAllNodes(outputPath, namespace, regexArgs):
+    namespace = namespace.rstrip('$')##お試し
+
     if len(regexArgs) == 0:
         regexArgs = ['*']
 
@@ -35,27 +37,30 @@ def _getAllNodes(outputPath, namespace, regexArgs):
             regexN += namespace + ':'
         regexN = regexN + regex
         objs = mc.ls(regexN, type='transform')
-        objSets = mc.sets(regexN, q=True)
-        if len(objs) != 0:
-            nodes += objs
-        if len(objSets) != 0:
-            nodes += objSets
-        yetiobjs = mc.ls(namespace+':yetiSet')
-        if len(yetiobjs) != 0:
-        #     nodes += yetiobjs
-        #     nodes += mc.sets(namespace+':yetiSet',q=True)
-            dirname = os.path.dirname(outputPath)
-            dirname = os.path.dirname(dirname)
-            inyeticasch = mc.getAttr(namespace+":pgYetiMaya"+namespace+"Shape.cacheFileName")
-            outyeticasch = mc.getAttr(namespace+":pgYetiMaya"+namespace+"Shape.outputCacheFileName")
-            outputFile = os.path.join(dirname,'yetimem.txt')
-            try:
-                with open(outputFile, 'w') as fp:
-                    fp.write(inyeticasch)
-                    fp.write('\n')
-                    fp.write(outyeticasch)
-            except:
-                pass
+        try:
+            objSets = mc.sets(regexN, q=True)
+            if len(objs) != 0:
+                nodes += objs
+            if len(objSets) != 0:
+                nodes += objSets
+            yetiobjs = mc.ls(namespace+':yetiSet')
+            if len(yetiobjs) != 0:
+            #     nodes += yetiobjs
+            #     nodes += mc.sets(namespace+':yetiSet',q=True)
+                dirname = os.path.dirname(outputPath)
+                dirname = os.path.dirname(dirname)
+                inyeticasch = mc.getAttr(namespace+":pgYetiMaya"+namespace+"Shape.cacheFileName")
+                outyeticasch = mc.getAttr(namespace+":pgYetiMaya"+namespace+"Shape.outputCacheFileName")
+                outputFile = os.path.join(dirname,'yetimem.txt')
+                try:
+                    with open(outputFile, 'w') as fp:
+                        fp.write(inyeticasch)
+                        fp.write('\n')
+                        fp.write(outyeticasch)
+                except:
+                    pass
+        except:
+            pass
 
 
     return nodes
@@ -180,8 +185,6 @@ def _exportAbc2 (outputPath, namespaceList, regexArgs, step_value, framerange_ou
         print '>>>>>>>>>>>>>'
         # for x in namespaceList:
         #     allNamespaces.append(x)
-
-        allNamespaces = []
 
         tmpNS = _getNamespace()
         print tmpNS

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 #------------------------------
-__version__ = '0.8.1'
+__version__ = '0.9.0'
 __author__ = "Yoshihisa Okano"
 #------------------------------
 
@@ -57,7 +57,7 @@ class GUI (QMainWindow):
         self.setGeometry(400, 400, 400, 300)
         self.exportTgtList = []
 
-        self.modeList = ['ZGR', 'DUCT_C', 'CORA']
+        self.modeList = ['ZGR', 'DUCT_C', 'CORA', 'Liquid']
 
         self.ui.mode_comboBox.addItems(self.modeList)
         self.ui.mode_comboBox.currentIndexChanged.connect(self.mode_comboBox_changed)
@@ -124,7 +124,11 @@ class GUI (QMainWindow):
                 self.execExportAnim(chara, inputpath)
             elif chara == 'BG':
                 for bg in self.bgList:
-                    self.execExportAnim(bg, inputpath)
+                    if bg == 'RPG_destD':
+                        self.execExport(bg,inputpath)
+                        self.execExportAnim(bg, inputpath , 1)
+                    else:
+                        self.execExportAnim(bg, inputpath)
             elif chara == 'Cam':
                 self.execExportCam(inputpath, camScale)
             elif chara in ['LgtSetAddCoreA', 'LgtSetCORin']:
@@ -141,7 +145,11 @@ class GUI (QMainWindow):
                     self.execExportAnim(chara, inputpath)
                 elif chara == 'BG':
                     for bg in self.bgList:
-                        self.execExportAnim(bg, inputpath)
+                        if bg == 'RPG_destD':
+                            self.execExport(bg, inputpath)
+                            self.execExportAnim(bg, inputpath, overlap=1)
+                        else:
+                            self.execExportAnim(bg, inputpath)
                 elif chara == 'Cam':
                     self.execExportCam(inputpath, camScale)
                 elif chara in ['LgtSetAddCoreA', 'LgtSetCORin']:
@@ -164,13 +172,17 @@ class GUI (QMainWindow):
             self.exportTgtList = ['ikka', 'juran', 'manato', 'tatsuya', 'naoto', 'SMO',
                                     'UKI', 'YPI', 'FBTKN', 'TKN', 'TKN_bodyBroken_leg', 'TKN2ancAlong']
             self.exportTgtList.append('BG')
-            self.bgList = ['DCT_CtubeA', 'DCT_CtubeB', 'DCT_Cbunki', 'DCT_CNml',
+            self.bgList = ['DCT_CtubeA', 'DCT_CtubeB', 'DCT_Cbunki','DCT_CNml',
                             'DCT_CtubeC017', 'DCT_Cescape', 'DCT_CtubeWideA', 'DCT_CtubeWideB']
         elif self.mode == 'CORA':
             self.exportTgtList = ['LXM', 'saki',
                                     'LgtSetCORin', 'LgtSetAddCoreA']
             self.exportTgtList.append('BG')
             self.bgList = ['ZGRCORin']
+        elif self.mode == 'Liquid':
+            self.exportTgtList = ['LXM', 'amamiya', 'sizuko', 'TKN', 'ikka', 'ikka_zig2','naoto', 'naoto_zig2', 'ninaScan', 'hikal']
+            self.exportTgtList.append('BG')
+            self.bgList = ['RPG_destD','ZGR_W', 'ZGR_WdestA', 'ZGR_WdestG', 'ZGR_WdestK', 'RBL_destG', 'COR_destG', 'ZGR_WpartsA', 'ZGR_T', 'MJFshutter']
 
         self.exportTgtList.append('Cam')
         self.exportTgtList.append('all')
@@ -247,8 +259,8 @@ class GUI (QMainWindow):
             abcOutput = opc.publishcurrentpath + '/abc/' + output[1]
             batch.repABC(charaOutput, abcOutput)
 
-    def execExportAnim(self, charaName, inputpath):
-        opc = util.outputPathConf(inputpath, True, test=self.testRun)
+    def execExportAnim(self, charaName, inputpath, overlap=0):
+        opc = util.outputPathConf(inputpath, isAnim=True, test=self.testRun, overlap=overlap)
         opc.createOutputDir(charaName)
 
         output = opc.publishfullanimpath
