@@ -29,7 +29,7 @@ def _getNamespace ():
 def _getAllNodes (namespace, regexArgs):
     if len(regexArgs) == 0:
         regexArgs = ['*']
-    
+
     nodes = []
     for regex in regexArgs:
         regexN = ''
@@ -141,7 +141,7 @@ def _exportAnim (publishpath, oFilename, namespaceList, regexArgs, isFilter, bak
             # ns = ns.replace(':', '___')
             outputfiles.append(publishpath+oFilename+'_'+ns+'.ma')
             ndPyLibAnimIOExportContain(isFilter, ['3', ''], publishpath, oFilename+'_'+ns, pickNodes, 0, 0 , (sframe, eframe), bakeAnim)
-    
+
     return outputfiles
 
 
@@ -157,7 +157,7 @@ def ndPyLibExportAnim (regexArgs, isFilter):
     if match is None:
         mc.warning('directory structure is not n-design format')
         return
-    
+
     project  = match.group(1)
     roll     = match.group(3)
     sequence = match.group(4)

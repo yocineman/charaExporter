@@ -9,6 +9,7 @@ mayaBatch = 'C:\\Program Files\\Autodesk\\Maya2017\\bin\\mayabatch.exe'
 pythonBatch = 'C:\\Program Files\\Shotgun\\Python\\python.exe'
 this_dir = os.path.dirname(os.path.abspath(__file__))
 
+
 def abcExport (namespace, exportSet, outputPath, scene, yeti, step_value):
     if yeti:
         print "load yeti"
@@ -28,7 +29,8 @@ def abcExport (namespace, exportSet, outputPath, scene, yeti, step_value):
     print this_dir
     print nw_cmd
 
-    x = subprocess.call(nw_cmd)
+    subprocess.call(nw_cmd)
+
 
 def hairExport (assetPath, namespace, topNode, outputPath, scene):
     cmd = []
@@ -39,6 +41,7 @@ def hairExport (assetPath, namespace, topNode, outputPath, scene):
     cmd.append(scene)
     print cmd
     ret = subprocess.call(cmd)
+
 
 def abcAttach (assetPath, namespace,topNode, abcPath, outputPath):
     cmd = []
@@ -79,6 +82,7 @@ def animReplace (namespace, animPath, scene):
     print cmd
     subprocess.call(cmd)
 
+
 def camExport (outputPath, oFilename, camScale, scene, yeti):
     if yeti:
         env_load()
@@ -91,6 +95,7 @@ def camExport (outputPath, oFilename, camScale, scene, yeti):
     print cmd
     subprocess.call(cmd)
 
+
 def repABC (scenePath, repAbcPath):
     cmd = []
     cmd.append(mayaBatch)
@@ -100,6 +105,16 @@ def repABC (scenePath, repAbcPath):
     cmd.append(scenePath)
     print cmd
     subprocess.call(cmd)
+
+
+def doubleAttach(assetPath, namespace, topNode, abcPath, animPath, outputPath):
+    cmd = []
+    cmd.append(mayaBatch)
+    cmd.append('-command')
+    cmd.append('''python(\"import sys;sys.path.append(''' + "\'"+this_dir.replace("\\","/")+"\'"+ ''');from mayaBasic import *;import maya.cmds as mc;saveAs(''' + "\'" + outputPath + "\'" + ''');loadAsset(''' + "\'" + assetPath + "\'" + "," + "\'" + namespace + "\'"''');selHierarchy=mc.ls(''' + "\'" + topNode + "\'" + ''', dag=True);attachABC(''' + "\'" + abcPath + "\'" + ","+"\'"+namespace+"\'"+''',selHierarchy);loadAsset(''' + "\'" + animPath + "\'" + "," + "\'" + namespace+'_anim' + "\'" + ''');saveAs(''' + "\'" + outputPath + "\'" + ''');\")''')
+    print cmd
+    subprocess.call(cmd)
+
 
 def env_load():
     os.environ["_TMP_VRAY_VER"]='36004'

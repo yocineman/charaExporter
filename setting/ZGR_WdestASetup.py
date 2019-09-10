@@ -4,4 +4,4 @@ assetChara = 'P:/Project/mem2/assets/bg/ZGR/ZGR_WdestA/publish/Model/MdlRH10/may
 
 nsChara = ['[a-zA-Z0-9_:]*ZGR_WdestA[a-zA-Z0-9_]*']
 
-regex = ["*all"]
+regex = ["*all_grp"]
